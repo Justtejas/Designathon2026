@@ -22,8 +22,7 @@ namespace Hexa_Hub.Repository
         }
 
         //public async Task<List<Asset>> GetAllAssets()
-        //{
-        //    return await _context.Assets
+        //{    return await _context.Assets
         //                         //.Include(a => a.Category)
         //                         //.Include(a => a.SubCategories)
         //                         .ToListAsync();
