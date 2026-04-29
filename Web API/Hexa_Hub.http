@@ -1,0 +1,6 @@
+@Hexa_Hub_HostAddress = http://localhost:5231
+
+GET {{Hexa_Hub_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
