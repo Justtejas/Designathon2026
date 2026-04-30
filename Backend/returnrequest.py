@@ -1,0 +1,337 @@
+from flask import Blueprint, jsonify, request
+from pymongo import MongoClient
+from auth import get_user_id, get_user_role
+from datetime import datetime
+import os
+import logging
+from dotenv import load_dotenv
+from bson.objectid import ObjectId
+from dateutil import parser
+ 
+load_dotenv()
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+ 
+client = MongoClient(os.getenv('MONGODB_URI'))
+db = client['HexaHubDB']
+return_requests = db['ReturnRequests']
+assets = db['Assets']
+users = db['Users']
+asset_allocations = db['AssetAllocations']
+asset_requests = db['AssetRequests']
+categories = db['Categories']
+ 
+return_requests_blueprint = Blueprint('return_requests', __name__)
+ 
+def is_admin():
+    """Check if user is admin"""
+    return get_user_role() == "Admin"
+ 
+def serialize_return_simple(doc):
+    """Serialize basic ReturnRequest"""
+    if doc:
+        doc['_id'] = str(doc['_id']) if doc.get('_id') else None
+        return {
+            "ReturnId": doc.get('ReturnId'),
+            "UserId": doc.get('UserId'),
+            "AssetId": doc.get('AssetId'),
+            "CategoryId": doc.get('CategoryId'),
+            "ReturnDate": doc.get('ReturnDate'),
+            "Reason": doc.get('Reason'),
+            "Condition": doc.get('Condition'),
+            "ReturnStatus": doc.get('ReturnStatus', 'Sent')
+        }
+    return None
+ 
+def serialize_return_class(doc):
+    """Serialize ReturnClassDto with full details"""
+    if doc:
+        doc['_id'] = str(doc['_id']) if doc.get('_id') else None
+        return_status = doc.get('ReturnStatus', 'Sent')
+        return {
+            "ReturnId": doc.get('ReturnId'),
+            "UserId": doc.get('UserId'),
+            "UserName": doc.get('UserName'),
+            "AssetName": doc.get('AssetName'),
+            "AssetId": doc.get('AssetId'),
+            "CategoryId": doc.get('CategoryId'),
+            "CategoryName": doc.get('CategoryName'),
+            "ReturnDate": doc.get('ReturnDate'),
+            "Reason": doc.get('Reason'),
+            "Condition": doc.get('Condition'),
+            "ReturnStatus": return_status
+        }
+    return None
+ 
+def user_has_asset(user_id):
+    """Check if user has allocated assets"""
+    return asset_allocations.find_one({"UserId": user_id}) is not None
+ 
+def handle_return_status_update(return_doc, return_status):
+    """Handle complex return status logic"""
+    if return_status in ["Approved", "Returned", "Rejected"]:
+        return_doc["ReturnDate"] = datetime.now().isoformat()
+        # Update asset status if returned
+        if return_status == "Returned":
+            assets.update_one(
+                {"AssetId": return_doc["AssetId"]},
+                {"$set": {"Asset_Status": "OpenToRequest"}}
+            )
+            # Delete allocation
+            asset_allocations.delete_one({
+                "AssetId": return_doc["AssetId"],
+                "UserId": return_doc["UserId"]
+            })
+            # Delete related asset request
+            asset_requests.delete_one({
+                "AssetId": return_doc["AssetId"],
+                "UserId": return_doc["UserId"],
+                "Request_Status": "Allocated"
+            })
+ 
+@return_requests_blueprint.route("/api/ReturnRequests/all", methods=["GET"])
+def get_all_return_requests():
+    try:
+        logger.info("Fetching all return requests")
+        pipeline = [
+            {"$lookup": {
+                "from": "Users",
+                "localField": "UserId",
+                "foreignField": "UserId",
+                "as": "user"
+            }},
+            {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
+            {"$lookup": {
+                "from": "Assets",
+                "localField": "AssetId",
+                "foreignField": "AssetId",
+                "as": "asset"
+            }},
+            {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
+            {"$lookup": {
+                "from": "Categories",
+                "localField": "CategoryId",
+                "foreignField": "CategoryId",
+                "as": "category"
+            }},
+            {"$unwind": {"path": "$category", "preserveNullAndEmptyArrays": True}},
+            {
+                "$project": {
+                    "_id": 0,
+                    "ReturnId": "$ReturnId",
+                    "UserId": "$UserId",
+                    "UserName": "$user.UserName",
+                    "AssetName": "$asset.AssetName",
+                    "AssetId": "$AssetId",
+                    "CategoryId": "$CategoryId",
+                    "CategoryName": "$category.CategoryName",
+                    "ReturnDate": 1,
+                    "Reason": 1,
+                    "Condition": 1,
+                    "ReturnStatus": {"$ifNull": ["$ReturnStatus", "Sent"]}
+                }
+            },
+            {"$sort": {"ReturnDate": -1}}
+        ]
+        requests_cursor = return_requests.aggregate(pipeline)
+        requests_list = list(requests_cursor)
+        serialized_requests = [serialize_return_class(req) for req in requests_list]
+        return jsonify(serialized_requests), 200
+    except Exception as e:
+        logger.error(f"Error fetching all return requests: {str(e)}")
+        return jsonify({"error": "An error occurred"}), 500
+ 
+@return_requests_blueprint.route("/api/ReturnRequests", methods=["GET"])
+def get_user_return_requests():
+    try:
+        user_id = get_user_id()
+        logger.info(f"Fetching return requests for user: {user_id}")
+        requests_list = list(return_requests.find({"UserId": user_id}).sort("ReturnDate", -1))
+        if not requests_list:
+            return jsonify({"error": "No details found"}), 404
+        serialized_requests = [serialize_return_simple(req) for req in requests_list]
+        return jsonify(serialized_requests), 200
+    except Exception as e:
+        logger.error(f"Error fetching user return requests: {str(e)}")
+        return jsonify({"error": "An error occurred"}), 500
+ 
+@return_requests_blueprint.route("/api/ReturnRequests/GetByReturnId/<int:return_id>", methods=["GET"])
+def get_return_request_by_id(return_id):
+    try:
+        logger.info(f"Fetching return request by ID: {return_id}")
+        pipeline = [
+            {"$match": {"ReturnId": return_id}},
+            {"$lookup": {
+                "from": "Users",
+                "localField": "UserId",
+                "foreignField": "UserId",
+                "as": "user"
+            }},
+            {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
+            {"$lookup": {
+                "from": "Assets",
+                "localField": "AssetId",
+                "foreignField": "AssetId",
+                "as": "asset"
+            }},
+            {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
+            {"$lookup": {
+                "from": "Categories",
+                "localField": "CategoryId",
+                "foreignField": "CategoryId",
+                "as": "category"
+            }},
+            {"$unwind": {"path": "$category", "preserveNullAndEmptyArrays": True}},
+            {
+                "$project": {
+                    "_id": 0,
+                    "ReturnId": "$ReturnId",
+                    "UserId": "$UserId",
+                    "UserName": "$user.UserName",
+                    "AssetName": "$asset.AssetName",
+                    "AssetId": "$AssetId",
+                    "CategoryId": "$CategoryId",
+                    "CategoryName": "$category.CategoryName",
+                    "ReturnDate": 1,
+                    "Reason": 1,
+                    "Condition": 1,
+                    "ReturnStatus": {"$ifNull": ["$ReturnStatus", "Sent"]}
+                }
+            }
+        ]
+        request_cursor = return_requests.aggregate(pipeline)
+        request_list = list(request_cursor)
+        if not request_list:
+            return jsonify({"error": f"Return request not found"}), 404
+        serialized_request = serialize_return_class(request_list[0])
+        return jsonify(serialized_request), 200
+    except Exception as e:
+        logger.error(f"Error fetching return request {return_id}: {str(e)}")
+        return jsonify({"error": "An error occurred"}), 500
+ 
+@return_requests_blueprint.route("/api/ReturnRequests/<int:return_id>", methods=["GET"])
+def get_return_request_admin(return_id):
+    try:
+        if not is_admin():
+            return jsonify({"error": "Admin access required"}), 403
+        logger.info(f"Admin fetching return request: {return_id}")
+        pipeline = [
+            {"$match": {"ReturnId": return_id}},
+            {"$lookup": {
+                "from": "Users",
+                "localField": "UserId",
+                "foreignField": "UserId",
+                "as": "user"
+            }},
+            {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
+            {"$lookup": {
+                "from": "Assets",
+                "localField": "AssetId",
+                "foreignField": "AssetId",
+                "as": "asset"
+            }},
+            {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
+            {"$lookup": {
+                "from": "Categories",
+                "localField": "CategoryId",
+                "foreignField": "CategoryId",
+                "as": "category"
+            }},
+            {"$unwind": {"path": "$category", "preserveNullAndEmptyArrays": True}}
+        ]
+        request_cursor = return_requests.aggregate(pipeline)
+        request_list = list(request_cursor)
+        if not request_list:
+            return jsonify({"error": f"Details for the request ID {return_id} not found"}), 404
+        return jsonify(request_list[0]), 200
+    except Exception as e:
+        logger.error(f"Error fetching admin return request {return_id}: {str(e)}")
+        return jsonify({"error": "An error occurred"}), 500
+ 
+@return_requests_blueprint.route("/api/ReturnRequests/<int:return_id>", methods=["PUT"])
+def put_return_request(return_id):
+    try:
+        if not is_admin():
+            return jsonify({"error": "Admin access required"}), 403
+        data = request.get_json()
+        logger.info(f"Updating return request {return_id}")
+        if data.get("ReturnId") != return_id:
+            return jsonify({"error": "Return ID mismatch"}), 400
+        # Get existing request
+        existing_request = return_requests.find_one({"ReturnId": return_id})
+        if not existing_request:
+            return jsonify({"error": f"Details for the request ID {return_id} not found"}), 404
+        # Update fields
+        update_data = {
+            "$set": {
+                "UserId": data.get("UserId", existing_request.get("UserId")),
+                "AssetId": data.get("AssetId", existing_request.get("AssetId")),
+                "CategoryId": data.get("CategoryId", existing_request.get("CategoryId")),
+                "ReturnDate": data.get("ReturnDate", existing_request.get("ReturnDate")),
+                "Reason": data.get("Reason", existing_request.get("Reason")),
+                "Condition": data.get("Condition", existing_request.get("Condition")),
+                "ReturnStatus": data.get("ReturnStatus", existing_request.get("ReturnStatus", "Sent"))
+            }
+        }
+        new_status = data.get("ReturnStatus")
+        # Handle status change logic
+        handle_return_status_update(existing_request, new_status)
+        result = return_requests.update_one({"ReturnId": return_id}, update_data)
+        if result.matched_count == 0:
+            return jsonify({"error": f"Details for the request ID {return_id} not found"}), 404
+        logger.info(f"Updated return request {return_id} to status: {new_status}")
+        return jsonify({"message": "Return request updated successfully"}), 204
+    except Exception as e:
+        logger.error(f"Error updating return request {return_id}: {str(e)}")
+        return jsonify({"error": "An error occurred while updating return request"}), 500
+ 
+@return_requests_blueprint.route("/api/ReturnRequests", methods=["POST"])
+def post_return_request():
+    try:
+        user_id = get_user_id()
+        if get_user_role() != "Employee":
+            return jsonify({"error": "Employee access required"}), 403
+        data = request.get_json()
+        logger.info(f"Creating return request for user: {user_id}")
+        # Check if user has assets
+        if not user_has_asset(user_id):
+            return jsonify({"error": "User does not have an asset to return"}), 400
+        return_request_doc = {
+            "ReturnId": data.get("ReturnId"),
+            "UserId": user_id,
+            "AssetId": data.get("AssetId"),
+            "CategoryId": data.get("CategoryId"),
+            "ReturnDate": data.get("ReturnDate"),
+            "Reason": data.get("Reason"),
+            "Condition": data.get("Condition"),
+            "ReturnStatus": "Sent"
+        }
+        result = return_requests.insert_one(return_request_doc)
+        logger.info(f"Created return request with ID: {result.inserted_id}")
+        return_request_doc["_id"] = str(result.inserted_id)
+        return jsonify(return_request_doc), 201
+    except Exception as e:
+        logger.error(f"Error creating return request: {str(e)}")
+        return jsonify({"error": "An error occurred while creating return request"}), 500
+ 
+@return_requests_blueprint.route("/api/ReturnRequests/<int:return_id>", methods=["DELETE"])
+def delete_return_request(return_id):
+    try:
+        user_id = get_user_id()
+        if get_user_role() != "Employee":
+            return jsonify({"error": "Employee access required"}), 403
+        logger.info(f"Deleting return request {return_id} for user {user_id}")
+        # Check ownership
+        request_doc = return_requests.find_one({"ReturnId": return_id, "UserId": user_id})
+        if not request_doc:
+            return jsonify({"error": f"Details for the request ID {return_id} not found"}), 404
+        if request_doc.get("UserId") != user_id:
+            return jsonify({"error": "You are not allowed to delete other records"}), 403
+        result = return_requests.delete_one({"ReturnId": return_id})
+        if result.deleted_count == 0:
+            return jsonify({"error": "Failed to delete return request"}), 404
+        logger.info(f"Deleted return request {return_id}")
+        return jsonify({"message": f"Deletion occurred for ID {return_id}"}), 200
+    except Exception as e:
+        logger.error(f"Error deleting return request {return_id}: {str(e)}")
+        return jsonify({"error": f"Failed to delete return request: {str(e)}"}), 400

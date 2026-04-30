@@ -1,0 +1,10 @@
+pdfplumber
+scikit-learn
+spacy
+Flask
+groq
+flask-cors
+PyJWT
+pymongo
+python-dotenv
+torch
