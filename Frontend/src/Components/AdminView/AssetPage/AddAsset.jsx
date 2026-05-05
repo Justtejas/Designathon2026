@@ -58,7 +58,9 @@ const AddAsset = () => {
     const fetchCategories = async () => {
         try {
             const response = await axios.get('http://localhost:7287/api/Categories/all-categories');
-            setCategories(response.data.$values || []);
+            //console.log(response.data)
+            setCategories(response.data || []);
+            console.log(categories)
         } catch (error) {
             console.error('Error fetching categories:', error);
             setErrorMessage('Error fetching categories. Please try again.');
@@ -316,8 +318,8 @@ const AddAsset = () => {
                                                 required
                                             >
                                                 {categories.map((category) => (
-                                                    <MenuItem key={category.categoryId} value={category.categoryId}>
-                                                        {category.categoryName}
+                                                    <MenuItem key={category.CategoryId} value={category.CategoryId}>
+                                                        {category.CategoryName}
                                                     </MenuItem>
                                                 ))}
                                             </Select>
