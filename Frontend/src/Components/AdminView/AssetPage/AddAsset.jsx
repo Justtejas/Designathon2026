@@ -57,7 +57,7 @@ const AddAsset = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get('https://localhost:7287/api/Categories/all-categories');
+            const response = await axios.get('http://localhost:7287/api/Categories/all-categories');
             setCategories(response.data.$values || []);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -67,7 +67,7 @@ const AddAsset = () => {
 
     const fetchSubCategories = async (categoryId) => {
         try {
-            const response = await axios.get(`https://localhost:7287/api/SubCategories?categoryId=${categoryId}`);
+            const response = await axios.get(`http://localhost:7287/api/SubCategories?categoryId=${categoryId}`);
             setSubCategories(response.data.$values || []);
         } catch (error) {
             console.error('Error fetching subcategories:', error);
@@ -109,7 +109,7 @@ const AddAsset = () => {
         }
 
         try {
-            const assetResponse = await axios.post('https://localhost:7287/api/Assets', assetData, {
+            const assetResponse = await axios.post('http://localhost:7287/api/Assets', assetData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
@@ -123,7 +123,7 @@ const AddAsset = () => {
                 const uploadFormData = new FormData();
                 uploadFormData.append('file', file);
 
-                await axios.post(`https://localhost:7287/api/Assets/upload-image/${assetId}`, uploadFormData, {
+                await axios.post(`http://localhost:7287/api/Assets/upload-image/${assetId}`, uploadFormData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data'
@@ -149,7 +149,7 @@ const AddAsset = () => {
 
     const handleAddCategory = async () => {
         try {
-            const response = await axios.post('https://localhost:7287/api/Categories', { CategoryName: newCategory });
+            const response = await axios.post('http://localhost:7287/api/Categories', { CategoryName: newCategory });
             setCategories([...categories, response.data]);
             setNewCategoryDialog(false);
             setNewCategory('');
@@ -164,7 +164,7 @@ const AddAsset = () => {
 
     const handleAddSubCategory = async () => {
         try {
-            const response = await axios.post('https://localhost:7287/api/SubCategories', {
+            const response = await axios.post('http://localhost:7287/api/SubCategories', {
                 SubCategoryName: newSubCategory.name,
                 CategoryId: newSubCategory.categoryId,
                 Quantity: newSubCategory.quantity,

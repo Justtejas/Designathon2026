@@ -54,7 +54,7 @@ export default function Employee() {
                 return;
             }
             try {
-                const response = await axios.get('https://localhost:7287/api/Users/role?role=Employee');
+                const response = await axios.get('http://localhost:7287/api/Users/role?role=Employee');
                 setEmployees(response.data.$values || []);
             } catch (error) {
                 console.error("Error fetching employees:", error);
@@ -87,7 +87,7 @@ export default function Employee() {
     const handleDelete = async () => {
         if (deleteId) {
             try {
-                await axios.delete(`https://localhost:7287/api/Users/${deleteId}`);
+                await axios.delete(`http://localhost:7287/api/Users/${deleteId}`);
                 setEmployees(employees.filter(employee => employee.userId !== deleteId));
                 setOpenDialog(false);
                 setDeleteId(null);

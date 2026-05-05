@@ -51,7 +51,7 @@ const ServiceRequest = () => {
 
           try {
             // Fetch service requests
-            const serviceResponse = await axios.get('https://localhost:7287/api/ServiceRequests', {
+            const serviceResponse = await axios.get('http://localhost:7287/api/ServiceRequests', {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -65,7 +65,7 @@ const ServiceRequest = () => {
             console.error('Error fetching service requests:', error);
           } 
           try {
-            const assetResponse = await axios.get(`https://localhost:7287/api/AssetAllocations/user/${userId}`, {
+            const assetResponse = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -129,7 +129,7 @@ const ServiceRequest = () => {
         return;
       }
       const response = await axios.post(
-        'https://localhost:7287/api/ServiceRequests',
+        'http://localhost:7287/api/ServiceRequests',
         { ...formData },
         {
           headers: {

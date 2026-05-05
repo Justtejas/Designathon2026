@@ -56,7 +56,7 @@ export default function MaintenancePage() {
                 return;
             }
             try {
-                const response = await axios.get('https://localhost:7287/api/MaintenanceLogs/AllLog');
+                const response = await axios.get('http://localhost:7287/api/MaintenanceLogs/AllLog');
                 console.log('Fetched Maintenance Logs Response:', JSON.stringify(response.data));
                 setMaintenanceLogs(response.data.$values || []); 
             } catch (error) {

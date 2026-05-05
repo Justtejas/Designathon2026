@@ -70,7 +70,7 @@ const Assets = () => {
 
   const fetchAssetImage = async (assetId) => {
     try {
-      const response = await fetch(`https://localhost:7287/api/Assets/get-image/${assetId}`);
+      const response = await fetch(`http://localhost:7287/api/Assets/get-image/${assetId}`);
       if (response.ok) {
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob); 
@@ -98,7 +98,7 @@ const Assets = () => {
   // Fetch assets and related data
   const fetchAssets = async () => {
     try {
-      const response = await axios.get('https://localhost:7287/api/Assets/assetall');
+      const response = await axios.get('http://localhost:7287/api/Assets/assetall');
       console.log('Fetched assets:', response.data);
 
       // Check if response data is in the expected format
@@ -212,7 +212,7 @@ const Assets = () => {
     console.log("Form Data to Submit:", formData);
 
     try {
-      const response = await axios.post('https://localhost:7287/api/AssetRequests', formData);
+      const response = await axios.post('http://localhost:7287/api/AssetRequests', formData);
       console.log("Asset Request Submitted:", response.data);
       setSuccessMessage('Asset request sent successfully!');
     } catch (error) {
@@ -272,7 +272,7 @@ const Assets = () => {
   // Fetch suggestions based on search term
   const fetchSuggestions = async (term) => {
     try {
-      const response = await axios.get(`https://localhost:7287/api/Assets/ByAssetName/${encodeURIComponent(term)}`);
+      const response = await axios.get(`http://localhost:7287/api/Assets/ByAssetName/${encodeURIComponent(term)}`);
       console.log('API Response:', response.data);
       // Set suggestions to the response data
       const assets = Array.isArray(response.data) ? response.data : [];

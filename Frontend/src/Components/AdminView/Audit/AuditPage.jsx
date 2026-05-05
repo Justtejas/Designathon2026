@@ -64,7 +64,7 @@ export default function AuditPage() {
                 return;
             }
             try {
-                const response = await axios.get('https://localhost:7287/api/Audits');
+                const response = await axios.get('http://localhost:7287/api/Audits');
                 setAudits(response.data.$values || []);
             } catch (error) {
                 console.error('Error fetching audits:', error);
@@ -217,7 +217,7 @@ export default function AuditPage() {
     const handleDelete = async () => {
         if (deleteId) {
             try {
-                await axios.delete(`https://localhost:7287/api/Audits/${deleteId}`);
+                await axios.delete(`http://localhost:7287/api/Audits/${deleteId}`);
                 setAudits(audits.filter(audit => audit.auditId !== deleteId));
                 setOpenDialog(false);
                 setDeleteId(null);

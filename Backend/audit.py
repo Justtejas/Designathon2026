@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
  
 client = MongoClient(os.getenv('MONGODB_URI'))
-db = client['HexaHubDB']
+db = client['MaventoryDB']
 audits = db['Audits']
 assets = db['Assets']
 users = db['Users']

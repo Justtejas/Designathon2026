@@ -52,7 +52,7 @@ const UpdateAsset = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get('https://localhost:7287/api/Categories/all-categories');
+            const response = await axios.get('http://localhost:7287/api/Categories/all-categories');
             setCategories(response.data.$values || []);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -62,7 +62,7 @@ const UpdateAsset = () => {
 
     const fetchSubCategories = async (categoryId) => {
         try {
-            const response = await axios.get(`https://localhost:7287/api/SubCategories?categoryId=${categoryId}`);
+            const response = await axios.get(`http://localhost:7287/api/SubCategories?categoryId=${categoryId}`);
             setSubCategories(response.data.$values || []);
             setFormData((prev) => ({ ...prev, SubCategoryId: '' }));
         } catch (error) {
@@ -73,7 +73,7 @@ const UpdateAsset = () => {
 
     const fetchAssetImage = async (assetId) => {
         try {
-            const response = await axios.get(`https://localhost:7287/api/Assets/get-image/${assetId}`, { responseType: 'blob' });
+            const response = await axios.get(`http://localhost:7287/api/Assets/get-image/${assetId}`, { responseType: 'blob' });
             setAssetImage(URL.createObjectURL(new Blob([response.data])));
         } catch (error) {
             console.error('Error fetching asset image:', error);
@@ -83,7 +83,7 @@ const UpdateAsset = () => {
 
     const fetchAsset = async () => {
         try {
-            const response = await axios.get(`https://localhost:7287/api/Assets/${id}`);
+            const response = await axios.get(`http://localhost:7287/api/Assets/${id}`);
             setFormData({
                 AssetName: response.data.assetName,
                 AssetDescription: response.data.assetDescription,
@@ -140,7 +140,7 @@ const UpdateAsset = () => {
         console.log('Payload being sent:', JSON.stringify(payload, null, 2));
     
         try {
-            const response = await axios.put(`https://localhost:7287/api/Assets/${id}`, payload, {
+            const response = await axios.put(`http://localhost:7287/api/Assets/${id}`, payload, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',

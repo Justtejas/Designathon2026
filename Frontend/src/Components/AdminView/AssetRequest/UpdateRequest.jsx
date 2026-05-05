@@ -38,7 +38,7 @@ const UpdateAssetRequest = () => {
     useEffect(() => {
         const fetchAssetRequestDetails = async () => {
             try {
-                const response = await axios.get(`https://localhost:7287/api/AssetRequests/${id}`);
+                const response = await axios.get(`http://localhost:7287/api/AssetRequests/${id}`);
                 const data = response.data;
                 console.log(data);
                 setAssetRequest({
@@ -73,7 +73,7 @@ const UpdateAssetRequest = () => {
         e.preventDefault();
         console.log("Updating asset request with details:", assetRequest);
         try {
-            await axios.put(`https://localhost:7287/api/AssetRequests/${id}`, {
+            await axios.put(`http://localhost:7287/api/AssetRequests/${id}`, {
                 assetReqId: assetRequest.assetReqId,
                 userName: assetRequest.userName,
                 assetName: assetRequest.assetName,

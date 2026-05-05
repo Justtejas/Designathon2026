@@ -53,7 +53,7 @@ export default function AllocationPage() {
                 return;
             }
             try {
-                const response = await axios.get('https://localhost:7287/api/AssetAllocations');
+                const response = await axios.get('http://localhost:7287/api/AssetAllocations');
                 console.log('Fetched Assets Response:', JSON.stringify(response.data));
                 setAllocation(response.data.$values || []);
             } catch (error) {

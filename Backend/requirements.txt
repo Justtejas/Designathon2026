@@ -8,3 +8,4 @@ PyJWT
 pymongo
 python-dotenv
 torch
+python-dateutil

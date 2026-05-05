@@ -39,7 +39,7 @@ const RequestInfo = () => {
             }
 
             try {
-                const response = await axios.get(`https://localhost:7287/api/AssetRequests/${id}`, {
+                const response = await axios.get(`http://localhost:7287/api/AssetRequests/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
@@ -89,7 +89,7 @@ const RequestInfo = () => {
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                 <Avatar
-                                    src={`https://localhost:7287/api/Assets/get-image/${request.assetId}`}
+                                    src={`http://localhost:7287/api/Assets/get-image/${request.assetId}`}
                                     sx={{ width: 120, height: 120, mr: 3 }}
                                 />
                                 <Box>

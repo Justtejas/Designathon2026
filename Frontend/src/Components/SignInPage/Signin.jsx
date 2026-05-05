@@ -27,12 +27,12 @@ const SignInPage = () => {
     };
 
     try {
-      const response = await axios.post('https://localhost:7287/api/Auth', loginData);
+      const response = await axios.post('http://localhost:7287/api/auth', loginData);
 
       const { token } = response.data;
       Cookies.set('token', token);
       const decode = jwtDecode(token);
-      const userRole = decode.role;
+      const userRole = decode.User_Type;
       Cookies.set('role' , userRole);
       console.log('Decoded Token:', decode); 
       console.log('Navigating to:', userRole === 'Admin' ? '/admin/Dashboard' : '/dashboard');

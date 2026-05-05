@@ -47,7 +47,7 @@ const AddEmployee = () => {
         };
 
         try {
-            await axios.post('https://localhost:7287/api/Users', dataToSend);
+            await axios.post('http://localhost:7287/api/Users', dataToSend);
             alert('Employee added successfully!');
             navigate('/admin/employee');
             setFormData({

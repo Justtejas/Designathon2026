@@ -31,7 +31,7 @@ const MaintenanceInfo = () => {
             }
 
             try {
-                const response = await axios.get(`https://localhost:7287/api/MaintenanceLogs/id/${id}`, {
+                const response = await axios.get(`http://localhost:7287/api/MaintenanceLogs/id/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
@@ -79,7 +79,7 @@ const MaintenanceInfo = () => {
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                 <Avatar
-                                    src={`https://localhost:7287/api/Assets/get-image/${maintenance.assetId}`}
+                                    src={`http://localhost:7287/api/Assets/get-image/${maintenance.assetId}`}
                                     sx={{ width: 120, height: 120, mr: 3 }}
                                 />
                                 <Box>

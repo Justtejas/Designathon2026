@@ -35,11 +35,11 @@ const AddAudit = () => {
     useEffect(() => {
         const fetchUsersAndAllocatedAssets = async () => {
             try {
-                const userResponse = await axios.get('https://localhost:7287/api/Users');
+                const userResponse = await axios.get('http://localhost:7287/api/Users');
                 console.log('User Response:', userResponse.data);
                 setUsers(userResponse.data.$values || []);
 
-                const assetResponse = await axios.get('https://localhost:7287/api/Audits/allocated-assets');
+                const assetResponse = await axios.get('http://localhost:7287/api/Audits/allocated-assets');
                 console.log('Allocated Assets Response:', assetResponse.data);
                 setAllocatedAssets(assetResponse.data.$values || []);
             } catch (error) {
@@ -73,7 +73,7 @@ const AddAudit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`https://localhost:7287/api/Audits`, formData);
+            await axios.post(`http://localhost:7287/api/Audits`, formData);
             setTimeout(() => {
                 showToast('Audit Added Successfully', 'success');
             }, 2000)

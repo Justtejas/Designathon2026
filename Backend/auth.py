@@ -17,10 +17,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
  
 client = MongoClient(os.getenv('MONGODB_URI'))
-db = client["HexaHubDB"]
-users = db["Users"]
+db = client["MaventoryDB"]
+users = db["users"]
  
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-here")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 JWT_EXPIRY_HOURS = 1
  
 def get_user_role():
@@ -35,6 +35,31 @@ def get_user_role():
     except Exception as e:
         logger.error(f"Error getting user role: {str(e)}")
         return None
+
+def create_admin():
+    try:
+        logger.info("Checking for admin..")
+        # Check if Admin already exists
+        if users.find_one({"User_Type": "Admin"}):
+            logger.info("Admin already exists")
+            return "Admin already exists"
+        # Create Admin with default password
+        logger.info("Registering new admin")
+        hashed_pw = generate_password_hash("Admin@123")
+        user_doc = {
+            "UserId": "0",
+            "UserName": "Admin",
+            "UserMail": "Admin@gmail.com",
+            "User_Type": "Admin",
+            "Password": hashed_pw, 
+            "ProfileImage": "profile-img.jpg"  # Default profile image
+        }
+        result = users.insert_one(user_doc)
+        logger.info(f"Registered new admin: {user_doc['UserMail']}")
+        return "Admin created Successfully"
+    except Exception as e:
+        logger.error(f"Error registering user: {str(e)}")
+        return "An error occurred while registering user"
  
 def is_admin():
     """Check if user is admin"""
@@ -78,7 +103,7 @@ def get_user_email():
         logger.error(f"Error getting user email: {str(e)}")
         return None
  
-@bp.route('/api/auth', methods=['POST'])
+@auth_bp.route('/api/auth', methods=['POST'])
 def login():
     try:
         data = request.json
@@ -94,7 +119,7 @@ def login():
             "UserMail": {"$regex": email, "$options": "i"}
         })
  
-        if not user or user.get("Password") != password:  # Plain text comparison (match C#)
+        if not user or not check_password_hash(user['Password'], password):
             logger.warning(f"Failed login attempt for email: {email}")
             return jsonify({"error": "Invalid credentials"}), 401
  
@@ -103,8 +128,8 @@ def login():
             "UserId": user["UserId"],
             "UserName": user["UserName"],
             "UserMail": user["UserMail"],
-            "User_Type": user.get("User_Type", "Employee"),
-            "exp": datetime.utcnow() + timedelta(hours=JWT_EXPIRY_HOURS)
+            "User_Type": user.get("User_Type"),
+            "exp": datetime.now() + timedelta(hours=JWT_EXPIRY_HOURS)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
         logger.info(f"Successful login for user: {email}")
@@ -121,7 +146,7 @@ def login():
         logger.error(f"Login error: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
  
-@bp.route('/api/users', methods=['GET'])
+@auth_bp.route('/api/users', methods=['GET'])
 def get_users():
     try:
         logger.info("Fetching all users")
@@ -141,7 +166,7 @@ def get_users():
         logger.error(f"Error fetching users: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
-@bp.route('/api/users/role', methods=['GET'])
+@auth_bp.route('/api/users/role', methods=['GET'])
 def get_users_by_role():
     try:
         role = request.args.get('role')
@@ -164,7 +189,7 @@ def get_users_by_role():
         logger.error(f"Error fetching users by role: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
-@bp.route('/api/users/profile', methods=['GET'])
+@auth_bp.route('/api/users/profile', methods=['GET'])
 def get_user_profile():
     try:
         user_id = get_user_id()
@@ -183,7 +208,7 @@ def get_user_profile():
         logger.error(f"Error fetching user profile: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
-@bp.route('/api/users/<int:user_id>', methods=['GET'])
+@auth_bp.route('/api/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     try:
         logger.info(f"Fetching user: {user_id}")
@@ -199,81 +224,121 @@ def get_user(user_id):
         logger.error(f"Error fetching user {user_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
-@bp.route('/api/users/<int:user_id>', methods=['PUT'])
+@auth_bp.route('/api/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     try:
         current_user_id = get_user_id()
         if not current_user_id:
             return jsonify({"error": "User not authenticated"}), 401
-        data = request.json
-        logger.info(f"Updating user {user_id}")
-        if data.get("UserId") != user_id:
-            return jsonify({"error": "Check Id"}), 400
-        # Permission check: self or admin
-        if current_user_id != user_id and not is_admin():
+
+        data = request.get_json(silent=True) or {}
+        logger.info("Updating user %s requested by %s", user_id, current_user_id)
+
+        # Authorization: only self or admin may update
+        admin = is_admin()
+        if current_user_id != user_id and not admin:
             return jsonify({"error": "You do not have permission to update this user"}), 403
-        # Get existing user
+
+        # Retrieve existing user
         existing_user = users.find_one({"UserId": user_id})
         if not existing_user:
             return jsonify({"error": "User not found"}), 404
-        # Prepare update data (exclude password)
-        update_data = {
-            "$set": {
-                "UserName": data.get("UserName", existing_user.get("UserName")),
-                "UserMail": data.get("UserMail", existing_user.get("UserMail")),
-                "Gender": data.get("Gender", existing_user.get("Gender")),
-                "Dept": data.get("Dept", existing_user.get("Dept")),
-                "Designation": data.get("Designation", existing_user.get("Designation")),
-                "PhoneNumber": data.get("PhoneNumber", existing_user.get("PhoneNumber")),
-                "Address": data.get("Address", existing_user.get("Address")),
-                "Branch": data.get("Branch", existing_user.get("Branch")),
-                "ProfileImage": data.get("ProfileImage", existing_user.get("ProfileImage"))
-            }
+
+        # Build set of allowed updatable fields from input (exclude password, UserId, _id)
+        allowed_fields = [
+            "UserName", "UserMail", "Gender", "Dept", "Designation",
+            "PhoneNumber", "Address", "Branch", "ProfileImage"
+        ]
+        update_fields = {}
+        for key in allowed_fields:
+            # Only include keys that were provided (presence), allow explicit empty-string if intended
+            if key in data:
+                update_fields[key] = data[key]
+
+        # Admin-only fields
+        if admin and "User_Type" in data:
+            update_fields["User_Type"] = data["User_Type"]
+
+        if not update_fields:
+            return jsonify({"error": "No updatable fields provided"}), 400
+
+        result = users.find_one_and_update(
+            {"UserId": user_id},
+            {"$set": update_fields},
+            return_document=True  # import ReturnDocument if needed; adjust as per driver version
+        )
+
+        if not result:
+            # Unexpected — we already checked existence, but handle gracefully
+            return jsonify({"error": "Unable to update user"}), 500
+
+        logger.info("Updated user %s (requested by %s)", user_id, current_user_id)
+        # Do not return sensitive fields
+        sanitized = {
+            "UserId": result.get("UserId"),
+            "UserName": result.get("UserName"),
+            "UserMail": result.get("UserMail"),
+            "User_Type": result.get("User_Type")
         }
-        # Admin can update role
-        if is_admin():
-            update_data["$set"]["User_Type"] = data.get("User_Type", existing_user.get("User_Type"))
-        result = users.update_one({"UserId": user_id}, update_data)
-        if result.matched_count == 0:
-            return jsonify({"error": "User not found"}), 404
-        logger.info(f"Updated user {user_id}")
-        return jsonify({"message": "Updation Successful"}), 200
+        return jsonify({"message": "Updation Successful", "user": sanitized}), 200
+
     except Exception as e:
-        logger.error(f"Error updating user {user_id}: {str(e)}")
+        logger.exception("Error updating user %s: %s", user_id, str(e))
         return jsonify({"error": "An error occurred while updating user"}), 500
  
-@bp.route('/api/users/<int:user_id>/password', methods=['PUT'])
+@auth_bp.route('/api/users/<int:user_id>/password', methods=['PUT'])
 def change_password(user_id):
     try:
         current_user_id = get_user_id()
         if not current_user_id:
             return jsonify({"error": "User not authenticated"}), 401
-        data = request.json
-        logger.info(f"Changing password for user: {user_id}")
-        if data.get("UserId") != user_id:
-            return jsonify({"error": "Check Your Id"}), 400
-        # Only self password change allowed
+
+        data = request.get_json(silent=True) or {}
+        logger.info("Password change requested for user id %s", user_id)
+
+        # Prefer server-side identity check; ignore client-sent UserId
         if current_user_id != user_id:
-            return jsonify({"error": "Check your Id"}), 403
+            return jsonify({"error": "Forbidden"}), 403
+
+        # Validate input
+        current_pw = data.get("CurrentPassword")
+        new_pw = data.get("NewPassword")
+        if not current_pw or not new_pw:
+            return jsonify({"error": "CurrentPassword and NewPassword are required"}), 400
+        if current_pw == new_pw:
+            return jsonify({"error": "New password must be different from current password"}), 400
+
         # Get existing user
         existing_user = users.find_one({"UserId": user_id})
         if not existing_user:
             return jsonify({"error": "User not found"}), 404
-        # Verify current password
-        if existing_user.get("Password") != data.get("CurrentPassword"):
-            return jsonify({"error": "Current password is incorrect"}), 401
-        # Update password (plain text to match C#)
-        users.update_one(
+
+        # Verify current password (existing_user["Password"] should be the stored hash)
+        if not check_password_hash(existing_user.get("Password", ""), current_pw):
+            # Generic message preferred to avoid user enumeration
+            return jsonify({"error": "Authentication failed"}), 401
+
+        # Hash new password and update document correctly
+        hashed_pw = generate_password_hash(new_pw)  # consider stronger algorithm/config
+        result = users.update_one(
             {"UserId": user_id},
-            {"$set": {"Password": data.get("NewPassword")}}
+            {"$set": {"Password": hashed_pw}}
         )
-        logger.info(f"Password changed for user {user_id}")
-        return jsonify({"message": "Password Changed Successfully"}), 200
+
+        if result.matched_count == 0:
+            return jsonify({"error": "User not found during update"}), 404
+        if result.modified_count == 0:
+            # This can mean the new hash is identical to stored hash (rare) or no change applied
+            logger.info("Password update did not modify document for user %s", user_id)
+
+        logger.info("Password changed for user %s", user_id)
+        return jsonify({"message": "Password changed successfully"}), 200
+
     except Exception as e:
-        logger.error(f"Error changing password for user {user_id}: {str(e)}")
+        logger.exception("Error changing password for user %s", user_id)
         return jsonify({"error": "An error occurred while changing password"}), 500
  
-@bp.route('/api/users', methods=['POST'])
+@auth_bp.route('/api/users', methods=['POST'])
 def register_user():
     try:
         data = request.json
@@ -286,14 +351,27 @@ def register_user():
         if users.find_one({"UserMail": data.get("UserMail")}):
             return jsonify({"error": "User already exists"}), 400
         # Create user with default password
+        email = data.get("UserMail", "").strip()
+        role = data.get("Role", "").strip()
+        if "@" not in email:
+            return jsonify({"error": "UserMail must be a valid email"}), 400
+        local_part = email.split("@", 1)[0]
+        user_id = f"{local_part}_{role}".lower().replace(" ", "_")
+
+        # Ensure the generated UserId is unique; if taken, return error (simple behavior)
+        if users.find_one({"UserId": user_id}):
+            return jsonify({"error": "UserId already exists. Please use a different role or email"}), 409
+        # Create user with default password
+        hashed_pw = generate_password_hash("Maventory@123")
         user_doc = {
+            "UserId": user_id,
             "UserName": data.get("UserName"),
-            "UserMail": data.get("UserMail"),
+            "UserMail": email,
             "PhoneNumber": data.get("PhoneNumber"),
             "Branch": data.get("Branch"),
-            "User_Type": "Employee",
-            "Password": "Hexahub@123",  # Default password matching C#
-            "ProfileImage": "profile-img.jpg"  # Default profile image
+            "User_Type": role,
+            "Password": hashed_pw,
+            "ProfileImage": "profile-img.jpg"
         }
         result = users.insert_one(user_doc)
         logger.info(f"Registered new user: {user_doc['UserMail']}")
@@ -304,7 +382,7 @@ def register_user():
         logger.error(f"Error registering user: {str(e)}")
         return jsonify({"error": "An error occurred while registering user"}), 500
  
-@bp.route('/api/users/<int:user_id>', methods=['DELETE'])
+@auth_bp.route('/api/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     try:
         if not is_admin():
@@ -319,7 +397,7 @@ def delete_user(user_id):
         logger.error(f"Error deleting user {user_id}: {str(e)}")
         return jsonify({"error": "An error occurred while deleting user"}), 500
  
-@bp.route('/api/users/<int:user_id>/upload', methods=['PUT'])
+@auth_bp.route('/api/users/<int:user_id>/upload', methods=['PUT'])
 def upload_profile_image(user_id):
     try:
         current_user_id = get_user_id()
@@ -348,7 +426,7 @@ def upload_profile_image(user_id):
         logger.error(f"Error uploading profile image: {str(e)}")
         return jsonify({"error": "Failed to upload image"}), 500
  
-@bp.route('/api/users/<int:user_id>/profileImage', methods=['GET'])
+@auth_bp.route('/api/users/<int:user_id>/profileImage', methods=['GET'])
 def get_profile_image(user_id):
     try:
         logger.info(f"Fetching profile image for user: {user_id}")

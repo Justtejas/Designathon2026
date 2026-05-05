@@ -60,7 +60,7 @@ export default function ServicePage() {
                 return;
             }
             try {
-                const response = await axios.get('https://localhost:7287/api/ServiceRequests');
+                const response = await axios.get('http://localhost:7287/api/ServiceRequests');
                 console.log('Fetched Service Requests Response:', JSON.stringify(response.data));
                 setServiceRequest(response.data.$values || []);
             } catch (error) {

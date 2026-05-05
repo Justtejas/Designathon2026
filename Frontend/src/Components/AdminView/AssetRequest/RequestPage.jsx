@@ -61,7 +61,7 @@ export default function AssetPage() {
                 return;
             }
             try {
-                const response = await axios.get('https://localhost:7287/api/AssetRequests');
+                const response = await axios.get('http://localhost:7287/api/AssetRequests');
                 console.log('Fetched Assets Response:', JSON.stringify(response.data));
                 setAssetsRequest(response.data.$values || []);
             } catch (error) {

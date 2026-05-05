@@ -33,7 +33,7 @@ const UpdateMaintenanceLog = () => {
     useEffect(() => {
         const fetchMaintenanceLogDetails = async () => {
             try {
-                const response = await axios.get(`https://localhost:7287/api/MaintenanceLogs/id/${id}`);
+                const response = await axios.get(`http://localhost:7287/api/MaintenanceLogs/id/${id}`);
                 const data = response.data;
 
                 setMaintenanceLog({
@@ -80,7 +80,7 @@ const UpdateMaintenanceLog = () => {
         console.log('Data to update:', dataToUpdate); // Log the data being sent
     
         try {
-            await axios.put(`https://localhost:7287/api/MaintenanceLogs/${id}`, dataToUpdate);
+            await axios.put(`http://localhost:7287/api/MaintenanceLogs/${id}`, dataToUpdate);
             setTimeout(() => {
                 showToast('Maintenance Updated Successfully', 'success');
             }, 2000);

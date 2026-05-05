@@ -53,7 +53,7 @@ const UpdateReturn = () => {
     useEffect(() => {
         const fetchReturnRequestDetails = async () => {
             try {
-                const response = await axios.get(`https://localhost:7287/api/ReturnRequests/GetByReturnId/${id}`);
+                const response = await axios.get(`http://localhost:7287/api/ReturnRequests/GetByReturnId/${id}`);
                 const data = response.data;
                 console.log(data)
                 setReturnRequest({
@@ -89,7 +89,7 @@ const UpdateReturn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`https://localhost:7287/api/ReturnRequests/${id}`, {
+            await axios.put(`http://localhost:7287/api/ReturnRequests/${id}`, {
                 returnId: returnRequest.returnId,
                 userId: returnRequest.userId,
                 assetId: returnRequest.assetId, 

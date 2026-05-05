@@ -62,8 +62,8 @@ export default function AssetPage() {
         const fetchData = async () => {
             try {
                 const [assetsResponse, categoriesResponse] = await Promise.all([
-                    axios.get('https://localhost:7287/api/Assets/assetall'),
-                    axios.get('https://localhost:7287/api/Categories/all-categories'),
+                    axios.get('http://localhost:7287/api/Assets/assetall'),
+                    axios.get('http://localhost:7287/api/Categories/all-categories'),
                 ]);
                 setAssets(assetsResponse.data.$values || []);
                 setCategories(categoriesResponse.data.$values || []);
@@ -81,7 +81,7 @@ export default function AssetPage() {
             return;
         };
 
-        const url = `https://localhost:7287/api/SubCategories/by-category-name?categoryName=${categoryId}`;
+        const url = `http://localhost:7287/api/SubCategories/by-category-name?categoryName=${categoryId}`;
         try {
             const response = await axios.get(url);
             const fetchedSubCategories = response.data.$values || [];
@@ -122,7 +122,7 @@ export default function AssetPage() {
     const handleDelete = async () => {
         if (deleteId) {
             try {
-                await axios.delete(`https://localhost:7287/api/Assets/${deleteId}`);
+                await axios.delete(`http://localhost:7287/api/Assets/${deleteId}`);
                 setAssets(prevAssets => prevAssets.filter((asset) => asset.assetId !== deleteId));
                 setOpenDialog(false);
                 setDeleteId(null);

@@ -26,7 +26,7 @@ except Exception:
 
 # --- MongoDB Client & Collection ---
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-DB_NAME = os.getenv("MONGODB_DB", "HexaHubDB")
+DB_NAME = os.getenv("MONGODB_DB", "MaventoryDB")
 COLLECTION_NAME = os.getenv("ASSET_ALLOCATIONS_COLLECTION", "AssetAllocations")
 
 client = MongoClient(MONGODB_URI)

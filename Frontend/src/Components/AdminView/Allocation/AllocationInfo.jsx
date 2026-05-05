@@ -30,7 +30,7 @@ const AllocationInfo = () => {
                 return;
             }
             try {
-                const response = await axios.get(`https://localhost:7287/api/AssetAllocations/${id}`, {
+                const response = await axios.get(`http://localhost:7287/api/AssetAllocations/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
@@ -87,7 +87,7 @@ const AllocationInfo = () => {
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                 <Avatar
-                                    src={`https://localhost:7287/api/Assets/get-image/${allocation.assetId}`}
+                                    src={`http://localhost:7287/api/Assets/get-image/${allocation.assetId}`}
                                     onError={(e) => { e.target.onerror = null; e.target.src = 'path/to/placeholder/image.jpg'; }}
                                     sx={{ width: 120, height: 120, mr: 3 }}
                                 />

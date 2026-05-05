@@ -38,7 +38,7 @@ const UpdateServiceRequest = () => {
     useEffect(() => {
         const fetchServiceRequestDetails = async () => {
             try {
-                const response = await axios.get(`https://localhost:7287/api/ServiceRequests/${id}`);
+                const response = await axios.get(`http://localhost:7287/api/ServiceRequests/${id}`);
                 const data = response.data;
 
                 setServiceRequest({
@@ -89,7 +89,7 @@ const UpdateServiceRequest = () => {
         };
 
         try {
-            await axios.put(`https://localhost:7287/api/ServiceRequests/${id}`, dataToUpdate);
+            await axios.put(`http://localhost:7287/api/ServiceRequests/${id}`, dataToUpdate);
             setTimeout(() => {
                 showToast('Category Added Successfully', 'success');
             }, 2000);

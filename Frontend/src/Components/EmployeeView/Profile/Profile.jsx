@@ -77,7 +77,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
       const fetchUserDetails = async () => {
         try {
           // Make an API request to fetch user details
-          const userResponse = await axios.get(`https://localhost:7287/api/Users/${userId}`, {
+          const userResponse = await axios.get(`http://localhost:7287/api/Users/${userId}`, {
             headers: {
               Authorization: `Bearer ${token}` // Passing the token for authorization
             }
@@ -118,7 +118,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
       if (token) {
         const decode = jwtDecode(token);
         const userIdFromToken = decode.nameid; 
-        const userRole = decode.role;
+        const userRole = decode.User_Type;
 
         // Prepare updated profile data, filtering out empty or undefined fields
         const updatedProfileData = {
@@ -137,7 +137,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
         console.log('Data being sent:', updatedProfileData);
         try {
           const response = await axios.put(
-            `https://localhost:7287/api/Users/${userIdFromToken}`, 
+            `http://localhost:7287/api/Users/${userIdFromToken}`, 
             updatedProfileData, 
             {
               headers: {
@@ -194,11 +194,11 @@ const [showNewPassword, setShowNewPassword] = useState(false);
   
     const decode = jwtDecode(token);
     const userIdFromToken = decode.nameid;  // Extract user ID from token
-    const userRole = decode.role;           // Extract user role from token
+    const userRole = decode.User_Type;           // Extract user role from token
   
     try {
       const response = await axios.put(
-        `https://localhost:7287/api/Users/${userIdFromToken}/password`,
+        `http://localhost:7287/api/Users/${userIdFromToken}/password`,
         {
           userId: userIdFromToken, // Using the userId extracted from token
           currentPassword,

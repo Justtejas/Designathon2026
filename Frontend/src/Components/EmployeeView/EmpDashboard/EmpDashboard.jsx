@@ -110,7 +110,7 @@ const EmpDashboard = () => {
 
             // Separate try-catch blocks for each request
             try {
-                const response = await axios.get(`https://localhost:7287/api/AssetAllocations/user/${userId}`);
+                const response = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`);
                 const assetAllocations = Array.isArray(response.data.$values) ? response.data.$values : response.data;
                 setAssetTableData(assetAllocations);
                 console.log("Asset Allocations:", assetAllocations);
@@ -121,7 +121,7 @@ const EmpDashboard = () => {
 
             let serviceRequests = [];
             try {
-                const serviceResponse = await axios.get(`https://localhost:7287/api/ServiceRequests`);
+                const serviceResponse = await axios.get(`http://localhost:7287/api/ServiceRequests`);
                 const allServiceRequests = Array.isArray(serviceResponse.data.$values) ? serviceResponse.data.$values : serviceResponse.data;
                 serviceRequests = allServiceRequests.filter(request => request.userId === parseInt(userId));
                 setServiceRequestsData(groupRequestsByWeek(serviceRequests));
@@ -132,7 +132,7 @@ const EmpDashboard = () => {
 
             let returnRequests = [];
             try {
-                const returnResponse = await axios.get(`https://localhost:7287/api/ReturnRequests`);
+                const returnResponse = await axios.get(`http://localhost:7287/api/ReturnRequests`);
                 const allReturnRequests = Array.isArray(returnResponse.data.$values) ? returnResponse.data.$values : returnResponse.data;
                 returnRequests = allReturnRequests.filter(request => request.userId === parseInt(userId));
                 setReturnRequests(returnRequests);
@@ -144,7 +144,7 @@ const EmpDashboard = () => {
 
             let assetRequests = [];
             try {
-                const assetRequestsResponse = await axios.get(`https://localhost:7287/api/AssetRequests`);
+                const assetRequestsResponse = await axios.get(`http://localhost:7287/api/AssetRequests`);
                 const allAssetRequests = Array.isArray(assetRequestsResponse.data.$values) ? assetRequestsResponse.data.$values : assetRequestsResponse.data;
                 assetRequests = allAssetRequests.filter(request => request.userId === parseInt(userId));
                 setAssetRequestsData(groupRequestsByWeek(assetRequests));
@@ -169,7 +169,7 @@ const EmpDashboard = () => {
         //         return;
         //     }
         //     try {
-        //         const response = await axios.get(`https://localhost:7287/api/AssetAllocations/user/${userId}`);
+        //         const response = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`);
         //         console.log("Fetched Data:", response.data);
 
         //         // Check if data is directly an array or inside a $values property
@@ -182,19 +182,19 @@ const EmpDashboard = () => {
         //             console.error("Expected an array for asset allocations", response.data);
         //         }
         //         // Fetch all Service Requests
-        //         const serviceResponse = await axios.get(`https://localhost:7287/api/ServiceRequests`);
+        //         const serviceResponse = await axios.get(`http://localhost:7287/api/ServiceRequests`);
 
         //         const allServiceRequests = Array.isArray(serviceResponse.data.$values) ? serviceResponse.data.$values : serviceResponse.data;
         //         // Filter Service Requests by userId
         //         const serviceRequests = allServiceRequests.filter(request => request.userId === parseInt(userId));
 
         //         // Fetch all Return Requests
-        //         const returnResponse = await axios.get(`https://localhost:7287/api/ReturnRequests`);
+        //         const returnResponse = await axios.get(`http://localhost:7287/api/ReturnRequests`);
         //         const allReturnRequests = Array.isArray(returnResponse.data.$values) ? returnResponse.data.$values : returnResponse.data;
         //         // Filter Return Requests by userId
         //         const returnRequests = allReturnRequests.filter(request => request.userId === parseInt(userId));
 
-        //         const assetRequestsResponse = await axios.get(`https://localhost:7287/api/AssetRequests`);
+        //         const assetRequestsResponse = await axios.get(`http://localhost:7287/api/AssetRequests`);
 
         //         const allAssetRequests = Array.isArray(assetRequestsResponse.data.$values) ? assetRequestsResponse.data.$values : assetRequestsResponse.data;
         //         const assetRequests = allAssetRequests.filter(request => request.userId === parseInt(userId));
@@ -243,7 +243,7 @@ const EmpDashboard = () => {
     useEffect(() => {
         const fetchReturnRequests = async () => {
             try {
-                const response = await axios.get('https://localhost:7287/api/ReturnRequests');
+                const response = await axios.get('http://localhost:7287/api/ReturnRequests');
 
                 // Make sure the data is valid JSON
                 const data = Array.isArray(response.data.$values) ? response.data.$values : response.data;

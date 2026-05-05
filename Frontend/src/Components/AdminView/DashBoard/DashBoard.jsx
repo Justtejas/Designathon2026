@@ -72,7 +72,7 @@ export default function Dashboard() {
             }
 
             try {
-                const auditResponse = await axios.get('https://localhost:7287/api/Audits/All');
+                const auditResponse = await axios.get('http://localhost:7287/api/Audits/All');
                 if (auditResponse.data && auditResponse.data.$values) {
                     setAuditTableData(auditResponse.data.$values);
                 } else {
@@ -80,14 +80,14 @@ export default function Dashboard() {
                 }
 
                 //Fetching Asset data
-                const assetResponse = await axios.get('https://localhost:7287/api/Assets');
+                const assetResponse = await axios.get('http://localhost:7287/api/Assets');
                 if (assetResponse.data && assetResponse.data.$values) {
                     setTotalAssets(assetResponse.data.$values.length);
                 } else {
                     console.error('Expected an array for assets, but got:', assetResponse.data);
                 }
                 //Fetching Allcoated Assets data
-                const allocatedResponse = await axios.get('https://localhost:7287/api/Assets/Status?status=Allocated');
+                const allocatedResponse = await axios.get('http://localhost:7287/api/Assets/Status?status=Allocated');
                 if (allocatedResponse.data && allocatedResponse.data.$values) {
                     setAllocatedAssets(allocatedResponse.data.$values.length);
                 } else {
@@ -95,7 +95,7 @@ export default function Dashboard() {
                 }
 
                 //Fetching Users data
-                const usersResponse = await axios.get('https://localhost:7287/api/Users');
+                const usersResponse = await axios.get('http://localhost:7287/api/Users');
                 if (usersResponse.data && usersResponse.data.$values) {
                     setUsers(usersResponse.data.$values);
                     setTotalEmployees(usersResponse.data.$values.length);
@@ -104,7 +104,7 @@ export default function Dashboard() {
                 }
 
                 //Fetching MaintenaceLog data
-                const logResponse = await axios.get('https://localhost:7287/api/ServiceRequests/Status/UnderReview');
+                const logResponse = await axios.get('http://localhost:7287/api/ServiceRequests/Status/UnderReview');
                 if (logResponse.data && logResponse.data.$values) {
                     setMaintenanceLog(logResponse.data.$values.length);
                 } else {
@@ -114,7 +114,7 @@ export default function Dashboard() {
                 //Fetching Service Requests data with status
                 const statuses = ['UnderReview', 'Approved', 'Completed'];
                 const serviceCounts = await Promise.all(
-                    statuses.map(status => axios.get(`https://localhost:7287/api/ServiceRequests/Status/${status}`))
+                    statuses.map(status => axios.get(`http://localhost:7287/api/ServiceRequests/Status/${status}`))
                 );
 
                 const newServiceData = serviceCounts.map((response, index) => ({
@@ -128,8 +128,8 @@ export default function Dashboard() {
                 const requestCounts = await Promise.all(
                     months.map(async (month) => {
                         try {
-                            const response = await axios.get(`https://localhost:7287/api/AssetRequests/filter-by-month?month=${month}`);
-                            const responseAlloc = await axios.get(`https://localhost:7287/api/AssetAllocations/filter-by-month?month=${month}`);
+                            const response = await axios.get(`http://localhost:7287/api/AssetRequests/filter-by-month?month=${month}`);
+                            const responseAlloc = await axios.get(`http://localhost:7287/api/AssetAllocations/filter-by-month?month=${month}`);
                             return {
                                 name: month,
                                 AssetRequest: response.data.$values ? response.data.$values.length : 0,

@@ -53,7 +53,7 @@ const ReturnRequest = () => {
 
                     try {
                         // Fetch return requests first
-                        const returnResponse = await axios.get('https://localhost:7287/api/ReturnRequests', {
+                        const returnResponse = await axios.get('http://localhost:7287/api/ReturnRequests', {
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
@@ -69,7 +69,7 @@ const ReturnRequest = () => {
                         setError('Error fetching return requests: ' + (error.response ? error.response.data : 'Unknown error'));
                     } 
                     try {
-                        const assetResponse = await axios.get(`https://localhost:7287/api/AssetAllocations/user/${userId}`, {
+                        const assetResponse = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`, {
                             headers: {
                                 Authorization: `Bearer ${token}`,
                             },
@@ -129,7 +129,7 @@ const ReturnRequest = () => {
         e.preventDefault();
         console.log("Submitting Return Request:", formData);
         try {
-            const response = await axios.post('https://localhost:7287/api/ReturnRequests', {
+            const response = await axios.post('http://localhost:7287/api/ReturnRequests', {
                 ...formData // Ensure that formData is correctly populated
             });
             console.log("Return Request Submitted:", response.data);

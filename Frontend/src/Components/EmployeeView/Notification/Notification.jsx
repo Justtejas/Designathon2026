@@ -50,7 +50,7 @@ const Notifications = () => {
             
             const fetchAuditRequests = async () => {
                 try {
-                    const response = await axios.get(`https://localhost:7287/api/Audits?userId=${decode.nameid}`);
+                    const response = await axios.get(`http://localhost:7287/api/Audits?userId=${decode.nameid}`);
                     const requests = response.data.$values;
 
                     const today = new Date();
@@ -86,7 +86,7 @@ const Notifications = () => {
 
 
         try {
-            const assetResponse = await axios.get(`https://localhost:7287/api/Assets/${assetId}`);
+            const assetResponse = await axios.get(`http://localhost:7287/api/Assets/${assetId}`);
             if (assetResponse.status === 200) {
                 const assetData = assetResponse.data;
                 setAssetName(assetData.assetName); // Set the asset name here
@@ -109,7 +109,7 @@ const Notifications = () => {
 
             const fetchAssetAllocations = async () => {
                 try {
-                    const response = await fetch(`https://localhost:7287/api/AssetAllocations/user/${userId}`);
+                    const response = await fetch(`http://localhost:7287/api/AssetAllocations/user/${userId}`);
                     if (response.ok) {
                         const data = await response.json();
                           // Get today's date and the date five days ago
@@ -142,7 +142,7 @@ const Notifications = () => {
             };
             const fetchAssetImage = async (assetId) => {
                 try {
-                    const response = await fetch(`https://localhost:7287/api/Assets/get-image/${assetId}`);
+                    const response = await fetch(`http://localhost:7287/api/Assets/get-image/${assetId}`);
                     if (response.ok) {
                         const blob = await response.blob();
                         const imageUrl = URL.createObjectURL(blob); // Convert blob to URL
@@ -184,7 +184,7 @@ const Notifications = () => {
     
             // Create an array to hold the promises for the API requests
             const requests = [
-                axios.get('https://localhost:7287/api/AssetRequests', {
+                axios.get('http://localhost:7287/api/AssetRequests', {
                     headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
                 }).then(res => {
                     setAssetRequest(res.data.$values);
@@ -194,7 +194,7 @@ const Notifications = () => {
                     setAssetRequest([]); // Set to empty if there's an error
                 }),
                 
-                axios.get('https://localhost:7287/api/ServiceRequests', {
+                axios.get('http://localhost:7287/api/ServiceRequests', {
                     headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
                 }).then(res => {
                     setServiceRequest(res.data.$values);
@@ -204,7 +204,7 @@ const Notifications = () => {
                     setServiceRequest([]); // Set to empty if there's an error
                 }),
                 
-                axios.get('https://localhost:7287/api/ReturnRequests', {
+                axios.get('http://localhost:7287/api/ReturnRequests', {
                     headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
                 }).then(res => {
                     setReturnRequest(res.data.$values);
@@ -238,13 +238,13 @@ const Notifications = () => {
 
     //         // Make API requests using the userId with Authorization header
     //         const [assetRes, serviceRes, returnRes] = await Promise.all([
-    //             axios.get('https://localhost:7287/api/AssetRequests', {
+    //             axios.get('http://localhost:7287/api/AssetRequests', {
     //                 headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
     //             }), // Asset requests
-    //             axios.get('https://localhost:7287/api/ServiceRequests', {
+    //             axios.get('http://localhost:7287/api/ServiceRequests', {
     //                 headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
     //             }), // Service requests
-    //             axios.get('https://localhost:7287/api/ReturnRequests', {
+    //             axios.get('http://localhost:7287/api/ReturnRequests', {
     //                 headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
     //             }), // Return requests
     //         ]);
@@ -269,7 +269,7 @@ const Notifications = () => {
 
     const updateAudit = async () => {
         try {
-            const assetResponse = await axios.get(`https://localhost:7287/api/Assets/${selectedAssetId}`);
+            const assetResponse = await axios.get(`http://localhost:7287/api/Assets/${selectedAssetId}`);
             const assetData = assetResponse.data;
             setAssetName(assetData.assetName);
 
@@ -290,7 +290,7 @@ const Notifications = () => {
 
             console.log("Audit update data:", auditUpdateData); 
 
-            await axios.put(`https://localhost:7287/api/Audits/${selectedAuditId}`, auditUpdateData, {
+            await axios.put(`http://localhost:7287/api/Audits/${selectedAuditId}`, auditUpdateData, {
                 headers: {
                     'Content-Type': 'application/json',
                     accept: '*/*'
