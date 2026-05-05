@@ -54,7 +54,8 @@ export default function Employee() {
                 return;
             }
             try {
-                const response = await axios.get('http://localhost:7287/api/Users/role?role=Employee');
+                const response = await axios.get('http://localhost:7287/api/users/role?role=Employee');
+                console.log(response)
                 setEmployees(response.data.$values || []);
             } catch (error) {
                 console.error("Error fetching employees:", error);

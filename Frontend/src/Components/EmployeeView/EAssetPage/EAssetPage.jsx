@@ -86,8 +86,8 @@ const Assets = () => {
         }));
       }
     } catch (error) {
-      console.error('Error fetching asset image:', error);
-      setAssetImages((prevImages) => ({
+        console.error('Error fetching asset image:', error);
+        setAssetImages((prevImages) => ({
         ...prevImages,
         [assetId]: defaultImage, // Set default image if there's an error
       }));
