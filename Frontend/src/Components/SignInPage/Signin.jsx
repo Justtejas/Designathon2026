@@ -66,7 +66,7 @@ const SignInPage = () => {
       <div className="flex items-start justify-start mt-4 mb-8">
           <img
             src="/Images/HEXA_HUB.png"
-            alt="HexaHub Logo"
+            alt="Maventory Logo"
             className="h-20 w-20 mr-4" 
             onClick={handleLogoClick}
             

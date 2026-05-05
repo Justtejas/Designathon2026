@@ -43,7 +43,7 @@ const Header = ({ handleDrawerToggle }) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-          HexaHub
+          Maventory
         </Typography>
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="body1">

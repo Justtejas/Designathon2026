@@ -25,7 +25,7 @@ const Terms = () => {
                 <section className="mb-12">
                     <h1 className="text-3xl font-bold text-center text-indigo-950 mb-6">Terms of Service</h1>
                     <p className="mb-6 text-gray-700">
-                        By using Hexahub, you agree to the following terms and conditions. Please read them carefully.
+                        By using Maventory, you agree to the following terms and conditions. Please read them carefully.
                     </p>
 
                     {/* Section 1 */}
@@ -43,7 +43,7 @@ const Terms = () => {
                         <h2 className="text-xl font-semibold text-indigo-950">Use of Services</h2>
                     </div>
                     <p className="mb-6 text-gray-700">
-                        You agree to use Hexahub solely for managing and tracking assets within your organization. Unauthorized use of the platform, including but not limited to, illegal activities or accessing the system for malicious purposes, is prohibited.
+                        You agree to use Maventory solely for managing and tracking assets within your organization. Unauthorized use of the platform, including but not limited to, illegal activities or accessing the system for malicious purposes, is prohibited.
                     </p>
 
                     {/* Section 3 */}
@@ -61,7 +61,7 @@ const Terms = () => {
                         <h2 className="text-xl font-semibold text-indigo-950">Limitation of Liability</h2>
                     </div>
                     <p className="mb-6 text-gray-700">
-                        Hexahub will not be liable for any direct, indirect, incidental, special, or consequential damages arising from your use of the platform. This includes but is not limited to, any loss of data or financial losses resulting from system malfunctions.
+                        Maventory will not be liable for any direct, indirect, incidental, special, or consequential damages arising from your use of the platform. This includes but is not limited to, any loss of data or financial losses resulting from system malfunctions.
                     </p>
 
                     {/* Section 5 */}
@@ -70,7 +70,7 @@ const Terms = () => {
                         <h2 className="text-xl font-semibold text-indigo-950">Termination</h2>
                     </div>
                     <p className="mb-6 text-gray-700">
-                        We reserve the right to suspend or terminate your access to Hexahub at our discretion, without notice, if we believe that you have violated these terms.
+                        We reserve the right to suspend or terminate your access to Maventory at our discretion, without notice, if we believe that you have violated these terms.
                     </p>
 
                     {/* Section 6 */}
@@ -79,11 +79,11 @@ const Terms = () => {
                         <h2 className="text-xl font-semibold text-indigo-950">Modifications to the Service</h2>
                     </div>
                     <p className="mb-6 text-gray-700">
-                        Hexahub reserves the right to modify, suspend, or discontinue the service at any time, without notice.
+                        Maventory reserves the right to modify, suspend, or discontinue the service at any time, without notice.
                     </p>
 
                     <p className="text-gray-700">
-                        If you have any questions about these Terms of Service, please contact us at <span className="underline">support@hexahub.com</span>.
+                        If you have any questions about these Terms of Service, please contact us at <span className="underline">support@Maventory.com</span>.
                     </p>
                 </section>
             </div>

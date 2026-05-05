@@ -193,10 +193,10 @@ const Header = () => {
       <div className="flex items-center space-x-4">
         <img
           src="/Images/logo.png" 
-          alt="HexaHub Logo"
+          alt="Maventory Logo"
           className="h-16 w-16"  // Adjusted size for dashboard layout
         />
-        <h2 className="text-2xl font-bold text-indigo-950">HexaHub</h2>
+        <h2 className="text-2xl font-bold text-indigo-950">Maventory</h2>
       </div>
 
       {/* Date and Calendar */}

@@ -1,6 +1,6 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HexaHubLandingPage from './Components/LandingPage/HomePage';
+import MaventoryLandingPage from './Components/LandingPage/HomePage';
 import SignInPage from './Components/SignInPage/Signin';
 import Privacy from './Components/PrivacyTerms/Privacy';
 import Terms from './Components/PrivacyTerms/Terms';
@@ -54,7 +54,7 @@ function App() {
           <ToastContainer />
 
           <Routes>
-            <Route path="/" element={<HexaHubLandingPage />} />
+            <Route path="/" element={<MaventoryLandingPage />} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="Privacy" element={<Privacy />} />
             <Route path="Terms" element={<Terms />} />

@@ -2,7 +2,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 
 
-const HexaHubLandingPage = () => {
+const MaventoryLandingPage = () => {
     return (
       <div className="bg-white min-h-screen ">
         <Header/>
@@ -75,5 +75,5 @@ const HexaHubLandingPage = () => {
     );
   };
   
-  export default HexaHubLandingPage;
+  export default MaventoryLandingPage;
   

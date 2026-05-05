@@ -17,7 +17,7 @@ const Footer = () => {
           </a>
         </div>
         <p className="text-sm">
-          &copy; {new Date().getFullYear()} HexaHub. All rights reserved.
+          &copy; {new Date().getFullYear()} Maventory. All rights reserved.
         </p>
       </div>
     </footer>

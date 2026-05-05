@@ -24,7 +24,7 @@ const AddEmployee = () => {
         UserMail: '',
         PhoneNumber: '',
         Branch: '',
-        Password: "Hexahub@123",
+        Password: "Maventory@123",
     });
     const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ const AddEmployee = () => {
         // Create a new object that includes the default password
         const dataToSend = {
             ...formData,
-            Password: "Hexahub@123",  // Add the default password here
+            Password: "Maventory@123",  // Add the default password here
         };
 
         try {

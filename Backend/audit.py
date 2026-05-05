@@ -55,10 +55,10 @@ def send_audit_notification(user_email, audit_id, notification_type):
     """Send audit-specific notifications"""
     if notification_type == "Completed":
         subject = "Audit Request Completed"
-        body = f"Greetings HexaHub,<br><br>Audit Request for Audit ID: {audit_id} has been Completed."
+        body = f"Greetings Maventory,<br><br>Audit Request for Audit ID: {audit_id} has been Completed."
     elif notification_type == "InProgress":
         subject = "Audit Request In Progress"
-        body = f"Greetings HexaHub,<br><br>Audit Request for Audit ID: {audit_id} has been set to InProgress."
+        body = f"Greetings Maventory,<br><br>Audit Request for Audit ID: {audit_id} has been set to InProgress."
     else:
         return False
     return send_email(user_email, subject, body)
@@ -339,7 +339,7 @@ def post_audit():
             send_email(
                 employee["UserMail"],
                 "Audit Request",
-                f"Dear {employee['UserName']},<br><br>You have been assigned an Audit Request {audit_doc['AuditId']} which needs to be completed ASAP.<br><br>Best regards,<br>HexaHub"
+                f"Dear {employee['UserName']},<br><br>You have been assigned an Audit Request {audit_doc['AuditId']} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory"
             )
         else:
             return jsonify({"error": "Employee not found"}), 404

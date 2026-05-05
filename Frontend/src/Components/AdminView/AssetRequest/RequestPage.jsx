@@ -143,7 +143,7 @@ export default function AssetPage() {
                 if (doc.internal.getNumberOfPages() === 1) {
                     doc.addImage(img, 'PNG', 10, 10, 30, 30);
                 doc.setFontSize(18);
-                doc.text("HexaHub", 50, 30);
+                doc.text("Maventory", 50, 30);
                 doc.setFontSize(20);
                 doc.text("Asset Request List", 40, 60);
                 doc.setFontSize(10);

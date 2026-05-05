@@ -208,7 +208,7 @@ export default function AssetPage() {
     const companyInfo = {
         address: "No.4, West Mada Church Street, Royapuram, Chennai, Tamil Nadu, 600013",
         phoneNumber: "Phone: 044 3355 3355  Email: hexawarehub@gmail.com",
-        website: "website: HexaHub.in"
+        website: "website: Maventory.in"
     }
         doc.autoTable({
             head: [tableColumn],
@@ -227,7 +227,7 @@ export default function AssetPage() {
                     doc.line(0, 0, pageWidth, 0);
                     doc.addImage(img, 'PNG', pageWidth - 135, 7, 30, 30);
                     doc.setFontSize(18);
-                    doc.text("HexaHub", pageWidth - 100, 27);
+                    doc.text("Maventory", pageWidth - 100, 27);
                     doc.setFontSize(18);
                     doc.text("Asset List", 40, 65);
                     doc.setFontSize(10);
