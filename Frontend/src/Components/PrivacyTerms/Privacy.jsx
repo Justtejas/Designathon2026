@@ -25,7 +25,7 @@ const Privacy = () => {
                 <section className="mb-12">
                     <h1 className="text-3xl font-bold text-center text-indigo-950 mb-6">Privacy Policy</h1>
                     <p className="mb-6 text-gray-700">
-                        At Hexahub, we prioritize your privacy and are committed to safeguarding your personal information. This Privacy Policy outlines how we collect, use, and protect the data you provide while using our asset management system.
+                        At Maventory, we prioritize your privacy and are committed to safeguarding your personal information. This Privacy Policy outlines how we collect, use, and protect the data you provide while using our asset management system.
                     </p>
 
                     <div className="mb-6 flex items-center">
@@ -57,7 +57,7 @@ const Privacy = () => {
                         <h2 className="text-xl font-semibold text-indigo-950">Third-Party Services</h2>
                     </div>
                     <p className="mb-6 text-gray-700">
-                        Hexahub may use third-party services to process or store your data. These third parties are obligated to ensure your data is protected and will not be used for unauthorized purposes.
+                        Maventory may use third-party services to process or store your data. These third parties are obligated to ensure your data is protected and will not be used for unauthorized purposes.
                     </p>
 
                     <div className="mb-6 flex items-center">
@@ -73,11 +73,11 @@ const Privacy = () => {
                         <h2 className="text-xl font-semibold text-indigo-950">Changes to this Privacy Policy</h2>
                     </div>
                     <p className="mb-6 text-gray-700">
-                        Hexahub reserves the right to update or change this Privacy Policy at any time. We will notify you of any significant changes through the platform or by email.
+                        Maventory reserves the right to update or change this Privacy Policy at any time. We will notify you of any significant changes through the platform or by email.
                     </p>
 
                     <p className="text-gray-700">
-                        If you have any questions about this Privacy Policy, please contact us at <span className="underline">privacy@hexahub.com</span>.
+                        If you have any questions about this Privacy Policy, please contact us at <span className="underline">privacy@Maventory.com</span>.
                     </p>
                 </section>
             </div>

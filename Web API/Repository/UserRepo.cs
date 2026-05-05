@@ -36,7 +36,7 @@ namespace Hexa_Hub.Repository
                 PhoneNumber = dto.PhoneNumber,
                 Branch = dto.Branch,
                 User_Type = Models.MultiValues.UserType.Employee,
-                Password = "Hexahub@123"
+                Password = "Maventory@123"
             };
 
             await _context.Users.AddAsync(user);
