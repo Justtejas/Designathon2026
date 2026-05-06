@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 # --- Auth helpers (expected from your auth module) ---
 try:
-    from Backend.old_auth import get_user_id, get_user_role
+    from auth import get_user_id, get_user_role
 except Exception:
     # Fallbacks if not provided: use headers for local/testing
     def get_user_id():

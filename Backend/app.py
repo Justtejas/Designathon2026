@@ -1,9 +1,6 @@
-import base64
-import io
-import re
 import logging
-from flask import Flask, request, jsonify, send_from_directory
-from auth import get_user_email,get_user_id,auth_bp,create_admin
+from flask import Flask, send_from_directory
+from auth import auth_bp,create_admin
 from assetallocations import asset_allocations_bp
 from asset import assets_blueprint
 from assetRequest import asset_requests_blueprint
@@ -14,19 +11,9 @@ from returnrequest import return_requests_blueprint
 from servicerequest import service_requests_blueprint
 from subcategories import subcategories_blueprint
 from flask_cors import CORS
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
 import os
 from groq import Groq
-import json
 from dotenv import load_dotenv
-from datetime import datetime, timezone
-import torch
- 
 
 load_dotenv()
 
@@ -56,8 +43,6 @@ for bp in (
 
 CORS(app, resources={r"/api/*": {"origins": os.getenv("CORS_ORIGINS", "*")}})
 
-vectorizer = CountVectorizer()
-
 
 @app.route('/')
 def serve_react_app():
@@ -76,6 +61,8 @@ def serve_static_files(path):
 
 @app.errorhandler(404)
 def not_found(e):
+    print("File not found, serving index.html")
+    print("Error:"+e)
     return send_from_directory(app.static_folder, 'index.html')
 
 

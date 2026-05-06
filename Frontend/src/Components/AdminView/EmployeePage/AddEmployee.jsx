@@ -24,7 +24,7 @@ const AddEmployee = () => {
         UserMail: '',
         PhoneNumber: '',
         Branch: '',
-        Password: "Maventory@123",
+        Role: "Employee",
     });
     const navigate = useNavigate();
 
