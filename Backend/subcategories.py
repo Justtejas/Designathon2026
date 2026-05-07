@@ -27,9 +27,9 @@ def serialize_subcategory(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "SubCategoryId": doc.get('SubCategoryId'),
-            "SubCategoryName": doc.get('SubCategoryName'),
-            "CategoryId": doc.get('CategoryId'),
+            "subCategoryId": doc.get('subCategoryId'),
+            "subCategoryName": doc.get('subCategoryName'),
+            "categoryId": doc.get('categoryId'),
             "Quantity": doc.get('Quantity', 0)
         }
     return None
@@ -44,7 +44,8 @@ def get_subcategories():
             subcats_list = list(subcategories.find({}))
         else:
             # Filter by categoryId
-            subcats_list = list(subcategories.find({"CategoryId": category_id}))
+            subcats_list = list(subcategories.find({"categoryId": category_id}))
+            print(subcats_list)
         if not subcats_list:
             return jsonify([]), 200
         serialized_subcats = [serialize_subcategory(sc) for sc in subcats_list]
@@ -53,20 +54,20 @@ def get_subcategories():
         logger.info(f"Error fetching subcategories: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
-@subcategories_blueprint.route("/api/SubCategories/by-quantity", methods=["GET"])
-def get_subcategories_by_quantity():
+@subcategories_blueprint.route("/api/SubCategories/by-Quantity", methods=["GET"])
+def get_subcategories_by_Quantity():
     try:
-        quantity = int(request.args.get('quantity', 0))
-        logger.info(f"Fetching subcategories with quantity >= {quantity}")
-        subcats_list = list(subcategories.find({"Quantity": {"$gte": quantity}}))
+        Quantity = int(request.args.get('Quantity', 0))
+        logger.info(f"Fetching subcategories with Quantity >= {Quantity}")
+        subcats_list = list(subcategories.find({"Quantity": {"$gte": Quantity}}))
         if not subcats_list:
-            return jsonify({"error": "No subcategories found with the specified quantity"}), 404
+            return jsonify({"error": "No subcategories found with the specified Quantity"}), 404
         serialized_subcats = [serialize_subcategory(sc) for sc in subcats_list]
         return jsonify(serialized_subcats), 200
     except ValueError:
-        return jsonify({"error": "Invalid quantity parameter"}), 400
+        return jsonify({"error": "Invalid Quantity parameter"}), 400
     except Exception as e:
-        logger.info(f"Error fetching subcategories by quantity: {str(e)}")
+        logger.info(f"Error fetching subcategories by Quantity: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @subcategories_blueprint.route("/api/SubCategories/by-category-name", methods=["GET"])
@@ -77,11 +78,11 @@ def get_subcategories_by_category_name():
             return jsonify({"error": "categoryName parameter is required"}), 400
         logger.info(f"Fetching subcategories for category: {category_name}")
         # First find category ID by name
-        category = categories.find_one({"CategoryName": {"$regex": category_name, "$options": "i"}})
+        category = categories.find_one({"categoryName": {"$regex": category_name, "$options": "i"}})
         if not category:
             return jsonify({"error": "No subcategories found for the specified category"}), 404
-        category_id = category.get("CategoryId")
-        subcats_list = list(subcategories.find({"CategoryId": category_id}))
+        category_id = category.get("categoryId")
+        subcats_list = list(subcategories.find({"categoryId": category_id}))
         if not subcats_list:
             return jsonify({"error": "No subcategories found for the specified category"}), 404
         serialized_subcats = [serialize_subcategory(sc) for sc in subcats_list]
@@ -97,20 +98,20 @@ def put_subcategory(subcategory_id):
             return jsonify({"error": "Admin access required"}), 403
         data = request.get_json()
         logger.info(f"Updating subcategory {subcategory_id}")
-        if data.get("SubCategoryId") != subcategory_id:
+        if data.get("subCategoryId") != subcategory_id:
             return jsonify({"error": "Not Found"}), 400
         # Check if subcategory exists
-        existing_subcat = subcategories.find_one({"SubCategoryId": subcategory_id})
+        existing_subcat = subcategories.find_one({"subCategoryId": subcategory_id})
         if not existing_subcat:
             return jsonify({"error": "Id Not Found"}), 404
         update_data = {
             "$set": {
-                "SubCategoryName": data.get("SubCategoryName"),
-                "CategoryId": data.get("CategoryId"),
+                "subCategoryName": data.get("subCategoryName"),
+                "categoryId": data.get("categoryId"),
                 "Quantity": data.get("Quantity", 0)
             }
         }
-        result = subcategories.update_one({"SubCategoryId": subcategory_id}, update_data)
+        result = subcategories.update_one({"subCategoryId": subcategory_id}, update_data)
         if result.matched_count == 0:
             return jsonify({"error": "Id Not Found"}), 404
         logger.info(f"Updated subcategory {subcategory_id}")
@@ -127,13 +128,13 @@ def post_subcategory():
         data = request.get_json()
         logger.info("Creating new subcategory")
         subcategory_doc = {
-            "SubCategoryId": data.get("SubCategoryId"),
-            "SubCategoryName": data.get("SubCategoryName"),
-            "CategoryId": data.get("CategoryId"),
+            "subCategoryId": data.get("subCategoryId"),
+            "subCategoryName": data.get("subCategoryName"),
+            "categoryId": data.get("categoryId"),
             "Quantity": data.get("Quantity", 0)
         }
-        # Check for duplicate SubCategoryId
-        existing = subcategories.find_one({"SubCategoryId": subcategory_doc["SubCategoryId"]})
+        # Check for duplicate subCategoryId
+        existing = subcategories.find_one({"subCategoryId": subcategory_doc["subCategoryId"]})
         if existing:
             return jsonify({"error": "SubCategory ID already exists"}), 409
         result = subcategories.insert_one(subcategory_doc)
@@ -150,7 +151,7 @@ def delete_subcategory(subcategory_id):
         if not is_admin():
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Deleting subcategory {subcategory_id}")
-        result = subcategories.delete_one({"SubCategoryId": subcategory_id})
+        result = subcategories.delete_one({"subCategoryId": subcategory_id})
         if result.deleted_count == 0:
             logger.warning(f"Subcategory {subcategory_id} not found")
             return jsonify({"error": f"SubCategory with ID {subcategory_id} not found"}), 404

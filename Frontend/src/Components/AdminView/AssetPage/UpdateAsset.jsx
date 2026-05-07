@@ -30,8 +30,8 @@ const UpdateAsset = () => {
     const [formData, setFormData] = useState({
         AssetName: '',
         AssetDescription: '',
-        CategoryId: '',
-        SubCategoryId: '',
+        categoryId: '',
+        subCategoryId: '',
         SerialNumber: '',
         Model: '',
         ManufacturingDate: '',
@@ -64,7 +64,7 @@ const UpdateAsset = () => {
         try {
             const response = await axios.get(`http://localhost:7287/api/SubCategories?categoryId=${categoryId}`);
             setSubCategories(response.data.$values || []);
-            setFormData((prev) => ({ ...prev, SubCategoryId: '' }));
+            setFormData((prev) => ({ ...prev, subCategoryId: '' }));
         } catch (error) {
             console.error('Error fetching subcategories:', error);
             setErrorMessage('Error fetching subcategories. Please try again.');
@@ -87,8 +87,8 @@ const UpdateAsset = () => {
             setFormData({
                 AssetName: response.data.assetName,
                 AssetDescription: response.data.assetDescription,
-                CategoryId: response.data.categoryId || '',
-                SubCategoryId: response.data.subCategoryId || '',
+                categoryId: response.data.categoryId || '',
+                subCategoryId: response.data.subCategoryId || '',
                 SerialNumber: response.data.serialNumber,
                 Model: response.data.model,
                 ManufacturingDate: response.data.manufacturingDate,
@@ -111,7 +111,7 @@ const UpdateAsset = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-        if (name === 'CategoryId') {
+        if (name === 'categoryId') {
             fetchSubCategories(value);
         }
     };
@@ -127,8 +127,8 @@ const UpdateAsset = () => {
             assetId: id, 
             assetName: formData.AssetName,
             assetDescription: formData.AssetDescription,
-            categoryId: formData.CategoryId,
-            subCategoryId: formData.SubCategoryId,
+            categoryId: formData.categoryId,
+            subCategoryId: formData.subCategoryId,
             serialNumber: formData.SerialNumber,
             model: formData.Model,
             manufacturingDate: formData.ManufacturingDate,
@@ -283,8 +283,8 @@ const UpdateAsset = () => {
                                         <FormControl fullWidth variant="outlined" required>
                                             <InputLabel>Category</InputLabel>
                                             <Select
-                                                name="CategoryId"
-                                                value={formData.CategoryId || ''}
+                                                name="categoryId"
+                                                value={formData.categoryId || ''}
                                                 onChange={handleChange}
                                                 label="Category"
                                             >
@@ -300,8 +300,8 @@ const UpdateAsset = () => {
                                         <FormControl fullWidth variant="outlined" required>
                                             <InputLabel>SubCategory</InputLabel>
                                             <Select
-                                                name="SubCategoryId"
-                                                value={formData.SubCategoryId || ''}
+                                                name="subCategoryId"
+                                                value={formData.subCategoryId || ''}
                                                 onChange={handleChange}
                                                 label="SubCategory"
                                             >

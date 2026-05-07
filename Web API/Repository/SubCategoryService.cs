@@ -17,7 +17,7 @@ namespace Hexa_Hub.Repository
         {
             //return await _context.SubCategories.ToListAsync();
             return await _context.SubCategories
-            .Where(sc => sc.CategoryId == categoryId)
+            .Where(sc => sc.categoryId == categoryId)
             .ToListAsync();
         }
 
@@ -49,22 +49,22 @@ namespace Hexa_Hub.Repository
             _context.SubCategories.Remove(subCategory);
         }
 
-        public async Task<IEnumerable<SubCategory>> GetSubCategoriesByQuantityAsync(int quantity)
+        public async Task<IEnumerable<SubCategory>> GetSubCategoriesByQuantityAsync(int Quantity)
         {
             // Filter SubCategories by Quantity
             var subCategories = await _context.SubCategories
-                .Where(sc => sc.Quantity >= quantity)
+                .Where(sc => sc.Quantity >= Quantity)
                 .Include(sc => sc.Category) // Include Category for navigation
                 .ToListAsync();
 
             return subCategories;
         }
 
-        public async Task<IEnumerable<SubCategory>> GetSubCategoriesByCategoryNameAsync(string categoryName)
+        public async Task<IEnumerable<SubCategory>> GetSubCategoriesBycategoryNameAsync(string categoryName)
         {
             // Retrieve subcategories for the specified category name
             var subCategories = await _context.SubCategories
-                .Where(sc => sc.Category.CategoryName == categoryName)
+                .Where(sc => sc.Category.categoryName == categoryName)
                 .ToListAsync();
 
             return subCategories;

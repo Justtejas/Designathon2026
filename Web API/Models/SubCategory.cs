@@ -7,14 +7,14 @@ public class SubCategory
 {
     [Required]
     [Key]
-    public int SubCategoryId { get; set; }
+    public int subCategoryId { get; set; }
 
     [Required]
     [MaxLength(55)]
-    public string? SubCategoryName { get; set; }
+    public string? subCategoryName { get; set; }
 
     [Required]
-    public int CategoryId { get; set; }
+    public int categoryId { get; set; }
 
     [Required]
     public int Quantity { get; set; }

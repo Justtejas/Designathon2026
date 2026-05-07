@@ -8,8 +8,8 @@
         Task AddSubCategory(SubCategory subcategory);
         Task<SubCategory> UpdateSubCategory(SubCategory subcategory);
         Task DeleteSubCategory(int id);
-        Task<IEnumerable<SubCategory>> GetSubCategoriesByQuantityAsync(int quantity);
-        Task<IEnumerable<SubCategory>> GetSubCategoriesByCategoryNameAsync(string categoryName);
+        Task<IEnumerable<SubCategory>> GetSubCategoriesByQuantityAsync(int Quantity);
+        Task<IEnumerable<SubCategory>> GetSubCategoriesBycategoryNameAsync(string categoryName);
         Task Save();
     }
 }

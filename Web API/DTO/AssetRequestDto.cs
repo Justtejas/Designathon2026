@@ -16,7 +16,7 @@ namespace Hexa_Hub.DTO
         public int AssetId { get; set; }
 
         [Required]
-        public int CategoryId { get; set; }
+        public int categoryId { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

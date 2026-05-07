@@ -23,13 +23,13 @@ namespace Hexa_Hub.Repository
             return await _context.Categories
                                  .Include(c => c.Assets)
                                  .Include(c => c.SubCategories)
-                                 .FirstOrDefaultAsync(c => c.CategoryId == id);
+                                 .FirstOrDefaultAsync(c => c.categoryId == id);
         }
-        public async Task<IEnumerable<string>> GetAllCategoryNamesAsync()
+        public async Task<IEnumerable<string>> GetAllcategoryNamesAsync()
         {
             // Retrieve distinct category names for the dropdown
             var categoryNames = await _context.Categories
-                .Select(c => c.CategoryName)
+                .Select(c => c.categoryName)
                 .Distinct()
                 .ToListAsync();
 
@@ -40,8 +40,8 @@ namespace Hexa_Hub.Repository
         {
             var category = new Category
             {
-                CategoryId = categoryDto.CategoryId,
-                CategoryName = categoryDto.CategoryName
+                categoryId = categoryDto.categoryId,
+                categoryName = categoryDto.categoryName
             };
             await _context.AddAsync(category);
             return category;
@@ -55,7 +55,7 @@ namespace Hexa_Hub.Repository
                 return false;
             }
 
-            existingCategory.CategoryName = categoryDto.CategoryName;
+            existingCategory.categoryName = categoryDto.categoryName;
 
             _context.Categories.Update(existingCategory);
             await _context.SaveChangesAsync();

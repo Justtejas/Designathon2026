@@ -23,8 +23,8 @@ namespace AssetHubTests
             // Arrange
             var expectedSubCategories = new List<SubCategory>
                 {
-                new SubCategory { SubCategoryId = 1, SubCategoryName = "Laptop", CategoryId = 1 },
-                new SubCategory { SubCategoryId = 2, SubCategoryName = "Headphones", CategoryId = 1 }
+                new SubCategory { subCategoryId = 1, subCategoryName = "Laptop", categoryId = 1 },
+                new SubCategory { subCategoryId = 2, subCategoryName = "Headphones", categoryId = 1 }
                 };
 
             // Mock the repository methods
@@ -37,15 +37,15 @@ namespace AssetHubTests
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
             Assert.AreEqual(2, result.Count, "SubCategory count should be 2");
-            Assert.AreEqual("Laptop", result[0].SubCategoryName);
-            Assert.AreEqual("Headphones", result[1].SubCategoryName);
+            Assert.AreEqual("Laptop", result[0].subCategoryName);
+            Assert.AreEqual("Headphones", result[1].subCategoryName);
         }
 
         [TestCase]
         public async Task AddSubCategory_ShouldAddSubCategory()
         {
             // Arrange
-            var newSubCategory = new SubCategory { SubCategoryId = 3, SubCategoryName = "Keyboard" };
+            var newSubCategory = new SubCategory { subCategoryId = 3, subCategoryName = "Keyboard" };
 
 
             // Mock
@@ -55,7 +55,7 @@ namespace AssetHubTests
             await _subCategory.AddSubCategory(newSubCategory);
 
             //Assert
-            _subCategoryMock.Verify(repo => repo.AddSubCategory(It.Is<SubCategory>(s => s.SubCategoryId == newSubCategory.SubCategoryId && s.SubCategoryName == newSubCategory.SubCategoryName)), Times.Once);
+            _subCategoryMock.Verify(repo => repo.AddSubCategory(It.Is<SubCategory>(s => s.subCategoryId == newSubCategory.subCategoryId && s.subCategoryName == newSubCategory.subCategoryName)), Times.Once);
         }
 
         [TestCase]
@@ -73,24 +73,24 @@ namespace AssetHubTests
         public async Task DeleteSubCategory_ShouldRemoveCategory()
         {
             // Arrange
-            var subcategoryIdToDelete = 1;
+            var subCategoryIdToDelete = 1;
 
             // Mock
             _subCategoryMock.Setup(repo => repo.DeleteSubCategory(It.IsAny<int>())).Callback<int>(id => { });
 
 
             // Act
-            await _subCategory.DeleteSubCategory(subcategoryIdToDelete);
+            await _subCategory.DeleteSubCategory(subCategoryIdToDelete);
 
             // Assert
-            _subCategoryMock.Verify(repo => repo.DeleteSubCategory(It.Is<int>(id => id == subcategoryIdToDelete)), Times.Once);
+            _subCategoryMock.Verify(repo => repo.DeleteSubCategory(It.Is<int>(id => id == subCategoryIdToDelete)), Times.Once);
         }
 
         [TestCase]
         public async Task UpdateSubCategory_ShouldUpdateSubCategory()
         {
             // Arrange
-            var updatedSubCategory = new SubCategory { SubCategoryId = 1, SubCategoryName = "Mouse" };
+            var updatedSubCategory = new SubCategory { subCategoryId = 1, subCategoryName = "Mouse" };
 
             // Mock
             _subCategoryMock.Setup(repo => repo.UpdateSubCategory(It.IsAny<SubCategory>())).ReturnsAsync((SubCategory cat) => cat);
@@ -100,11 +100,11 @@ namespace AssetHubTests
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
-            Assert.AreEqual(updatedSubCategory.SubCategoryId, result.SubCategoryId, "Sub Category ID should match");
-            Assert.AreEqual(updatedSubCategory.SubCategoryId, result.SubCategoryId, "Sub Category name should be updated");
+            Assert.AreEqual(updatedSubCategory.subCategoryId, result.subCategoryId, "Sub Category ID should match");
+            Assert.AreEqual(updatedSubCategory.subCategoryId, result.subCategoryId, "Sub Category name should be updated");
 
             _subCategoryMock.Verify(repo => repo.UpdateSubCategory(It.Is<SubCategory>(s =>
-                s.SubCategoryId == updatedSubCategory.SubCategoryId && s.SubCategoryName == updatedSubCategory.SubCategoryName)), Times.Once);
+                s.subCategoryId == updatedSubCategory.subCategoryId && s.subCategoryName == updatedSubCategory.subCategoryName)), Times.Once);
         }
     }
 }

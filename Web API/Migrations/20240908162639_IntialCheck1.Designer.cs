@@ -46,7 +46,7 @@ namespace Hexa_Hub.Migrations
                     b.Property<int>("Asset_Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("categoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("Expiry_Date")
@@ -68,7 +68,7 @@ namespace Hexa_Hub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SubCategoryId")
+                    b.Property<int>("subCategoryId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Value")
@@ -76,9 +76,9 @@ namespace Hexa_Hub.Migrations
 
                     b.HasKey("AssetId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("categoryId");
 
-                    b.HasIndex("SubCategoryId");
+                    b.HasIndex("subCategoryId");
 
                     b.ToTable("Assets");
                 });
@@ -133,7 +133,7 @@ namespace Hexa_Hub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CategoryId")
+                    b.Property<string>("categoryId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -187,18 +187,18 @@ namespace Hexa_Hub.Migrations
 
             modelBuilder.Entity("Category", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("categoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("categoryId"));
 
-                    b.Property<string>("CategoryName")
+                    b.Property<string>("categoryName")
                         .IsRequired()
                         .HasMaxLength(55)
                         .HasColumnType("nvarchar(55)");
 
-                    b.HasKey("CategoryId");
+                    b.HasKey("categoryId");
 
                     b.ToTable("Categories");
                 });
@@ -246,7 +246,7 @@ namespace Hexa_Hub.Migrations
                     b.Property<int>("AssetId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("categoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Condition")
@@ -313,26 +313,26 @@ namespace Hexa_Hub.Migrations
 
             modelBuilder.Entity("SubCategory", b =>
                 {
-                    b.Property<int>("SubCategoryId")
+                    b.Property<int>("subCategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubCategoryId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("subCategoryId"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("categoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("SubCategoryName")
+                    b.Property<string>("subCategoryName")
                         .IsRequired()
                         .HasMaxLength(55)
                         .HasColumnType("nvarchar(55)");
 
-                    b.HasKey("SubCategoryId");
+                    b.HasKey("subCategoryId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("categoryId");
 
                     b.ToTable("SubCategories");
                 });
@@ -436,13 +436,13 @@ namespace Hexa_Hub.Migrations
                 {
                     b.HasOne("Category", "Category")
                         .WithMany("Assets")
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("categoryId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SubCategory", "SubCategories")
                         .WithMany("Assets")
-                        .HasForeignKey("SubCategoryId")
+                        .HasForeignKey("subCategoryId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -577,7 +577,7 @@ namespace Hexa_Hub.Migrations
                 {
                     b.HasOne("Category", "Category")
                         .WithMany("SubCategories")
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("categoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

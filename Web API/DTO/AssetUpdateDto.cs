@@ -18,10 +18,10 @@ namespace Hexa_Hub.DTO
         public string? AssetDescription { get; set; }
 
         [Required]
-        public int CategoryId { get; set; }
+        public int categoryId { get; set; }
 
         [Required]
-        public int SubCategoryId { get; set; }
+        public int subCategoryId { get; set; }
 
         public IFormFile? AssetImage { get; set; }
 

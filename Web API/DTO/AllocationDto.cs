@@ -12,10 +12,10 @@ namespace Hexa_Hub.DTO
         public string AssetName { get; set; }
 
         [Required]
-        public int CategoryId { get; set; }
+        public int categoryId { get; set; }
 
         [Required]
-        public string CategoryName { get; set; }
+        public string categoryName { get; set; }
 
         [Required]
         public decimal Value { get; set; }

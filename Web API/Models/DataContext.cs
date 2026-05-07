@@ -66,13 +66,13 @@ public class DataContext : DbContext
             modelBuilder.Entity<Asset>()
                 .HasOne(a => a.Category)
                 .WithMany(c => c.Assets)
-                .HasForeignKey(a => a.CategoryId)
+                .HasForeignKey(a => a.categoryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Asset>()
                 .HasOne(a => a.SubCategories)
                 .WithMany(c => c.Assets)
-                .HasForeignKey(a => a.SubCategoryId)
+                .HasForeignKey(a => a.subCategoryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Asset>()
@@ -167,7 +167,7 @@ public class DataContext : DbContext
             modelBuilder.Entity<SubCategory>()
                 .HasOne(sc => sc.Category)
                 .WithMany(c => c.SubCategories)
-                .HasForeignKey(sc => sc.CategoryId)
+                .HasForeignKey(sc => sc.categoryId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -7,11 +7,11 @@ public class Category
 {
     [Required]
     [Key]
-    public int CategoryId { get; set; }
+    public int categoryId { get; set; }
 
     [Required]
     [MaxLength(55)]
-    public string CategoryName { get; set; }
+    public string categoryName { get; set; }
 
     //Navigation Properties
     // 1 - * Relation

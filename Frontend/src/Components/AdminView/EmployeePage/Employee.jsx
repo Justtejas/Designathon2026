@@ -93,6 +93,7 @@ export default function Employee() {
                 setEmployees(employees.filter(employee => employee.userId !== deleteId));
                 setOpenDialog(false);
                 setDeleteId(null);
+                showToast('Employee deleted successfully!', 'success');
             } catch (error) {
                 console.error("Error deleting employee:", error);
             }

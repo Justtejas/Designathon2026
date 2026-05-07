@@ -35,8 +35,8 @@ def serialize_asset_simple(doc):
             "AssetId": doc.get('AssetId'),
             "AssetName": doc.get('AssetName'),
             "AssetDescription": doc.get('AssetDescription'),
-            "CategoryId": doc.get('CategoryId'),
-            "SubCategoryId": doc.get('SubCategoryId'),
+            "categoryId": doc.get('categoryId'),
+            "subCategoryId": doc.get('subCategoryId'),
             "AssetImage": doc.get('AssetImage'),
             "SerialNumber": doc.get('SerialNumber'),
             "Model": doc.get('Model'),
@@ -59,10 +59,10 @@ def serialize_asset_dto_class(doc):
             "Value": doc.get('Value'),
             "Model": doc.get('Model'),
             "SerialNumber": doc.get('SerialNumber'),
-            "CategoryName": doc.get('CategoryName'),
-            "CategoryId": doc.get('CategoryId'),
-            "SubCategoryId": doc.get('SubCategoryId'),
-            "SubCategoryName": doc.get('SubCategoryName'),
+            "categoryName": doc.get('categoryName'),
+            "categoryId": doc.get('categoryId'),
+            "subCategoryId": doc.get('subCategoryId'),
+            "subCategoryName": doc.get('subCategoryName'),
             "AssetStatus": doc.get('Asset_Status', 'OpenToRequest')
         }
     return None
@@ -86,15 +86,15 @@ def get_all_assets():
         pipeline = [
             {"$lookup": {
                 "from": "Categories",
-                "localField": "CategoryId",
-                "foreignField": "CategoryId",
+                "localField": "categoryId",
+                "foreignField": "categoryId",
                 "as": "category"
             }},
             {"$unwind": {"path": "$category", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "SubCategories", 
-                "localField": "SubCategoryId",
-                "foreignField": "SubCategoryId",
+                "localField": "subCategoryId",
+                "foreignField": "subCategoryId",
                 "as": "subcategory"
             }},
             {"$unwind": {"path": "$subcategory", "preserveNullAndEmptyArrays": True}},
@@ -106,10 +106,10 @@ def get_all_assets():
                     "Value": 1,
                     "Model": 1,
                     "SerialNumber": 1,
-                    "CategoryName": "$category.CategoryName",
-                    "CategoryId": "$category.CategoryId",
-                    "SubCategoryId": "$subcategory.SubCategoryId",
-                    "SubCategoryName": "$subcategory.SubCategoryName",
+                    "categoryName": "$category.categoryName",
+                    "categoryId": "$category.categoryId",
+                    "subCategoryId": "$subcategory.subCategoryId",
+                    "subCategoryName": "$subcategory.subCategoryName",
                     "Asset_Status": {"$ifNull": ["$Asset_Status", "OpenToRequest"]}
                 }
             }
@@ -131,15 +131,15 @@ def get_all_details_of_assets():
         pipeline = [
             {"$lookup": {
                 "from": "Categories",
-                "localField": "CategoryId",
-                "foreignField": "CategoryId", 
+                "localField": "categoryId",
+                "foreignField": "categoryId", 
                 "as": "category"
             }},
             {"$unwind": {"path": "$category", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "SubCategories",
-                "localField": "SubCategoryId",
-                "foreignField": "SubCategoryId",
+                "localField": "subCategoryId",
+                "foreignField": "subCategoryId",
                 "as": "subcategory"
             }},
             {"$unwind": {"path": "$subcategory", "preserveNullAndEmptyArrays": True}}
@@ -245,8 +245,8 @@ def put_asset(asset_id):
             "$set": {
                 "AssetName": data.get("AssetName"),
                 "AssetDescription": data.get("AssetDescription"),
-                "CategoryId": data.get("CategoryId"),
-                "SubCategoryId": data.get("SubCategoryId"),
+                "categoryId": data.get("categoryId"),
+                "subCategoryId": data.get("subCategoryId"),
                 "SerialNumber": data.get("SerialNumber"),
                 "Model": data.get("Model"),
                 "ManufacturingDate": data.get("ManufacturingDate"),
@@ -296,8 +296,8 @@ def add_asset():
         asset_doc = {
             "AssetName": data.get("AssetName"),
             "AssetDescription": data.get("AssetDescription"),
-            "CategoryId": int(data.get("CategoryId", 0)),
-            "SubCategoryId": int(data.get("SubCategoryId", 0)),
+            "categoryId": int(data.get("categoryId", 0)),
+            "subCategoryId": int(data.get("subCategoryId", 0)),
             "SerialNumber": data.get("SerialNumber"),
             "Model": data.get("Model"),
             "ManufacturingDate": data.get("ManufacturingDate"),

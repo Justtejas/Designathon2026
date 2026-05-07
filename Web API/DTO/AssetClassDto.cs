@@ -10,12 +10,12 @@ namespace Hexa_Hub.DTO
         public string AssetDescription { get; set; }
         public string Location { get; set; }
         public decimal Value { get; set; }
-        public string CategoryName { get; set; }
+        public string categoryName { get; set; }
 
-        public int CategoryId { get; set; }
+        public int categoryId { get; set; }
 
-        public int SubCategoryId { get; set; }
-        public string SubCategoryName { get; set; }
+        public int subCategoryId { get; set; }
+        public string subCategoryName { get; set; }
         public string SerialNumber { get; set; }
         public string Model { get; set; }
         [DataType(DataType.Date)]

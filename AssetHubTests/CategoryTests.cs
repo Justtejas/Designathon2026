@@ -28,8 +28,8 @@ namespace AssetHubTests
             // Arrange
             var expectedCategories = new List<Category>
                 {
-                new Category { CategoryId = 1, CategoryName = "Software" },
-                new Category { CategoryId = 2, CategoryName = "Hardware" }
+                new Category { categoryId = 1, categoryName = "Software" },
+                new Category { categoryId = 2, categoryName = "Hardware" }
                 };
 
             // Mock the repository methods
@@ -42,17 +42,17 @@ namespace AssetHubTests
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
             Assert.AreEqual(2, result.Count, "Category count should be 2");
-            Assert.AreEqual("Software", result[0].CategoryName);
-            Assert.AreEqual("Hardware", result[1].CategoryName);
+            Assert.AreEqual("Software", result[0].categoryName);
+            Assert.AreEqual("Hardware", result[1].categoryName);
         }
 
         [TestCase]
         public async Task AddCategory_ShouldAddCategory()
         {
             // Arrange
-            var newCategory = new CategoriesDto { CategoryId = 3, CategoryName = "Networking" };
+            var newCategory = new CategoriesDto { categoryId = 3, categoryName = "Networking" };
 
-            var newCat = new Category { CategoryId = newCategory.CategoryId, CategoryName = newCategory.CategoryName };
+            var newCat = new Category { categoryId = newCategory.categoryId, categoryName = newCategory.categoryName };
 
 
             // Mock
@@ -61,11 +61,11 @@ namespace AssetHubTests
             // Act
             var result  = await _category.AddCategory(newCategory);
             Assert.IsNotNull(result, "Result should not be null");
-            Assert.AreEqual(newCategory.CategoryId, result.CategoryId, "CategoryId should match");
+            Assert.AreEqual(newCategory.categoryId, result.categoryId, "categoryId should match");
 
             //Assert
             _categoryMock.Verify(repo => repo.AddCategory(It.Is<CategoriesDto>(a =>
-               a.CategoryId == newCategory.CategoryId && a.CategoryId == newCat.CategoryId && a.CategoryName == newCat.CategoryName)), Times.Once);
+               a.categoryId == newCategory.categoryId && a.categoryId == newCat.categoryId && a.categoryName == newCat.categoryName)), Times.Once);
 
         }
 

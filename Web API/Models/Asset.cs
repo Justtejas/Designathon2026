@@ -17,10 +17,10 @@ public class Asset
     public string? AssetDescription { get; set; }
 
     [Required]
-    public int CategoryId { get; set; }
+    public int categoryId { get; set; }
 
     [Required]
-    public int SubCategoryId { get; set; }
+    public int subCategoryId { get; set; }
 
     public byte[]? AssetImage { get; set; }
 

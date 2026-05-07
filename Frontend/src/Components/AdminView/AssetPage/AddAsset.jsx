@@ -31,8 +31,8 @@ const AddAsset = () => {
     const [formData, setFormData] = useState({
         AssetName: '',
         AssetDescription: '',
-        CategoryId: '',
-        SubCategoryId: '',
+        categoryId: '',
+        subCategoryId: '',
         SerialNumber: '',
         Model: '',
         ManufacturingDate: '',
@@ -46,7 +46,7 @@ const AddAsset = () => {
     const [newCategoryDialog, setNewCategoryDialog] = useState(false);
     const [newSubCategoryDialog, setNewSubCategoryDialog] = useState(false);
     const [newCategory, setNewCategory] = useState('');
-    const [newSubCategory, setNewSubCategory] = useState({ name: '', categoryId: '', quantity: '' });
+    const [newSubCategory, setNewSubCategory] = useState({ name: '', categoryId: '', Quantity: '' });
     const [errorMessage, setErrorMessage] = useState('');
     const [file, setFile] = useState(null);
     const [progress, setProgress] = useState({ started: false, pc: 0 });
@@ -60,7 +60,7 @@ const AddAsset = () => {
             const response = await axios.get('http://localhost:7287/api/Categories/all-categories');
             //console.log(response.data)
             setCategories(response.data || []);
-            console.log(categories)
+            console.log(response.data)
         } catch (error) {
             console.error('Error fetching categories:', error);
             setErrorMessage('Error fetching categories. Please try again.');
@@ -71,6 +71,7 @@ const AddAsset = () => {
         try {
             const response = await axios.get(`http://localhost:7287/api/SubCategories?categoryId=${categoryId}`);
             setSubCategories(response.data.$values || []);
+            console.log(response.data)
         } catch (error) {
             console.error('Error fetching subcategories:', error);
             setErrorMessage('Error fetching subcategories. Please try again.');
@@ -80,7 +81,7 @@ const AddAsset = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-        if (name === 'CategoryId') {
+        if (name === 'categoryId') {
             fetchSubCategories(value);
         }
     };
@@ -151,7 +152,7 @@ const AddAsset = () => {
 
     const handleAddCategory = async () => {
         try {
-            const response = await axios.post('http://localhost:7287/api/Categories', { CategoryName: newCategory });
+            const response = await axios.post('http://localhost:7287/api/Categories', { categoryName: newCategory });
             setCategories([...categories, response.data]);
             setNewCategoryDialog(false);
             setNewCategory('');
@@ -167,13 +168,14 @@ const AddAsset = () => {
     const handleAddSubCategory = async () => {
         try {
             const response = await axios.post('http://localhost:7287/api/SubCategories', {
-                SubCategoryName: newSubCategory.name,
-                CategoryId: newSubCategory.categoryId,
-                Quantity: newSubCategory.quantity,
+                subCategoryName: newSubCategory.name,
+                categoryId: newSubCategory.categoryId,
+                Quantity: newSubCategory.Quantity,
             });
             setSubCategories([...subCategories, response.data]);
             setNewSubCategoryDialog(false);
-            setNewSubCategory({ name: '', categoryId: '', quantity: '' });
+            setNewSubCategory({ name: '', categoryId: '', Quantity: '' });
+            showToast('Subcategory Added Successfully', 'success');
         } catch (error) {
             console.error('Error adding subcategory:', error);
         }
@@ -311,15 +313,15 @@ const AddAsset = () => {
                                         <FormControl fullWidth variant="outlined">
                                             <InputLabel>Category</InputLabel>
                                             <Select
-                                                name="CategoryId"
-                                                value={formData.CategoryId || ''}
+                                                name="categoryId"
+                                                value={formData.categoryId || ''}
                                                 onChange={handleChange}
                                                 label="Category"
                                                 required
                                             >
                                                 {categories.map((category) => (
-                                                    <MenuItem key={category.CategoryId} value={category.CategoryId}>
-                                                        {category.CategoryName}
+                                                    <MenuItem key={category.categoryId} value={category.categoryId}>
+                                                        {category.categoryName}
                                                     </MenuItem>
                                                 ))}
                                             </Select>
@@ -329,8 +331,8 @@ const AddAsset = () => {
                                         <FormControl fullWidth variant="outlined">
                                             <InputLabel>Subcategory</InputLabel>
                                             <Select
-                                                name="SubCategoryId"
-                                                value={formData.SubCategoryId || ''}
+                                                name="subCategoryId"
+                                                value={formData.subCategoryId || ''}
                                                 onChange={handleChange}
                                                 label="Subcategory"
                                                 required
@@ -426,8 +428,8 @@ const AddAsset = () => {
                         label="Quantity"
                         type="number"
                         fullWidth
-                        value={newSubCategory.quantity}
-                        onChange={(e) => setNewSubCategory({ ...newSubCategory, quantity: parseInt(e.target.value) })}
+                        value={newSubCategory.Quantity}
+                        onChange={(e) => setNewSubCategory({ ...newSubCategory, Quantity: parseInt(e.target.value) })}
                         sx={{ mt: 2 }}
                     />
                 </DialogContent>

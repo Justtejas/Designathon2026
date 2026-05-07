@@ -9,7 +9,7 @@ public class AssetRequestClassDto
     public string AssetName { get; set; }
     public int userId { get; set; }
     public int AssetId { get; set; }
-    public string CategoryName { get; set; }
+    public string categoryName { get; set; }
 
     [DataType(DataType.Date)]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]

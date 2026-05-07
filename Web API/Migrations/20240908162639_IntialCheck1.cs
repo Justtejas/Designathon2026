@@ -15,13 +15,13 @@ namespace Hexa_Hub.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    categoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false)
+                    categoryName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
+                    table.PrimaryKey("PK_Categories", x => x.categoryId);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,20 +50,20 @@ namespace Hexa_Hub.Migrations
                 name: "SubCategories",
                 columns: table => new
                 {
-                    SubCategoryId = table.Column<int>(type: "int", nullable: false)
+                    subCategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SubCategoryName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    subCategoryName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
+                    categoryId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SubCategories", x => x.SubCategoryId);
+                    table.PrimaryKey("PK_SubCategories", x => x.subCategoryId);
                     table.ForeignKey(
-                        name: "FK_SubCategories_Categories_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_SubCategories_Categories_categoryId",
+                        column: x => x.categoryId,
                         principalTable: "Categories",
-                        principalColumn: "CategoryId",
+                        principalColumn: "categoryId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -100,8 +100,8 @@ namespace Hexa_Hub.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AssetName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
                     AssetDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    SubCategoryId = table.Column<int>(type: "int", nullable: false),
+                    categoryId = table.Column<int>(type: "int", nullable: false),
+                    subCategoryId = table.Column<int>(type: "int", nullable: false),
                     AssetImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     SerialNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -115,15 +115,15 @@ namespace Hexa_Hub.Migrations
                 {
                     table.PrimaryKey("PK_Assets", x => x.AssetId);
                     table.ForeignKey(
-                        name: "FK_Assets_Categories_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_Assets_Categories_categoryId",
+                        column: x => x.categoryId,
                         principalTable: "Categories",
-                        principalColumn: "CategoryId");
+                        principalColumn: "categoryId");
                     table.ForeignKey(
-                        name: "FK_Assets_SubCategories_SubCategoryId",
-                        column: x => x.SubCategoryId,
+                        name: "FK_Assets_SubCategories_subCategoryId",
+                        column: x => x.subCategoryId,
                         principalTable: "SubCategories",
-                        principalColumn: "SubCategoryId");
+                        principalColumn: "subCategoryId");
                 });
 
             migrationBuilder.CreateTable(
@@ -134,7 +134,7 @@ namespace Hexa_Hub.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     userId = table.Column<int>(type: "int", nullable: false),
                     AssetId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    categoryId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AssetReqDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AssetReqReason = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Request_Status = table.Column<int>(type: "int", nullable: false)
@@ -216,7 +216,7 @@ namespace Hexa_Hub.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     userId = table.Column<int>(type: "int", nullable: false),
                     AssetId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    categoryId = table.Column<int>(type: "int", nullable: false),
                     ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Condition = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -323,14 +323,14 @@ namespace Hexa_Hub.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Assets_CategoryId",
+                name: "IX_Assets_categoryId",
                 table: "Assets",
-                column: "CategoryId");
+                column: "categoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Assets_SubCategoryId",
+                name: "IX_Assets_subCategoryId",
                 table: "Assets",
-                column: "SubCategoryId");
+                column: "subCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Audits_AssetId",
@@ -373,9 +373,9 @@ namespace Hexa_Hub.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubCategories_CategoryId",
+                name: "IX_SubCategories_categoryId",
                 table: "SubCategories",
-                column: "CategoryId");
+                column: "categoryId");
         }
 
         /// <inheritdoc />

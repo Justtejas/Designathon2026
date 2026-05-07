@@ -29,8 +29,8 @@ def serialize_category_simple(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "CategoryId": doc.get('CategoryId'),
-            "CategoryName": doc.get('CategoryName')
+            "categoryId": doc.get('categoryId'),
+            "categoryName": doc.get('categoryName')
         }
     return None
  
@@ -39,8 +39,8 @@ def serialize_category_detailed(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "CategoryId": doc.get('CategoryId'),
-            "CategoryName": doc.get('CategoryName'),
+            "categoryId": doc.get('categoryId'),
+            "categoryName": doc.get('categoryName'),
             "Assets": doc.get('Assets', []),
             "SubCategories": doc.get('SubCategories', [])
         }
@@ -64,7 +64,7 @@ def get_all_categories():
 def get_category_names():
     try:
         logger.info("Fetching all category names")
-        category_names = categories.distinct("CategoryName")
+        category_names = categories.distinct("categoryName")
         if not category_names:
             return jsonify({"error": "No categories available"}), 404
         return jsonify(category_names), 200
@@ -78,17 +78,17 @@ def get_category_by_id(category_id):
         logger.info(f"Fetching category by ID: {category_id}")
         # Use aggregation to include assets and subcategories
         pipeline = [
-            {"$match": {"CategoryId": category_id}},
+            {"$match": {"categoryId": category_id}},
             {"$lookup": {
                 "from": "Assets",
-                "localField": "CategoryId",
-                "foreignField": "CategoryId",
+                "localField": "categoryId",
+                "foreignField": "categoryId",
                 "as": "Assets"
             }},
             {"$lookup": {
                 "from": "SubCategories",
-                "localField": "CategoryId",
-                "foreignField": "CategoryId",
+                "localField": "categoryId",
+                "foreignField": "categoryId",
                 "as": "SubCategories"
             }}
         ]
@@ -109,11 +109,11 @@ def put_category(category_id):
             return jsonify({"error": "Admin access required"}), 403
         data = request.get_json()
         logger.info(f"Updating category {category_id}")
-        if not data.get("CategoryName"):
-            return jsonify({"error": "CategoryName is required"}), 400
+        if not data.get("categoryName"):
+            return jsonify({"error": "categoryName is required"}), 400
         result = categories.update_one(
-            {"CategoryId": category_id},
-            {"$set": {"CategoryName": data.get("CategoryName")}}
+            {"categoryId": category_id},
+            {"$set": {"categoryName": data.get("categoryName")}}
         )
         if result.matched_count == 0:
             return jsonify({"error": "Category not found"}), 404
@@ -130,14 +130,14 @@ def post_category():
             return jsonify({"error": "Admin access required"}), 403
         data = request.get_json()
         logger.info("Creating new category")
-        if not data.get("CategoryName"):
-            return jsonify({"error": "CategoryName is required"}), 400
+        if not data.get("categoryName"):
+            return jsonify({"error": "categoryName is required"}), 400
         category_doc = {
-            "CategoryId": data.get("CategoryId"),
-            "CategoryName": data.get("CategoryName")
+            "categoryId": data.get("categoryId"),
+            "categoryName": data.get("categoryName")
         }
         # Check if category already exists
-        existing_category = categories.find_one({"CategoryId": category_doc["CategoryId"]})
+        existing_category = categories.find_one({"categoryId": category_doc["categoryId"]})
         if existing_category:
             return jsonify({"error": "Category ID already exists"}), 409
         result = categories.insert_one(category_doc)
@@ -154,10 +154,10 @@ def delete_category(category_id):
         if not is_admin():
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Deleting category {category_id}")
-        category_doc = categories.find_one({"CategoryId": category_id})
+        category_doc = categories.find_one({"categoryId": category_id})
         if not category_doc:
             return jsonify({"error": f"Category with ID {category_id} not found"}), 404
-        result = categories.delete_one({"CategoryId": category_id})
+        result = categories.delete_one({"categoryId": category_id})
         if result.deleted_count == 0:
             return jsonify({"error": "Failed to delete category"}), 404
         logger.info(f"Deleted category {category_id}")

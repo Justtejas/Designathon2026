@@ -130,7 +130,7 @@ namespace Hexa_Hub.Controllers
             // Map fields from DTO to the existing request
             existingRequest.userId = returnRequestDto.userId;
             existingRequest.AssetId = returnRequestDto.AssetId;
-            existingRequest.CategoryId = returnRequestDto.CategoryId;
+            existingRequest.categoryId = returnRequestDto.categoryId;
             existingRequest.ReturnDate = returnRequestDto.ReturnDate;
             existingRequest.Reason = returnRequestDto.Reason;
             existingRequest.Condition = returnRequestDto.Condition;
@@ -225,7 +225,7 @@ namespace Hexa_Hub.Controllers
         //    // Map fields from DTO to the existing request
         //    existingRequest.userId = returnRequestDto.userId;
         //    existingRequest.AssetId = returnRequestDto.AssetId;
-        //    existingRequest.CategoryId = returnRequestDto.CategoryId;
+        //    existingRequest.categoryId = returnRequestDto.categoryId;
         //    existingRequest.ReturnDate = returnRequestDto.ReturnDate;
         //    existingRequest.Reason = returnRequestDto.Reason;
         //    existingRequest.Condition = returnRequestDto.Condition;
@@ -329,7 +329,7 @@ namespace Hexa_Hub.Controllers
 
         //    existingRequest.userId = returnRequestDto.userId;
         //    existingRequest.AssetId = returnRequestDto.AssetId;
-        //    existingRequest.CategoryId = returnRequestDto.CategoryId;
+        //    existingRequest.categoryId = returnRequestDto.categoryId;
         //    existingRequest.ReturnDate = returnRequestDto.ReturnDate;
         //    existingRequest.Reason = returnRequestDto.Reason;
         //    existingRequest.Condition = returnRequestDto.Condition;

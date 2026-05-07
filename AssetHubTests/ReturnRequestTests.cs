@@ -50,7 +50,7 @@ namespace AssetHubTests
                 ReturnId = 3,
                 userId = 1,
                 AssetId = 2,
-                CategoryId = 3,
+                categoryId = 3,
                 ReturnDate = DateTime.Now,
                 Reason = "Reason Test",
                 Condition = "Good"
@@ -61,7 +61,7 @@ namespace AssetHubTests
                 ReturnId = newReturnRequestDto.ReturnId,
                 userId = newReturnRequestDto.userId,
                 AssetId = newReturnRequestDto.AssetId,
-                CategoryId = newReturnRequestDto.CategoryId,
+                categoryId = newReturnRequestDto.categoryId,
                 ReturnDate = newReturnRequestDto.ReturnDate,
                 Reason = newReturnRequestDto.Reason,
                 Condition = newReturnRequestDto.Condition

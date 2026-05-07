@@ -36,8 +36,8 @@ namespace Hexa_Hub.Repository
         //    //    AssetId = a.AssetId,
         //    //    AssetName = a.AssetName,
         //    //    AssetDescription = a.AssetDescription,
-        //    //    CategoryId = a.CategoryId,
-        //    //    SubCategoryId = a.SubCategoryId,
+        //    //    categoryId = a.categoryId,
+        //    //    subCategoryId = a.subCategoryId,
         //    //    AssetImage = a.AssetImage,
         //    //    SerialNumber = a.SerialNumber,
         //    //    Model = a.Model,
@@ -67,10 +67,10 @@ namespace Hexa_Hub.Repository
              Value = a.Value,
              Model = a.Model,
              SerialNumber = a.SerialNumber,
-             CategoryName = a.Category.CategoryName,
-             CategoryId =  a.Category.CategoryId,
-             SubCategoryId = a.SubCategories.SubCategoryId,
-             SubCategoryName = a.SubCategories.SubCategoryName, 
+             categoryName = a.Category.categoryName,
+             categoryId =  a.Category.categoryId,
+             subCategoryId = a.SubCategories.subCategoryId,
+             subCategoryName = a.SubCategories.subCategoryName, 
              AssetStatus = a.Asset_Status ?? AssetStatus.OpenToRequest,        
          })
          .ToListAsync();
@@ -88,8 +88,8 @@ namespace Hexa_Hub.Repository
         //    AssetId = a.AssetId,
         //    AssetName = a.AssetName,
         //    AssetDescription = a.AssetDescription,
-        //    CategoryId = a.CategoryId,
-        //    SubCategoryId = a.SubCategoryId,
+        //    categoryId = a.categoryId,
+        //    subCategoryId = a.subCategoryId,
         //    AssetImage = a.AssetImage,
         //    SerialNumber = a.SerialNumber,
         //    Model = a.Model,
@@ -139,8 +139,8 @@ namespace Hexa_Hub.Repository
                                       AssetDescription = a.AssetDescription,
                                       Location = a.Location,
                                       Value = a.Value,
-                                      CategoryName = a.Category.CategoryName,
-                                      SubCategoryName = a.SubCategories.SubCategoryName,
+                                      categoryName = a.Category.categoryName,
+                                      subCategoryName = a.SubCategories.subCategoryName,
                                       AssetStatus = a.Asset_Status ?? AssetStatus.OpenToRequest,
                                       SerialNumber = a.SerialNumber,
                                       Model = a.Model,
@@ -173,8 +173,8 @@ namespace Hexa_Hub.Repository
 
         //    existingAsset.AssetName = assetDto.AssetName;
         //    existingAsset.AssetDescription = assetDto.AssetDescription;
-        //    existingAsset.CategoryId = assetDto.CategoryId;
-        //    existingAsset.SubCategoryId = assetDto.SubCategoryId;
+        //    existingAsset.categoryId = assetDto.categoryId;
+        //    existingAsset.subCategoryId = assetDto.subCategoryId;
         //    //existingAsset.AssetImage = assetImageBytes ?? existingAsset.AssetImage;
         //    //existingAsset.AssetImage = assetImageBytes;
         //    existingAsset.SerialNumber = assetDto.SerialNumber;
@@ -217,8 +217,8 @@ namespace Hexa_Hub.Repository
 
             existingAsset.AssetName = assetDto.AssetName;
             existingAsset.AssetDescription = assetDto.AssetDescription;
-            existingAsset.CategoryId = assetDto.CategoryId;
-            existingAsset.SubCategoryId = assetDto.SubCategoryId;
+            existingAsset.categoryId = assetDto.categoryId;
+            existingAsset.subCategoryId = assetDto.subCategoryId;
             existingAsset.SerialNumber = assetDto.SerialNumber;
             existingAsset.Model = assetDto.Model;
             existingAsset.ManufacturingDate = assetDto.ManufacturingDate;
@@ -256,8 +256,8 @@ namespace Hexa_Hub.Repository
                                           Value = asset.Value,
                                           Expiry_Date = asset.Expiry_Date,
                                           Asset_Status = asset.Asset_Status.ToString(),
-                                          CategoryId = asset.CategoryId,
-                                          SubCategoryId = asset.SubCategoryId,
+                                          categoryId = asset.categoryId,
+                                          subCategoryId = asset.subCategoryId,
                                           SerialNumber = asset.SerialNumber,
                                           Model = asset.Model
                                       }).ToListAsync();
@@ -280,8 +280,8 @@ namespace Hexa_Hub.Repository
                                            Value = asset.Value,
                                            Expiry_Date = asset.Expiry_Date,
                                            Asset_Status = asset.Asset_Status.ToString(),
-                                           CategoryId = asset.CategoryId,
-                                           SubCategoryId = asset.SubCategoryId,
+                                           categoryId = asset.categoryId,
+                                           subCategoryId = asset.subCategoryId,
                                            SerialNumber = asset.SerialNumber,
                                            Model = asset.Model
                                        }).ToListAsync();
@@ -304,8 +304,8 @@ namespace Hexa_Hub.Repository
                                           Value = asset.Value,
                                           Expiry_Date = asset.Expiry_Date,
                                           Asset_Status = asset.Asset_Status.ToString(),
-                                          CategoryId = asset.CategoryId,
-                                          SubCategoryId = asset.SubCategoryId,
+                                          categoryId = asset.categoryId,
+                                          subCategoryId = asset.subCategoryId,
                                           SerialNumber = asset.SerialNumber,
                                           Model = asset.Model
                                       }).ToListAsync();
@@ -328,8 +328,8 @@ namespace Hexa_Hub.Repository
                                             Value = asset.Value,
                                             Expiry_Date = asset.Expiry_Date,
                                             Asset_Status = asset.Asset_Status.ToString(),
-                                            CategoryId = asset.CategoryId,
-                                            SubCategoryId = asset.SubCategoryId,
+                                            categoryId = asset.categoryId,
+                                            subCategoryId = asset.subCategoryId,
                                             SerialNumber = asset.SerialNumber,
                                             Model = asset.Model
                                         }).ToListAsync();
@@ -479,8 +479,8 @@ namespace Hexa_Hub.Repository
             {
                 AssetName = assetDto.AssetName,
                 AssetDescription = assetDto.AssetDescription,
-                CategoryId = assetDto.CategoryId,
-                SubCategoryId = assetDto.SubCategoryId,
+                categoryId = assetDto.categoryId,
+                subCategoryId = assetDto.subCategoryId,
                 SerialNumber = assetDto.SerialNumber,
                 Model = assetDto.Model,
                 ManufacturingDate = assetDto.ManufacturingDate,
@@ -503,8 +503,8 @@ namespace Hexa_Hub.Repository
         //    {
         //        AssetName = assetDto.AssetName,
         //        AssetDescription = assetDto.AssetDescription,
-        //        CategoryId = assetDto.CategoryId,
-        //        SubCategoryId = assetDto.SubCategoryId,
+        //        categoryId = assetDto.categoryId,
+        //        subCategoryId = assetDto.subCategoryId,
         //        SerialNumber = assetDto.SerialNumber,
         //        Model = assetDto.Model,
         //        ManufacturingDate = assetDto.ManufacturingDate,

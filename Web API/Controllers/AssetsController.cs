@@ -70,8 +70,8 @@ namespace Hexa_Hub.Controllers
         //        Location = asset.Location,
         //        Value = asset.Value,
         //        AssetStatus = asset.Asset_Status?.ToString() ?? "N/A",
-        //        CategoryName = asset.Category?.CategoryName ?? "Unknown",
-        //        SubCategoryName = asset.SubCategories?.SubCategoryName ?? "Unknown"
+        //        categoryName = asset.Category?.categoryName ?? "Unknown",
+        //        subCategoryName = asset.SubCategories?.subCategoryName ?? "Unknown"
         //    }).ToList();
 
         //    return Ok(assetDtos);
@@ -342,25 +342,25 @@ namespace Hexa_Hub.Controllers
         //    }
 
         //    // Check if the category exists, if not, create it
-        //    var category = await _context.Categories.FindAsync(assetDto.CategoryId);
+        //    var category = await _context.Categories.FindAsync(assetDto.categoryId);
         //    if (category == null)
         //    {
         //        category = new Category
         //        {
-        //            CategoryName = assetDto.CategoryName
+        //            categoryName = assetDto.categoryName
         //        };
         //        _context.Categories.Add(category);
         //        await _context.SaveChangesAsync();
         //    }
 
         //    // Check if the subcategory exists, if not, create it
-        //    var subcategory = await _context.SubCategories.FindAsync(assetDto.SubCategoryId);
+        //    var subcategory = await _context.SubCategories.FindAsync(assetDto.subCategoryId);
         //    if (subcategory == null)
         //    {
         //        subcategory = new SubCategory
         //        {
-        //            SubCategoryName = assetDto.SubCategoryName,
-        //            CategoryId = category.CategoryId // Link to the newly created or existing category
+        //            subCategoryName = assetDto.subCategoryName,
+        //            categoryId = category.categoryId // Link to the newly created or existing category
         //        };
         //        _context.SubCategories.Add(subcategory);
         //        await _context.SaveChangesAsync();

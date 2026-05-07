@@ -20,7 +20,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "datetime2");
 
             migrationBuilder.AlterColumn<int>(
-                name: "CategoryId",
+                name: "categoryId",
                 table: "AssetRequests",
                 type: "int",
                 nullable: false,
@@ -40,7 +40,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "date");
 
             migrationBuilder.AlterColumn<string>(
-                name: "CategoryId",
+                name: "categoryId",
                 table: "AssetRequests",
                 type: "nvarchar(max)",
                 nullable: false,

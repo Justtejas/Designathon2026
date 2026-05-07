@@ -51,7 +51,7 @@ def serialize_asset_request(doc):
 
             "AssetName": doc.get('AssetName'),
 
-            "CategoryName": doc.get('CategoryName'),
+            "categoryName": doc.get('categoryName'),
 
             "AssetReqDate": doc.get('AssetReqDate'),
 
@@ -225,7 +225,7 @@ def post_asset_request():
 
             "AssetId": data.get("AssetId"),
 
-            "CategoryId": data.get("CategoryId"),
+            "categoryId": data.get("categoryId"),
 
             "AssetReqDate": data.get("AssetReqDate", datetime.now().isoformat()),
 
@@ -237,7 +237,7 @@ def post_asset_request():
 
             "AssetName": data.get("AssetName"),
 
-            "CategoryName": data.get("CategoryName")
+            "categoryName": data.get("categoryName")
 
         }
 

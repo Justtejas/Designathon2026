@@ -12,8 +12,8 @@ namespace Hexa_Hub.DTO
         public string userName { get; set; }
         public string AssetName { get; set; }
         public int AssetId { get; set; }
-        public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public int categoryId { get; set; }
+        public string categoryName { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]

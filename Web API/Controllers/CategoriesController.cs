@@ -42,9 +42,9 @@ namespace Hexa_Hub.Controllers
 
         // Endpoint to get all category names for the dropdown
         [HttpGet("category-names")]
-        public async Task<IActionResult> GetCategoryNames()
+        public async Task<IActionResult> GetcategoryNames()
         {
-            var categoryNames = await _category.GetAllCategoryNamesAsync();
+            var categoryNames = await _category.GetAllcategoryNamesAsync();
 
             if (categoryNames == null || !categoryNames.Any())
             {
@@ -94,7 +94,7 @@ namespace Hexa_Hub.Controllers
         {
             var category = await _category.AddCategory(categoryDto);
             await _category.Save();
-            return CreatedAtAction("GetCategoryById", new { id = category.CategoryId }, category);
+            return CreatedAtAction("GetCategoryById", new { id = category.categoryId }, category);
         }
 
         // GET: api/Categories/5
@@ -128,7 +128,7 @@ namespace Hexa_Hub.Controllers
 
         private bool CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.CategoryId == id);
+            return _context.Categories.Any(e => e.categoryId == id);
         }
     }
 }

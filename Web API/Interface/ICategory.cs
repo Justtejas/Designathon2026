@@ -8,7 +8,7 @@ namespace Hexa_Hub.Interface
         Task<List<Category>> GetAllCategories();
         Task<Category> AddCategory(CategoriesDto category);
         Task<Category?> GetCategoryById(int id);
-        Task<IEnumerable<string>> GetAllCategoryNamesAsync();
+        Task<IEnumerable<string>> GetAllcategoryNamesAsync();
         Task<bool> UpdateCategoryAsync(int id, CategoriesDto categoryDto);
         Task DeleteCategory(int id);
         Task Save();

@@ -37,14 +37,14 @@ namespace Hexa_Hub.Controllers
         }
 
         // Filter by Quantity
-        [HttpGet("by-quantity")]
-        public async Task<IActionResult> GetSubCategoriesByQuantity(int quantity)
+        [HttpGet("by-Quantity")]
+        public async Task<IActionResult> GetSubCategoriesByQuantity(int Quantity)
         {
-            var subCategories = await _subcategory.GetSubCategoriesByQuantityAsync(quantity);
+            var subCategories = await _subcategory.GetSubCategoriesByQuantityAsync(Quantity);
 
             if (!subCategories.Any())
             {
-                return NotFound("No subcategories found with the specified quantity.");
+                return NotFound("No subcategories found with the specified Quantity.");
             }
 
             return Ok(subCategories);
@@ -53,9 +53,9 @@ namespace Hexa_Hub.Controllers
 
         // Endpoint to get subcategories by category name
         [HttpGet("by-category-name")]
-        public async Task<IActionResult> GetSubCategoriesByCategoryName(string categoryName)
+        public async Task<IActionResult> GetSubCategoriesBycategoryName(string categoryName)
         {
-            var subCategories = await _subcategory.GetSubCategoriesByCategoryNameAsync(categoryName);
+            var subCategories = await _subcategory.GetSubCategoriesBycategoryNameAsync(categoryName);
 
             if (subCategories == null || !subCategories.Any())
             {
@@ -72,7 +72,7 @@ namespace Hexa_Hub.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutSubCategory(int id, SubCategoriesDto subCategoriesDto)
         {
-            if (id != subCategoriesDto.SubCategoryId)
+            if (id != subCategoriesDto.subCategoryId)
             {
                 return BadRequest("Not Found");
             }
@@ -84,8 +84,8 @@ namespace Hexa_Hub.Controllers
             }
 
             // Map DTO to model
-            existingSubCategory.SubCategoryName = subCategoriesDto.SubCategoryName;
-            existingSubCategory.CategoryId = subCategoriesDto.CategoryId;
+            existingSubCategory.subCategoryName = subCategoriesDto.subCategoryName;
+            existingSubCategory.categoryId = subCategoriesDto.categoryId;
             existingSubCategory.Quantity = subCategoriesDto.Quantity;
 
             _subcategory.UpdateSubCategory(existingSubCategory);
@@ -118,15 +118,15 @@ namespace Hexa_Hub.Controllers
             // Map DTO to model
             var subCategory = new SubCategory
             {
-                SubCategoryName = subCategoriesDto.SubCategoryName,
-                CategoryId = subCategoriesDto.CategoryId,
+                subCategoryName = subCategoriesDto.subCategoryName,
+                categoryId = subCategoriesDto.categoryId,
                 Quantity = subCategoriesDto.Quantity
             };
 
             _subcategory.AddSubCategory(subCategory);
             await _subcategory.Save();
 
-            return CreatedAtAction("GetSubCategories", new { id = subCategory.SubCategoryId }, subCategory);
+            return CreatedAtAction("GetSubCategories", new { id = subCategory.subCategoryId }, subCategory);
         }
 
         // DELETE: api/SubCategories/5
@@ -149,7 +149,7 @@ namespace Hexa_Hub.Controllers
 
         private bool SubCategoryExists(int id)
         {
-            return _context.SubCategories.Any(e => e.SubCategoryId == id);
+            return _context.SubCategories.Any(e => e.subCategoryId == id);
         }
     }
 }

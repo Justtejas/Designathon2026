@@ -29,8 +29,8 @@ namespace AssetHubTests
             // Arrange
             var expectedAssets = new List<Asset>
                 {
-                new Asset { AssetId = 1, AssetName ="Dell Laptop", SubCategoryId = 1,SerialNumber="7GHY5265",Model="G14",Location="Chennai"},
-                new Asset { AssetId = 2, AssetName = "Headphone" ,SubCategoryId=2,SerialNumber="DT6788",Model="5G67",Location = "Mumbai"}
+                new Asset { AssetId = 1, AssetName ="Dell Laptop", subCategoryId = 1,SerialNumber="7GHY5265",Model="G14",Location="Chennai"},
+                new Asset { AssetId = 2, AssetName = "Headphone" ,subCategoryId=2,SerialNumber="DT6788",Model="5G67",Location = "Mumbai"}
                 };
 
             // Mock the repository methods
