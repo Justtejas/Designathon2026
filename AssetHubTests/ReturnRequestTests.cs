@@ -48,7 +48,7 @@ namespace AssetHubTests
             var newReturnRequestDto = new ReturnRequestDto
             {
                 ReturnId = 3,
-                UserId = 1,
+                userId = 1,
                 AssetId = 2,
                 CategoryId = 3,
                 ReturnDate = DateTime.Now,
@@ -59,7 +59,7 @@ namespace AssetHubTests
             var expectedReturnRequest = new ReturnRequest
             {
                 ReturnId = newReturnRequestDto.ReturnId,
-                UserId = newReturnRequestDto.UserId,
+                userId = newReturnRequestDto.userId,
                 AssetId = newReturnRequestDto.AssetId,
                 CategoryId = newReturnRequestDto.CategoryId,
                 ReturnDate = newReturnRequestDto.ReturnDate,

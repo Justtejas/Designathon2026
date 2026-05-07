@@ -20,8 +20,8 @@ namespace Hexa_Hub.Interface
         Task<AssetRequest> UpdateAssetRequest(int id, UpdateRequestClassDto assetRequestDto);
         Task DeleteAssetRequest(int id);
         Task Save();
-        //Task<List<AssetRequest>> GetAssetRequestsByUserId(int userId);
-        Task<List<AssetRequestClassDto>> GetAssetRequestsByUserId(int userId);
+        //Task<List<AssetRequest>> GetAssetRequestsByuserId(int userId);
+        Task<List<AssetRequestClassDto>> GetAssetRequestsByuserId(int userId);
 
     }
 

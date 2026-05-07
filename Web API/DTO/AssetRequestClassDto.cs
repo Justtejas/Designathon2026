@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 public class AssetRequestClassDto
 {
     public int AssetReqId { get; set; }
-    public string UserName { get; set; }
+    public string userName { get; set; }
     public string AssetName { get; set; }
-    public int UserId { get; set; }
+    public int userId { get; set; }
     public int AssetId { get; set; }
     public string CategoryName { get; set; }
 

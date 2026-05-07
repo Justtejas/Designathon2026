@@ -89,7 +89,7 @@ public class DataContext : DbContext
             modelBuilder.Entity<AssetAllocation>()
                 .HasOne(aa => aa.User)
                 .WithMany(u => u.AssetAllocations)
-                .HasForeignKey(aa => aa.UserId)
+                .HasForeignKey(aa => aa.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<AssetAllocation>()
@@ -108,7 +108,7 @@ public class DataContext : DbContext
             modelBuilder.Entity<Audit>()
                 .HasOne(au => au.User)
                 .WithMany(u => u.Audits)
-                .HasForeignKey(au => au.UserId)
+                .HasForeignKey(au => au.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //AssetRequest Configuration
@@ -121,7 +121,7 @@ public class DataContext : DbContext
             modelBuilder.Entity<AssetRequest>()
                 .HasOne(ar => ar.User)
                 .WithMany(u => u.AssetRequests)
-                .HasForeignKey(ar => ar.UserId)
+                .HasForeignKey(ar => ar.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //MaintenanceLog Configuration
@@ -134,7 +134,7 @@ public class DataContext : DbContext
             modelBuilder.Entity<MaintenanceLog>()
             .HasOne(m => m.User)
             .WithMany(u => u.MaintenanceLogs)
-            .HasForeignKey(m => m.UserId)
+            .HasForeignKey(m => m.userId)
             .OnDelete(DeleteBehavior.NoAction);
 
             //ReturnReq Configuration
@@ -147,7 +147,7 @@ public class DataContext : DbContext
             modelBuilder.Entity<ReturnRequest>()
                 .HasOne(rr => rr.User)
                 .WithMany(u => u.ReturnRequests)
-                .HasForeignKey(rr => rr.UserId)
+                .HasForeignKey(rr => rr.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //ServiceReq Configuration
@@ -160,7 +160,7 @@ public class DataContext : DbContext
             modelBuilder.Entity<ServiceRequest>()
                 .HasOne(rr => rr.User)
                 .WithMany(u => u.ServiceRequests)
-                .HasForeignKey(rr => rr.UserId)
+                .HasForeignKey(rr => rr.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //SubCategory Configuration

@@ -27,8 +27,8 @@ namespace Hexa_Hub.Repository
                 .Select(sr => new ServiceClassDto
                 {
                     ServiceId = sr.ServiceId,
-                    UserName = sr.User.UserName,
-                    UserId = sr.User.UserId,
+                    userName = sr.User.userName,
+                    userId = sr.User.userId,
                     AssetId = sr.Asset.AssetId,
                     AssetName = sr.Asset.AssetName,
                     ServiceDescription = sr.ServiceDescription,
@@ -48,7 +48,7 @@ namespace Hexa_Hub.Repository
                                          {
                                              ServiceId = service.ServiceId,
                                              AssetId = service.AssetId,
-                                             UserId = service.UserId,
+                                             userId = service.userId,
                                              ServiceRequestDate = service.ServiceRequestDate,
                                              Issue_Type = service.Issue_Type,
                                              ServiceDescription = service.ServiceDescription,
@@ -75,8 +75,8 @@ namespace Hexa_Hub.Repository
                  .Select(sr => new ServiceClassDto
                  {
                      ServiceId = sr.ServiceId,
-                     UserName = sr.User.UserName,
-                     UserId = sr.User.UserId,
+                     userName = sr.User.userName,
+                     userId = sr.User.userId,
                      AssetId = sr.Asset.AssetId,
                      AssetName = sr.Asset.AssetName,
                      ServiceDescription = sr.ServiceDescription,
@@ -99,9 +99,9 @@ namespace Hexa_Hub.Repository
             var adminUsers = await _userRepo.GetUsersByAdmin();
             foreach (var admin in adminUsers)
             {
-                Console.WriteLine($"Sending email to: {admin.UserMail}");
+                Console.WriteLine($"Sending email to: {admin.userMail}");
 
-                await _notificationService.ServiceRequestSent(admin.UserMail, serviceRequest.AssetId, serviceRequest.ServiceId, serviceRequest.Issue_Type);
+                await _notificationService.ServiceRequestSent(admin.userMail, serviceRequest.AssetId, serviceRequest.ServiceId, serviceRequest.Issue_Type);
             }
         }
 
@@ -126,26 +126,26 @@ namespace Hexa_Hub.Repository
             await _context.SaveChangesAsync();
         }
 
-        //public async Task<List<ServiceRequest>> GetServiceRequestsByUserId(int userId)
+        //public async Task<List<ServiceRequest>> GetServiceRequestsByuserId(int userId)
         //{
         //    return await _context.ServiceRequests
-        //        .Where(sr => sr.UserId == userId)
+        //        .Where(sr => sr.userId == userId)
         //        .Include(sr => sr.Asset)
         //        .Include(sr => sr.User)
         //        .ToListAsync();
         //}
 
-        public async Task<List<ServiceClassDto>> GetServiceRequestsByUserId(int userId)
+        public async Task<List<ServiceClassDto>> GetServiceRequestsByuserId(int userId)
         {
             return await _context.ServiceRequests
-                .Where(sr => sr.UserId == userId)
+                .Where(sr => sr.userId == userId)
                 .Include(sr => sr.Asset)
                 .Include(sr => sr.User)
                  .Select(sr => new ServiceClassDto
                  {
                      ServiceId = sr.ServiceId,
-                     UserName = sr.User.UserName,
-                     UserId = sr.User.UserId,
+                     userName = sr.User.userName,
+                     userId = sr.User.userId,
                      AssetId = sr.Asset.AssetId,
                      AssetName = sr.Asset.AssetName,
                      ServiceDescription = sr.ServiceDescription,

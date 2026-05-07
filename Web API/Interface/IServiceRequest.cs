@@ -13,8 +13,8 @@ namespace Hexa_Hub.Interface
         Task DeleteServiceRequest(int id);
         Task Save();
         Task<IEnumerable<ServiceRequestDto>> GetServiceReqByStatus(ServiceReqStatus serviceReqStatus);
-        //Task<List<ServiceRequest>> GetServiceRequestsByUserId(int userId);
-        Task<List<ServiceClassDto>> GetServiceRequestsByUserId(int userId);
+        //Task<List<ServiceRequest>> GetServiceRequestsByuserId(int userId);
+        Task<List<ServiceClassDto>> GetServiceRequestsByuserId(int userId);
 
     }
 

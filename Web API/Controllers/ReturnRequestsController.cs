@@ -48,7 +48,7 @@ namespace Hexa_Hub.Controllers
         //    }
         //    else
         //    {
-        //        var req = await _returnRequestRepo.GetReturnRequestsByUserId(userId);
+        //        var req = await _returnRequestRepo.GetReturnRequestsByuserId(userId);
         //        if (req == null||req.Count==0)
         //        {
         //            return NotFound($"No details found");
@@ -75,7 +75,7 @@ namespace Hexa_Hub.Controllers
             //return await _context.ReturnRequests.ToListAsync();
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
            
-            var req = await _returnRequestRepo.GetReturnRequestsByUserId(userId);
+            var req = await _returnRequestRepo.GetReturnRequestsByuserId(userId);
             if (req == null || req.Count == 0)
             {
                 return NotFound($"No details found");
@@ -128,7 +128,7 @@ namespace Hexa_Hub.Controllers
             }
 
             // Map fields from DTO to the existing request
-            existingRequest.UserId = returnRequestDto.UserId;
+            existingRequest.userId = returnRequestDto.userId;
             existingRequest.AssetId = returnRequestDto.AssetId;
             existingRequest.CategoryId = returnRequestDto.CategoryId;
             existingRequest.ReturnDate = returnRequestDto.ReturnDate;
@@ -152,7 +152,7 @@ namespace Hexa_Hub.Controllers
                         _context.Entry(asset).State = EntityState.Modified;
 
                         var allocation = await _context.AssetAllocations
-                            .FirstOrDefaultAsync(a => a.AssetId == existingRequest.AssetId && a.UserId == existingRequest.UserId);
+                            .FirstOrDefaultAsync(a => a.AssetId == existingRequest.AssetId && a.userId == existingRequest.userId);
 
                         if (allocation != null)
                         {
@@ -160,7 +160,7 @@ namespace Hexa_Hub.Controllers
                         }
 
                         var assetRequest = await _context.AssetRequests
-                            .FirstOrDefaultAsync(a => a.AssetId == existingRequest.AssetId && a.UserId == existingRequest.UserId && a.Request_Status == Models.MultiValues.RequestStatus.Allocated);
+                            .FirstOrDefaultAsync(a => a.AssetId == existingRequest.AssetId && a.userId == existingRequest.userId && a.Request_Status == Models.MultiValues.RequestStatus.Allocated);
 
                         if (assetRequest != null)
                         {
@@ -169,19 +169,19 @@ namespace Hexa_Hub.Controllers
                     }
                 }
 
-                var user = await _context.Users.FindAsync(existingRequest.UserId);
+                var user = await _context.Users.FindAsync(existingRequest.userId);
                 if (user != null)
                 {
                     switch (existingRequest.ReturnStatus)
                     {
                         case Models.MultiValues.ReturnReqStatus.Approved:
-                            await _notificationService.ReturnRequestApproved(user.UserMail, user.UserName, existingRequest.AssetId, id);
+                            await _notificationService.ReturnRequestApproved(user.userMail, user.userName, existingRequest.AssetId, id);
                             break;
                         case Models.MultiValues.ReturnReqStatus.Returned:
-                            await _notificationService.ReturnRequestCompleted(user.UserMail, user.UserName, existingRequest.AssetId);
+                            await _notificationService.ReturnRequestCompleted(user.userMail, user.userName, existingRequest.AssetId);
                             break;
                         case Models.MultiValues.ReturnReqStatus.Rejected:
-                            await _notificationService.ReturnRequestRejected(user.UserMail, user.UserName, existingRequest.AssetId, id);
+                            await _notificationService.ReturnRequestRejected(user.userMail, user.userName, existingRequest.AssetId, id);
                             break;
                     }
                 }
@@ -223,7 +223,7 @@ namespace Hexa_Hub.Controllers
         //    }
 
         //    // Map fields from DTO to the existing request
-        //    existingRequest.UserId = returnRequestDto.UserId;
+        //    existingRequest.userId = returnRequestDto.userId;
         //    existingRequest.AssetId = returnRequestDto.AssetId;
         //    existingRequest.CategoryId = returnRequestDto.CategoryId;
         //    existingRequest.ReturnDate = returnRequestDto.ReturnDate;
@@ -256,7 +256,7 @@ namespace Hexa_Hub.Controllers
         //                _context.Entry(asset).State = EntityState.Modified;
 
         //                var allocation = await _context.AssetAllocations
-        //                    .FirstOrDefaultAsync(a => a.AssetId == existingRequest.AssetId && a.UserId == existingRequest.UserId);
+        //                    .FirstOrDefaultAsync(a => a.AssetId == existingRequest.AssetId && a.userId == existingRequest.userId);
 
         //                if (allocation != null)
         //                {
@@ -265,7 +265,7 @@ namespace Hexa_Hub.Controllers
         //                }
 
         //                var assetRequest = await _context.AssetRequests
-        //                    .FirstOrDefaultAsync(a => a.AssetId == existingRequest.AssetId && a.UserId == existingRequest.UserId && a.Request_Status == Models.MultiValues.RequestStatus.Allocated);
+        //                    .FirstOrDefaultAsync(a => a.AssetId == existingRequest.AssetId && a.userId == existingRequest.userId && a.Request_Status == Models.MultiValues.RequestStatus.Allocated);
 
         //                if (assetRequest != null)
         //                {
@@ -275,20 +275,20 @@ namespace Hexa_Hub.Controllers
         //            }
         //        }
 
-        //        var user = await _context.Users.FindAsync(existingRequest.UserId);
+        //        var user = await _context.Users.FindAsync(existingRequest.userId);
         //        if (user != null)
         //        {
         //            if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Approved)
         //            {
-        //                await _notificationService.ReturnRequestApproved(user.UserMail, user.UserName, existingRequest.AssetId, id);
+        //                await _notificationService.ReturnRequestApproved(user.userMail, user.userName, existingRequest.AssetId, id);
         //            }
         //            else if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned)
         //            {
-        //                await _notificationService.ReturnRequestCompleted(user.UserMail, user.UserName, existingRequest.AssetId);
+        //                await _notificationService.ReturnRequestCompleted(user.userMail, user.userName, existingRequest.AssetId);
         //            }
         //            else if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
         //            {
-        //                await _notificationService.ReturnRequestRejected(user.UserMail, user.UserName, existingRequest.AssetId, id);
+        //                await _notificationService.ReturnRequestRejected(user.userMail, user.userName, existingRequest.AssetId, id);
         //            }
         //        }
         //    }
@@ -327,7 +327,7 @@ namespace Hexa_Hub.Controllers
         //        return NotFound($"Details for the Request ID {id} not found");
         //    }
 
-        //    existingRequest.UserId = returnRequestDto.UserId;
+        //    existingRequest.userId = returnRequestDto.userId;
         //    existingRequest.AssetId = returnRequestDto.AssetId;
         //    existingRequest.CategoryId = returnRequestDto.CategoryId;
         //    existingRequest.ReturnDate = returnRequestDto.ReturnDate;
@@ -360,7 +360,7 @@ namespace Hexa_Hub.Controllers
         //                _context.Entry(asset).State = EntityState.Modified;
 
         //                var allocation = await _context.AssetAllocations
-        //                    .Where(a => a.AssetId == existingRequest.AssetId && a.UserId == existingRequest.UserId)
+        //                    .Where(a => a.AssetId == existingRequest.AssetId && a.userId == existingRequest.userId)
         //                    .FirstOrDefaultAsync();
 
         //                if (allocation != null)
@@ -377,7 +377,7 @@ namespace Hexa_Hub.Controllers
         //                }
 
         //                var assetRequest = await _context.AssetRequests
-        //                    .Where(a => a.AssetId == existingRequest.AssetId && a.UserId == existingRequest.UserId && a.Request_Status == Models.MultiValues.RequestStatus.Allocated)
+        //                    .Where(a => a.AssetId == existingRequest.AssetId && a.userId == existingRequest.userId && a.Request_Status == Models.MultiValues.RequestStatus.Allocated)
         //                    .FirstOrDefaultAsync();
 
         //                if (assetRequest != null)
@@ -395,20 +395,20 @@ namespace Hexa_Hub.Controllers
         //            }
         //        }
 
-        //        var user = await _context.Users.FindAsync(existingRequest.UserId);
+        //        var user = await _context.Users.FindAsync(existingRequest.userId);
         //        if (user != null)
         //        {
         //            if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Approved)
         //            {
-        //                await _notificationService.ReturnRequestApproved(user.UserMail, user.UserName, existingRequest.AssetId, id);
+        //                await _notificationService.ReturnRequestApproved(user.userMail, user.userName, existingRequest.AssetId, id);
         //            }
         //            else if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned)
         //            {
-        //                await _notificationService.ReturnRequestCompleted(user.UserMail, user.UserName, existingRequest.AssetId);
+        //                await _notificationService.ReturnRequestCompleted(user.userMail, user.userName, existingRequest.AssetId);
         //            }
         //            else if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
         //            {
-        //                await _notificationService.ReturnRequestRejected(user.UserMail, user.UserName, existingRequest.AssetId, id);
+        //                await _notificationService.ReturnRequestRejected(user.userMail, user.userName, existingRequest.AssetId, id);
         //            }
         //        }
         //    }
@@ -438,15 +438,15 @@ namespace Hexa_Hub.Controllers
         [Authorize(Roles = "Employee")]
         public async Task<ActionResult<ReturnRequest>> PostReturnRequest(ReturnRequestDto returnRequestDto)
         {
-            var loggedInUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-            var userHasAsset = await _returnRequestRepo.UserHasAsset(loggedInUserId);
+            var userHasAsset = await _returnRequestRepo.UserHasAsset(loggedInuserId);
             if (!userHasAsset)
             {
                 return BadRequest("User does not have an asset to return.");
             }
 
-            returnRequestDto.UserId = loggedInUserId;
+            returnRequestDto.userId = loggedInuserId;
 
             var createdRequest = await _returnRequestRepo.AddReturnRequest(returnRequestDto);
             await _returnRequestRepo.Save();
@@ -462,13 +462,13 @@ namespace Hexa_Hub.Controllers
         {
             try
             {
-                var loggedInUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
                 var returnRequest = await _returnRequestRepo.GetReturnRequestById(id);
                 if (returnRequest == null)
                 {
                     return NotFound($"Details For the Request id {id} is not found");
                 }
-                if (returnRequest.UserId != loggedInUserId)
+                if (returnRequest.userId != loggedInuserId)
                 {
                     return Forbid("You are not allowed to delete other records");
                 }

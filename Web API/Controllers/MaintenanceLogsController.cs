@@ -45,7 +45,7 @@ namespace Hexa_Hub.Controllers
             }
             else
             {
-                var req = await _maintenanceLogRepo.GetMaintenanceLogByUserId(userId);
+                var req = await _maintenanceLogRepo.GetMaintenanceLogByuserId(userId);
                 if (req == null)
                 {
                     return NotFound($"No maintenance has been for for user {userId}");

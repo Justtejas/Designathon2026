@@ -43,9 +43,9 @@ def serialize_asset_request(doc):
 
             "AssetReqId": doc.get('AssetReqId'),
 
-            "UserName": doc.get('UserName'),
+            "userName": doc.get('userName'),
 
-            "UserId": doc.get('UserId'),
+            "userId": doc.get('userId'),
 
             "AssetId": doc.get('AssetId'),
 
@@ -117,7 +117,7 @@ def get_asset_requests():
 
             # Regular user sees only their requests
 
-            requests = list(asset_requests.find({"UserId": user_id}).sort("AssetReqDate", -1))
+            requests = list(asset_requests.find({"userId": user_id}).sort("AssetReqDate", -1))
 
             if not requests:
 
@@ -195,7 +195,7 @@ def post_asset_request():
 
         # Validate user can only create for themselves
 
-        if data.get("UserId") != user_id:
+        if data.get("userId") != user_id:
 
             return jsonify({"error": "You can only create a request for yourself"}), 403
 
@@ -221,7 +221,7 @@ def post_asset_request():
 
             "AssetReqId": data.get("AssetReqId"),
 
-            "UserId": user_id,
+            "userId": user_id,
 
             "AssetId": data.get("AssetId"),
 
@@ -233,7 +233,7 @@ def post_asset_request():
 
             "Request_Status": "Pending",
 
-            "UserName": data.get("UserName"),
+            "userName": data.get("userName"),
 
             "AssetName": data.get("AssetName"),
 
@@ -309,7 +309,7 @@ def put_asset_request(asset_req_id):
 
                     "AssetId": data.get("AssetId"),
 
-                    "UserId": data.get("UserId"),
+                    "userId": data.get("userId"),
 
                     "AssetReqId": asset_req_id,
 
@@ -365,7 +365,7 @@ def delete_asset_request(asset_req_id):
 
             return jsonify({"error": f"Request with ID {asset_req_id} not found"}), 404
 
-        if request_doc.get("UserId") != user_id:
+        if request_doc.get("userId") != user_id:
 
             return jsonify({"error": "You are not allowed to Delete Request"}), 403
 

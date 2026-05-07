@@ -47,15 +47,15 @@ def create_admin():
         logger.info("Registering new admin")
         hashed_pw = generate_password_hash("Admin@123")
         user_doc = {
-            "UserId": "0",
-            "UserName": "Admin",
-            "UserMail": "Admin@gmail.com",
+            "userId": "0",
+            "userName": "Admin",
+            "userMail": "admin@gmail.com",
             "User_Type": "Admin",
             "Password": hashed_pw, 
             "ProfileImage": "profile-img.jpg"  # Default profile image
         }
         result = users.insert_one(user_doc)
-        logger.info(f"Registered new admin: {user_doc['UserMail']}")
+        logger.info(f"Registered new admin: {user_doc['userMail']}")
         return "Admin created Successfully"
     except Exception as e:
         logger.error(f"Error registering user: {str(e)}")
@@ -83,8 +83,8 @@ def get_user_id():
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
             payload = decode_token(token)
-            if payload and "UserId" in payload:
-                return int(payload["UserId"])
+            if payload and "userId" in payload:
+                return int(payload["userId"])
         return None
     except Exception as e:
         logger.error(f"Error getting user ID: {str(e)}")
@@ -96,8 +96,8 @@ def get_user_email():
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
             payload = decode_token(token)
-            if payload and "UserMail" in payload:
-                return payload["UserMail"]
+            if payload and "userMail" in payload:
+                return payload["userMail"]
         return None
     except Exception as e:
         logger.error(f"Error getting user email: {str(e)}")
@@ -107,17 +107,17 @@ def get_user_email():
 def login():
     try:
         data = request.json
-        email = data.get("UserMail")
+        email = data.get("userMail")
         password = data.get("Password")
  
         if not email or not password:
             logger.warning("Login attempt with missing credentials")
-            return jsonify({"error": "UserMail and Password are required"}), 400
+            return jsonify({"error": "userMail and Password are required"}), 400
  
         # Find user by email (case-insensitive)
-        user = users.find_one({
-            "UserMail": {"$regex": email, "$options": "i"}
-        })
+        email_norm = email.strip().lower()
+        user= users.find_one({"userMail": email_norm})
+        print(user)
  
         if not user or not check_password_hash(user['Password'], password):
             logger.warning(f"Failed login attempt for email: {email}")
@@ -125,9 +125,9 @@ def login():
  
         # Create JWT token
         payload = {
-            "UserId": user["UserId"],
-            "UserName": user["UserName"],
-            "UserMail": user["UserMail"],
+            "userId": user["userId"],
+            "userName": user["userName"],
+            "userMail": user["userMail"],
             "User_Type": user.get("User_Type"),
             "exp": datetime.now() + timedelta(hours=JWT_EXPIRY_HOURS)
         }
@@ -135,9 +135,9 @@ def login():
         logger.info(f"Successful login for user: {email}")
         return jsonify({
             "token": token,
-            "UserId": user["UserId"],
-            "UserName": user["UserName"],
-            "UserMail": user["UserMail"],
+            "userId": user["userId"],
+            "userName": user["userName"],
+            "userMail": user["userMail"],
             "User_Type": user.get("User_Type", "Employee"),
             "expires_in": JWT_EXPIRY_HOURS * 3600
         })
@@ -196,7 +196,7 @@ def get_user_profile():
         if not user_id:
             return jsonify({"error": "User not authenticated"}), 401
         logger.info(f"Fetching profile for user: {user_id}")
-        user = users.find_one({"UserId": user_id})
+        user = users.find_one({"userId": user_id})
         if not user:
             return jsonify({"error": "User not found"}), 404
         # Create UserDto response
@@ -212,7 +212,7 @@ def get_user_profile():
 def get_user(user_id):
     try:
         logger.info(f"Fetching user: {user_id}")
-        user = users.find_one({"UserId": user_id})
+        user = users.find_one({"userId": user_id})
         if not user:
             return jsonify({"error": "User not found"}), 404
         # Exclude password
@@ -240,14 +240,14 @@ def update_user(user_id):
             return jsonify({"error": "You do not have permission to update this user"}), 403
 
         # Retrieve existing user
-        existing_user = users.find_one({"UserId": user_id})
+        existing_user = users.find_one({"userId": user_id})
         if not existing_user:
             return jsonify({"error": "User not found"}), 404
 
-        # Build set of allowed updatable fields from input (exclude password, UserId, _id)
+        # Build set of allowed updatable fields from input (exclude password, userId, _id)
         allowed_fields = [
-            "UserName", "UserMail", "Gender", "Dept", "Designation",
-            "PhoneNumber", "Address", "Branch", "ProfileImage"
+            "userName", "userMail", "Gender", "dept", "designation",
+            "phoneNumber", "address", "branch", "ProfileImage"
         ]
         update_fields = {}
         for key in allowed_fields:
@@ -263,7 +263,7 @@ def update_user(user_id):
             return jsonify({"error": "No updatable fields provided"}), 400
 
         result = users.find_one_and_update(
-            {"UserId": user_id},
+            {"userId": user_id},
             {"$set": update_fields},
             return_document=True  # import ReturnDocument if needed; adjust as per driver version
         )
@@ -275,9 +275,9 @@ def update_user(user_id):
         logger.info("Updated user %s (requested by %s)", user_id, current_user_id)
         # Do not return sensitive fields
         sanitized = {
-            "UserId": result.get("UserId"),
-            "UserName": result.get("UserName"),
-            "UserMail": result.get("UserMail"),
+            "userId": result.get("userId"),
+            "userName": result.get("userName"),
+            "userMail": result.get("userMail"),
             "User_Type": result.get("User_Type")
         }
         return jsonify({"message": "Updation Successful", "user": sanitized}), 200
@@ -296,7 +296,7 @@ def change_password(user_id):
         data = request.get_json(silent=True) or {}
         logger.info("Password change requested for user id %s", user_id)
 
-        # Prefer server-side identity check; ignore client-sent UserId
+        # Prefer server-side identity check; ignore client-sent userId
         if current_user_id != user_id:
             return jsonify({"error": "Forbidden"}), 403
 
@@ -309,7 +309,7 @@ def change_password(user_id):
             return jsonify({"error": "New password must be different from current password"}), 400
 
         # Get existing user
-        existing_user = users.find_one({"UserId": user_id})
+        existing_user = users.find_one({"userId": user_id})
         if not existing_user:
             return jsonify({"error": "User not found"}), 404
 
@@ -321,7 +321,7 @@ def change_password(user_id):
         # Hash new password and update document correctly
         hashed_pw = generate_password_hash(new_pw)  # consider stronger algorithm/config
         result = users.update_one(
-            {"UserId": user_id},
+            {"userId": user_id},
             {"$set": {"Password": hashed_pw}}
         )
 
@@ -343,38 +343,38 @@ def register_user():
     try:
         data = request.json
         logger.info("Registering new user")
-        required_fields = ["UserName", "UserMail", "PhoneNumber", "Branch"]
+        required_fields = ["userName", "userMail", "phoneNumber", "branch"]
         for field in required_fields:
             if not data.get(field):
                 return jsonify({"error": f"{field} is required"}), 400
         # Check if user already exists
-        if users.find_one({"UserMail": data.get("UserMail")}):
+        if users.find_one({"userMail": data.get("userMail")}):
             return jsonify({"error": "User already exists"}), 400
         # Create user with default password
-        email = data.get("UserMail", "").strip()
+        email = data.get("userMail", "").strip().lower()
         role = data.get("Role", "").strip()
         if "@" not in email:
-            return jsonify({"error": "UserMail must be a valid email"}), 400
+            return jsonify({"error": "userMail must be a valid email"}), 400
         local_part = email.split("@", 1)[0]
         user_id = f"{local_part}_{role}".lower().replace(" ", "_")
 
-        # Ensure the generated UserId is unique; if taken, return error (simple behavior)
-        if users.find_one({"UserId": user_id}):
-            return jsonify({"error": "UserId already exists. Please use a different role or email"}), 409
+        # Ensure the generated userId is unique; if taken, return error (simple behavior)
+        if users.find_one({"userId": user_id}):
+            return jsonify({"error": "userId already exists. Please use a different role or email"}), 409
         # Create user with default password
         hashed_pw = generate_password_hash("Maventory@123")
         user_doc = {
-            "UserId": user_id,
-            "UserName": data.get("UserName"),
-            "UserMail": email,
-            "PhoneNumber": data.get("PhoneNumber"),
-            "Branch": data.get("Branch"),
+            "userId": user_id,
+            "userName": data.get("userName"),
+            "userMail": email,
+            "phoneNumber": data.get("phoneNumber"),
+            "branch": data.get("branch"),
             "User_Type": role,
             "Password": hashed_pw,
             "ProfileImage": "profile-img.jpg"
         }
         result = users.insert_one(user_doc)
-        logger.info(f"Registered new user: {user_doc['UserMail']}")
+        logger.info(f"Registered new user: {user_doc['userMail']}")
         user_doc["_id"] = str(result.inserted_id)
         user_doc.pop("Password", None)  # Remove password from response
         return jsonify(user_doc), 201
@@ -388,7 +388,7 @@ def delete_user(user_id):
         if not is_admin():
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Deleting user: {user_id}")
-        result = users.delete_one({"UserId": user_id})
+        result = users.delete_one({"userId": user_id})
         if result.deleted_count == 0:
             return jsonify({"error": "Id Not Found"}), 404
         logger.info(f"Deleted user {user_id}")
@@ -417,7 +417,7 @@ def upload_profile_image(user_id):
         # Save file and update user (simplified - store filename)
         filename = f"profile_{user_id}.jpg"
         users.update_one(
-            {"UserId": user_id},
+            {"userId": user_id},
             {"$set": {"ProfileImage": filename}}
         )
         logger.info(f"Uploaded profile image for user {user_id}")
@@ -430,7 +430,7 @@ def upload_profile_image(user_id):
 def get_profile_image(user_id):
     try:
         logger.info(f"Fetching profile image for user: {user_id}")
-        user = users.find_one({"UserId": user_id})
+        user = users.find_one({"userId": user_id})
         if not user or not user.get("ProfileImage"):
             # Return default image logic would go here
             return jsonify({"error": "No profile image available"}), 404

@@ -55,9 +55,9 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<ActionResult<User>> GetUserProfile()
         {
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentuserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (int.TryParse(currentUserId, out int userId))
+            if (int.TryParse(currentuserId, out int userId))
             {
                 var user = await _userRepo.GetUserById(userId);
                 if (user == null)
@@ -66,15 +66,15 @@ namespace Hexa_Hub.Controllers
                 }
                 var userDto = new UserDto
                 {
-                    UserId = user.UserId,
-                    UserName = user.UserName,
-                    UserMail = user.UserMail,
+                    userId = user.userId,
+                    userName = user.userName,
+                    userMail = user.userMail,
                     Gender = user.Gender,
-                    Dept = user.Dept,
-                    Designation = user.Designation,
-                    PhoneNumber = user.PhoneNumber,
-                    Address = user.Address,
-                    Branch = user.Branch,
+                    dept = user.dept,
+                    designation = user.designation,
+                    phoneNumber = user.phoneNumber,
+                    address = user.address,
+                    branch = user.branch,
                     User_Type = user.User_Type?.ToString(),
                     ProfileImage = user.ProfileImage
                 };
@@ -95,7 +95,7 @@ namespace Hexa_Hub.Controllers
         public async Task<ActionResult<User>> GetUser(int id)
         {
             //var user = await _userRepo.GetUserById(id);
-            var user = await _userRepo.GetUserId(id);
+            var user = await _userRepo.GetuserId(id);
 
             if (user == null)
             {
@@ -109,14 +109,14 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateUserDetails(int id, UserDto userDto)
         {
-            if (id != userDto.UserId)
+            if (id != userDto.userId)
             {
                 _log.LogDebug("Id doesnt match");
                 return BadRequest("Check Id");
             }
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentuserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (id.ToString() != currentUserId && !User.IsInRole("Admin"))
+            if (id.ToString() != currentuserId && !User.IsInRole("Admin"))
             {
                 _log.LogDebug("Role doesnt match");
                 return Forbid("You do not have permission to update this user.");
@@ -129,14 +129,14 @@ namespace Hexa_Hub.Controllers
                 return NotFound("User not Found");
             }
 
-            user.UserName = userDto.UserName;
-            user.UserMail = userDto.UserMail;
+            user.userName = userDto.userName;
+            user.userMail = userDto.userMail;
             user.Gender = userDto.Gender;
-            user.Dept = userDto.Dept;
-            user.Designation = userDto.Designation;
-            user.PhoneNumber = userDto.PhoneNumber;
-            user.Address = userDto.Address;
-            user.Branch = userDto.Branch;
+            user.dept = userDto.dept;
+            user.designation = userDto.designation;
+            user.phoneNumber = userDto.phoneNumber;
+            user.address = userDto.address;
+            user.branch = userDto.branch;
             user.ProfileImage = userDto.ProfileImage;
 
             if (User.IsInRole("Admin"))
@@ -181,15 +181,15 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<IActionResult> ChangeUserPassword(int id, PasswordDto passwordChangeDto)
         {
-            if (id != passwordChangeDto.UserId)
+            if (id != passwordChangeDto.userId)
             {
                 _log.LogDebug("User Not found");
 
                 return BadRequest("Check Your Id");
             }
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentuserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (id.ToString() != currentUserId)
+            if (id.ToString() != currentuserId)
             {
                 _log.LogDebug("User Not found");
 
@@ -232,7 +232,7 @@ namespace Hexa_Hub.Controllers
                     throw;
                 }
             }
-            _log.LogInfo($"Password Changed by {user.UserId}");
+            _log.LogInfo($"Password Changed by {user.userId}");
             return Ok("Password Changed Successfully");
         }
 
@@ -252,7 +252,7 @@ namespace Hexa_Hub.Controllers
             var user = await _userRepo.RegisterUser(dto);
             _log.LogInfo("User Registered Successfully");
 
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            return CreatedAtAction("GetUser", new { id = user.userId }, user);
             
         }
 
@@ -290,7 +290,7 @@ namespace Hexa_Hub.Controllers
 
         private bool UserExists(int id)
         {
-            return _context.Users.Any(e => e.UserId == id);
+            return _context.Users.Any(e => e.userId == id);
         }
 
 

@@ -19,7 +19,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "nvarchar(max)");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Designation",
+                name: "designation",
                 table: "Users",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -27,7 +27,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "nvarchar(max)");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Dept",
+                name: "dept",
                 table: "Users",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -35,7 +35,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "nvarchar(max)");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Address",
+                name: "address",
                 table: "Users",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -57,7 +57,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<string>(
-                name: "Designation",
+                name: "designation",
                 table: "Users",
                 type: "nvarchar(max)",
                 nullable: false,
@@ -67,7 +67,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<string>(
-                name: "Dept",
+                name: "dept",
                 table: "Users",
                 type: "nvarchar(max)",
                 nullable: false,
@@ -77,7 +77,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<string>(
-                name: "Address",
+                name: "address",
                 table: "Users",
                 type: "nvarchar(max)",
                 nullable: false,

@@ -21,8 +21,8 @@ const Notifications = () => {
     const [returnRequest, setReturnRequest] = useState(null);
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [auditRequests, setAuditRequests] = useState([]);
-    const [userId, setUserId] = useState(null);
-    const [userName, setUserName] = useState(null);
+    const [userId, setuserId] = useState(null);
+    const [userName, setuserName] = useState(null);
     const [assetName, setAssetName] = useState('');
     const [selectedAuditId, setSelectedAuditId] = useState(null);
     const [selectedAssetId, setSelectedAssetId] = useState(null);
@@ -46,7 +46,7 @@ const Notifications = () => {
         const token = Cookies.get('token');
         if (token) {
             const decode = jwtDecode(token);
-            setUserId(decode.nameid); 
+            setuserId(decode.nameid); 
             
             const fetchAuditRequests = async () => {
                 try {

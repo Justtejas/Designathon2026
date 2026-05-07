@@ -18,18 +18,18 @@ namespace Hexa_Hub.Repository
         {
             var smtpServer = _configuration["Email:SmtpServer"];
             var smtpPort = int.Parse(_configuration["Email:SmtpPort"]);
-            var smtpUsername = _configuration["Email:SmtpUsername"];
+            var smtpuserName = _configuration["Email:SmtpuserName"];
             var smtpPassword = _configuration["Email:SmtpPassword"];
 
             using var smtpClient = new SmtpClient(smtpServer, smtpPort)
             {
-                Credentials = new NetworkCredential(smtpUsername, smtpPassword),
+                Credentials = new NetworkCredential(smtpuserName, smtpPassword),
                 EnableSsl = true
             };
 
             var mailMessage = new MailMessage
             {
-                From = new MailAddress(smtpUsername),  // Use dynamic sender
+                From = new Mailaddress(smtpuserName),  // Use dynamic sender
                 Subject = subject,
                 Body = message,
                 IsBodyHtml = true,

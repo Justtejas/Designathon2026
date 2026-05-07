@@ -192,24 +192,24 @@ namespace Hexa_Hub.Migrations
                 name: "UserProfiles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Dept = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Designation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false),
+                    address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dept = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    designation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    phoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    UserMail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false)
+                    userMail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    userName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserProfiles", x => x.UserId);
+                    table.PrimaryKey("PK_UserProfiles", x => x.userId);
                     table.ForeignKey(
-                        name: "FK_UserProfiles_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_UserProfiles_Users_userId",
+                        column: x => x.userId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
+                        principalColumn: "userId",
                         onDelete: ReferentialAction.Cascade);
                 });
         }

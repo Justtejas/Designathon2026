@@ -33,8 +33,8 @@ namespace Hexa_Hub.Repository
                     AllocationId = aa.AllocationId,
                     AssetName = aa.Asset.AssetName,
                     AssetId = aa.Asset.AssetId,
-                    UserId = aa.User.UserId,
-                    UserName = aa.User.UserName,
+                    userId = aa.User.userId,
+                    userName = aa.User.userName,
                     CategoryName = aa.Asset.Category.CategoryName,
                     SubCategoryName = aa.Asset.SubCategories.SubCategoryName,
                     AssetReqDate = aa.AssetRequests.AssetReqDate,
@@ -45,14 +45,14 @@ namespace Hexa_Hub.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<AllocationDto>> GetAllocationsByUserIdAsync(int userId)
+        public async Task<IEnumerable<AllocationDto>> GetAllocationsByuserIdAsync(int userId)
         {
             var allocations = await _context.AssetAllocations
                 .Include(a => a.Asset) // Include the related Asset entity
-                .Where(a => a.UserId == userId)
+                .Where(a => a.userId == userId)
                 .Select(a => new AllocationDto
                 {
-                    UserId = a.UserId,
+                    userId = a.userId,
                     AssetName = a.Asset.AssetName,
                     AssetId = a.Asset.AssetId,
                     CategoryName = a.Asset.Category.CategoryName,
@@ -158,9 +158,9 @@ namespace Hexa_Hub.Repository
                 {
                     AllocationId = aa.AllocationId,
                     AssetName = aa.Asset.AssetName,
-                    UserName = aa.User.UserName,
+                    userName = aa.User.userName,
                     AssetId = aa.Asset.AssetId,
-                    UserId = aa.User.UserId,
+                    userId = aa.User.userId,
                     CategoryName = aa.Asset.Category.CategoryName,
                     SubCategoryName = aa.Asset.SubCategories.SubCategoryName,
                     AssetReqDate = aa.AssetRequests.AssetReqDate,
@@ -173,7 +173,7 @@ namespace Hexa_Hub.Repository
         public async Task<List<AssetAllocation>> GetAllocationListById(int userId)
         {
             return await _context.AssetAllocations
-                .Where(aa => aa.UserId == userId)
+                .Where(aa => aa.userId == userId)
                 .Include(aa => aa.Asset)
                     .ThenInclude(asset => asset.Category)
                     .ThenInclude(category => category.SubCategories)
@@ -184,7 +184,7 @@ namespace Hexa_Hub.Repository
 
 
 
-        //public async Task<AssetAllocation> AllocateAssetAsync(AssetAllocationDto allocationDto, int adminUserId)
+        //public async Task<AssetAllocation> AllocateAssetAsync(AssetAllocationDto allocationDto, int adminuserId)
         //{
         //    // Check if the asset exists
         //    var asset = await _context.Assets.FindAsync(allocationDto.AssetId);
@@ -194,14 +194,14 @@ namespace Hexa_Hub.Repository
         //    }
 
         //    // Check if the user exists (employee to whom the asset is being allocated)
-        //    var user = await _context.Users.FindAsync(allocationDto.UserId);
+        //    var user = await _context.Users.FindAsync(allocationDto.userId);
         //    if (user == null)
         //    {
         //        throw new UserNotFoundException("User not found.");
         //    }
 
         //    // Check if the current user (admin) exists
-        //    var admin = await _context.Users.FindAsync(adminUserId);
+        //    var admin = await _context.Users.FindAsync(adminuserId);
         //    if (admin == null || admin.User_Type != UserType.Admin)
         //    {
         //        throw new UnauthorizedAccessException("Only an admin can allocate assets.");
@@ -211,7 +211,7 @@ namespace Hexa_Hub.Repository
         //    var assetAllocation = new AssetAllocation
         //    {
         //        AssetId = allocationDto.AssetId,
-        //        UserId = allocationDto.UserId,
+        //        userId = allocationDto.userId,
         //        AssetReqId = allocationDto.AssetReqId,
         //        AllocatedDate = DateTime.Now,
         //        Asset = asset,
@@ -223,13 +223,13 @@ namespace Hexa_Hub.Repository
         //    await _context.SaveChangesAsync();
 
         //    // Admin details for email
-        //    string fromEmail = admin.UserMail;  // Admin's email
-        //    string fromName = admin.UserName;    // Admin's name
+        //    string fromEmail = admin.userMail;  // Admin's email
+        //    string fromName = admin.userName;    // Admin's name
 
         //    // Employee details
-        //    string toEmail = user.UserMail;     // Employee's email
+        //    string toEmail = user.userMail;     // Employee's email
         //    string subject = "Asset Allocation Notification";
-        //    string message = $"Dear {user.UserName},<br>Your asset {asset.AssetName} has been allocated successfully on {assetAllocation.AllocatedDate}.";
+        //    string message = $"Dear {user.userName},<br>Your asset {asset.AssetName} has been allocated successfully on {assetAllocation.AllocatedDate}.";
 
         //    // Send email notification from Admin to Employee
         //    await _email.SendEmailAsync(fromEmail, fromName, toEmail, subject, message);

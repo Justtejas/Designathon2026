@@ -52,7 +52,7 @@ namespace Hexa_Hub.Controllers
             }
             else
             {
-                var req = await _assetRequest.GetAssetRequestsByUserId(userId);
+                var req = await _assetRequest.GetAssetRequestsByuserId(userId);
                 if (req == null)
                 {
                     _log.LogDebug("Asset Request Not Found");
@@ -119,9 +119,9 @@ namespace Hexa_Hub.Controllers
         {
             _log.LogInfo("Adding Asset Requests Process Started");
 
-            var loggedInUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            assetRequestDto.UserId = loggedInUserId;
-            if (assetRequestDto.UserId != loggedInUserId)
+            var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            assetRequestDto.userId = loggedInuserId;
+            if (assetRequestDto.userId != loggedInuserId)
             {
                 return Forbid("You can only create a request for yourself.");
             }
@@ -151,13 +151,13 @@ namespace Hexa_Hub.Controllers
 
             try
             {
-                var loggedInUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
                 var assetRequest = await _assetRequest.GetAssetRequestById(id);
                 if (assetRequest == null)
                 {
                     throw new AssetRequestNotFoundException($"AssetRequest for id {assetRequest} not found");
                 }
-                if (assetRequest.UserId != loggedInUserId)
+                if (assetRequest.userId != loggedInuserId)
                 {
                     return Forbid("You are not allowed to Delete Request");
                 }

@@ -32,7 +32,7 @@ def serialize_maintenance_simple(doc):
         return {
             "MaintenanceId": doc.get('MaintenanceId'),
             "AssetId": doc.get('AssetId'),
-            "UserId": doc.get('UserId'),
+            "userId": doc.get('userId'),
             "Maintenance_date": doc.get('Maintenance_date'),
             "Cost": doc.get('Cost'),
             "Maintenance_Description": doc.get('Maintenance_Description')
@@ -47,8 +47,8 @@ def serialize_maintenance_class(doc):
             "MaintenanceId": doc.get('MaintenanceId'),
             "AssetId": doc.get('AssetId'),
             "AssetName": doc.get('AssetName'),
-            "UserId": doc.get('UserId'),
-            "UserName": doc.get('UserName'),
+            "userId": doc.get('userId'),
+            "userName": doc.get('userName'),
             "Maintenance_date": doc.get('Maintenance_date'),
             "Cost": doc.get('Cost'),
             "Maintenance_Description": doc.get('Maintenance_Description')
@@ -70,8 +70,8 @@ def get_all_maintenance_log():
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -81,8 +81,8 @@ def get_all_maintenance_log():
                     "MaintenanceId": "$MaintenanceId",
                     "AssetId": "$AssetId",
                     "AssetName": "$asset.AssetName",
-                    "UserId": "$UserId",
-                    "UserName": "$user.UserName",
+                    "userId": "$userId",
+                    "userName": "$user.userName",
                     "Maintenance_date": 1,
                     "Cost": 1,
                     "Maintenance_Description": 1
@@ -108,7 +108,7 @@ def get_maintenance_logs():
             logs_list = list(maintenance_logs.find({}).sort("Maintenance_date", -1))
         else:
             # User sees only their logs
-            logs_list = list(maintenance_logs.find({"UserId": user_id}).sort("Maintenance_date", -1))
+            logs_list = list(maintenance_logs.find({"userId": user_id}).sort("Maintenance_date", -1))
         if not logs_list:
             user_msg = f"No maintenance logs found for user {user_id}"
             logger.debug(user_msg)
@@ -136,8 +136,8 @@ def get_maintenance_log_by_id(log_id):
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -147,8 +147,8 @@ def get_maintenance_log_by_id(log_id):
                     "MaintenanceId": "$MaintenanceId",
                     "AssetId": "$AssetId",
                     "AssetName": "$asset.AssetName",
-                    "UserId": "$UserId",
-                    "UserName": "$user.UserName",
+                    "userId": "$userId",
+                    "userName": "$user.userName",
                     "Maintenance_date": 1,
                     "Cost": 1,
                     "Maintenance_Description": 1
@@ -171,7 +171,7 @@ def get_maintenance_log_by_user(user_id):
         if not is_admin():
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Fetching maintenance logs for user: {user_id}")
-        logs_list = list(maintenance_logs.find({"UserId": user_id}).sort("Maintenance_date", -1))
+        logs_list = list(maintenance_logs.find({"userId": user_id}).sort("Maintenance_date", -1))
         if not logs_list:
             return jsonify({"error": f"No maintenance logs found for user {user_id}"}), 404
         serialized_logs = [serialize_maintenance_simple(log) for log in logs_list]

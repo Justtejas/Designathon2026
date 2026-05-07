@@ -36,7 +36,7 @@ const ReturnRequest = () => {
     };
 
     useEffect(() => {
-        const fetchUserIdAndRequests = async () => {
+        const fetchuserIdAndRequests = async () => {
             setLoading(true);
             // Fetch the token from cookies and decode it to get the userId
             const token = Cookies.get('token');
@@ -93,7 +93,7 @@ const ReturnRequest = () => {
             }
         };
 
-        fetchUserIdAndRequests(); // Call the function to fetch data
+        fetchuserIdAndRequests(); // Call the function to fetch data
     }, []); // Empty dependency array to run only on mount
 
 

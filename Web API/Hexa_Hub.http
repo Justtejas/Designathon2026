@@ -1,6 +1,6 @@
-@Hexa_Hub_HostAddress = http://localhost:5231
+@Hexa_Hub_Hostaddress = http://localhost:5231
 
-GET {{Hexa_Hub_HostAddress}}/weatherforecast/
+GET {{Hexa_Hub_Hostaddress}}/weatherforecast/
 Accept: application/json
 
 ###

@@ -32,7 +32,7 @@ def serialize_service_simple(doc):
         return {
             "ServiceId": doc.get('ServiceId'),
             "AssetId": doc.get('AssetId'),
-            "UserId": doc.get('UserId'),
+            "userId": doc.get('userId'),
             "ServiceRequestDate": doc.get('ServiceRequestDate'),
             "Issue_Type": doc.get('Issue_Type', 'Repair'),
             "ServiceDescription": doc.get('ServiceDescription'),
@@ -46,8 +46,8 @@ def serialize_service_class(doc):
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
             "ServiceId": doc.get('ServiceId'),
-            "UserName": doc.get('UserName'),
-            "UserId": doc.get('UserId'),
+            "userName": doc.get('userName'),
+            "userId": doc.get('userId'),
             "AssetId": doc.get('AssetId'),
             "AssetName": doc.get('AssetName'),
             "ServiceDescription": doc.get('ServiceDescription'),
@@ -71,8 +71,8 @@ def get_service_requests():
             pipeline = [
                 {"$lookup": {
                     "from": "Users",
-                    "localField": "UserId",
-                    "foreignField": "UserId",
+                    "localField": "userId",
+                    "foreignField": "userId",
                     "as": "user"
                 }},
                 {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -87,8 +87,8 @@ def get_service_requests():
                     "$project": {
                         "_id": 0,
                         "ServiceId": "$ServiceId",
-                        "UserName": "$user.UserName",
-                        "UserId": "$UserId",
+                        "userName": "$user.userName",
+                        "userId": "$userId",
                         "AssetId": "$AssetId",
                         "AssetName": "$asset.AssetName",
                         "ServiceDescription": 1,
@@ -102,11 +102,11 @@ def get_service_requests():
         else:
             # User sees only their requests
             pipeline = [
-                {"$match": {"UserId": user_id}},
+                {"$match": {"userId": user_id}},
                 {"$lookup": {
                     "from": "Users",
-                    "localField": "UserId",
-                    "foreignField": "UserId",
+                    "localField": "userId",
+                    "foreignField": "userId",
                     "as": "user"
                 }},
                 {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -121,8 +121,8 @@ def get_service_requests():
                     "$project": {
                         "_id": 0,
                         "ServiceId": "$ServiceId",
-                        "UserName": "$user.UserName",
-                        "UserId": "$UserId",
+                        "userName": "$user.userName",
+                        "userId": "$userId",
                         "AssetId": "$AssetId",
                         "AssetName": "$asset.AssetName",
                         "ServiceDescription": 1,
@@ -168,7 +168,7 @@ def put_service_request(service_id):
         update_data = {
             "$set": {
                 "AssetId": data.get("AssetId", existing_request.get("AssetId")),
-                "UserId": data.get("UserId", existing_request.get("UserId")),
+                "userId": data.get("userId", existing_request.get("userId")),
                 "ServiceRequestDate": data.get("ServiceRequestDate", existing_request.get("ServiceRequestDate")),
                 "Issue_Type": data.get("Issue_Type", existing_request.get("Issue_Type", "Repair")),
                 "ServiceDescription": data.get("ServiceDescription", existing_request.get("ServiceDescription")),
@@ -185,7 +185,7 @@ def put_service_request(service_id):
             # Create maintenance log
             maintenance_log = {
                 "AssetId": data.get("AssetId"),
-                "UserId": data.get("UserId"),
+                "userId": data.get("userId"),
                 "Maintenance_date": datetime.now().isoformat(),
                 "Maintenance_Description": data.get("ServiceDescription")
             }
@@ -220,7 +220,7 @@ def post_service_request():
         service_request_doc = {
             "ServiceId": data.get("ServiceId"),
             "AssetId": data.get("AssetId"),
-            "UserId": user_id,
+            "userId": user_id,
             "ServiceRequestDate": data.get("ServiceRequestDate", datetime.now().isoformat()),
             "Issue_Type": data.get("Issue_Type", "Repair"),
             "ServiceDescription": data.get("ServiceDescription"),
@@ -245,7 +245,7 @@ def delete_service_request(service_id):
         request_doc = service_requests.find_one({"ServiceId": service_id})
         if not request_doc:
             return jsonify({"error": "ID's Mismatch"}), 404
-        if request_doc.get("UserId") != user_id:
+        if request_doc.get("userId") != user_id:
             return jsonify({"error": "You are not able to delete"}), 403
         status = request_doc.get("ServiceReqStatus", "UnderReview")
         if status in ["Approved", "Completed"]:
@@ -282,8 +282,8 @@ def get_service_request_by_id(service_id):
             {"$match": {"ServiceId": service_id}},
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -298,8 +298,8 @@ def get_service_request_by_id(service_id):
                 "$project": {
                     "_id": 0,
                     "ServiceId": "$ServiceId",
-                    "UserName": "$user.UserName",
-                    "UserId": "$UserId",
+                    "userName": "$user.userName",
+                    "userId": "$userId",
                     "AssetId": "$AssetId",
                     "AssetName": "$asset.AssetName",
                     "ServiceDescription": 1,

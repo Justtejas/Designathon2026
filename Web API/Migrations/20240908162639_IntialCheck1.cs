@@ -28,22 +28,22 @@ namespace Hexa_Hub.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    userId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
-                    UserMail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    userName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
+                    userMail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Dept = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Designation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Branch = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dept = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    designation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    phoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    branch = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     User_Type = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.PrimaryKey("PK_Users", x => x.userId);
                 });
 
             migrationBuilder.CreateTable(
@@ -71,24 +71,24 @@ namespace Hexa_Hub.Migrations
                 name: "UserProfiles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
-                    UserMail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false),
+                    userName = table.Column<string>(type: "nvarchar(55)", maxLength: 55, nullable: false),
+                    userMail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Dept = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Designation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dept = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    designation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    phoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserProfiles", x => x.UserId);
+                    table.PrimaryKey("PK_UserProfiles", x => x.userId);
                     table.ForeignKey(
-                        name: "FK_UserProfiles_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_UserProfiles_Users_userId",
+                        column: x => x.userId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
+                        principalColumn: "userId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -132,7 +132,7 @@ namespace Hexa_Hub.Migrations
                 {
                     AssetReqId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false),
                     AssetId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AssetReqDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -148,10 +148,10 @@ namespace Hexa_Hub.Migrations
                         principalTable: "Assets",
                         principalColumn: "AssetId");
                     table.ForeignKey(
-                        name: "FK_AssetRequests_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_AssetRequests_Users_userId",
+                        column: x => x.userId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "userId");
                 });
 
             migrationBuilder.CreateTable(
@@ -161,7 +161,7 @@ namespace Hexa_Hub.Migrations
                     AuditId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AssetId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false),
                     AuditDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AuditMessage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Audit_Status = table.Column<int>(type: "int", nullable: false)
@@ -175,10 +175,10 @@ namespace Hexa_Hub.Migrations
                         principalTable: "Assets",
                         principalColumn: "AssetId");
                     table.ForeignKey(
-                        name: "FK_Audits_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Audits_Users_userId",
+                        column: x => x.userId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "userId");
                 });
 
             migrationBuilder.CreateTable(
@@ -188,7 +188,7 @@ namespace Hexa_Hub.Migrations
                     MaintenanceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AssetId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false),
                     Maintenance_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Maintenance_Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -202,10 +202,10 @@ namespace Hexa_Hub.Migrations
                         principalTable: "Assets",
                         principalColumn: "AssetId");
                     table.ForeignKey(
-                        name: "FK_MaintenanceLogs_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_MaintenanceLogs_Users_userId",
+                        column: x => x.userId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "userId");
                 });
 
             migrationBuilder.CreateTable(
@@ -214,7 +214,7 @@ namespace Hexa_Hub.Migrations
                 {
                     ReturnId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false),
                     AssetId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -231,10 +231,10 @@ namespace Hexa_Hub.Migrations
                         principalTable: "Assets",
                         principalColumn: "AssetId");
                     table.ForeignKey(
-                        name: "FK_ReturnRequests_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_ReturnRequests_Users_userId",
+                        column: x => x.userId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "userId");
                 });
 
             migrationBuilder.CreateTable(
@@ -244,7 +244,7 @@ namespace Hexa_Hub.Migrations
                     ServiceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AssetId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false),
                     ServiceRequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Issue_Type = table.Column<int>(type: "int", nullable: false),
                     ServiceDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -259,10 +259,10 @@ namespace Hexa_Hub.Migrations
                         principalTable: "Assets",
                         principalColumn: "AssetId");
                     table.ForeignKey(
-                        name: "FK_ServiceRequests_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_ServiceRequests_Users_userId",
+                        column: x => x.userId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "userId");
                 });
 
             migrationBuilder.CreateTable(
@@ -272,7 +272,7 @@ namespace Hexa_Hub.Migrations
                     AllocationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AssetId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    userId = table.Column<int>(type: "int", nullable: false),
                     AssetReqId = table.Column<int>(type: "int", nullable: false),
                     AllocatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -290,10 +290,10 @@ namespace Hexa_Hub.Migrations
                         principalTable: "Assets",
                         principalColumn: "AssetId");
                     table.ForeignKey(
-                        name: "FK_AssetAllocations_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_AssetAllocations_Users_userId",
+                        column: x => x.userId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "userId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -308,9 +308,9 @@ namespace Hexa_Hub.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssetAllocations_UserId",
+                name: "IX_AssetAllocations_userId",
                 table: "AssetAllocations",
-                column: "UserId");
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssetRequests_AssetId",
@@ -318,9 +318,9 @@ namespace Hexa_Hub.Migrations
                 column: "AssetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssetRequests_UserId",
+                name: "IX_AssetRequests_userId",
                 table: "AssetRequests",
-                column: "UserId");
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assets_CategoryId",
@@ -338,9 +338,9 @@ namespace Hexa_Hub.Migrations
                 column: "AssetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Audits_UserId",
+                name: "IX_Audits_userId",
                 table: "Audits",
-                column: "UserId");
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MaintenanceLogs_AssetId",
@@ -348,9 +348,9 @@ namespace Hexa_Hub.Migrations
                 column: "AssetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MaintenanceLogs_UserId",
+                name: "IX_MaintenanceLogs_userId",
                 table: "MaintenanceLogs",
-                column: "UserId");
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReturnRequests_AssetId",
@@ -358,9 +358,9 @@ namespace Hexa_Hub.Migrations
                 column: "AssetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnRequests_UserId",
+                name: "IX_ReturnRequests_userId",
                 table: "ReturnRequests",
-                column: "UserId");
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceRequests_AssetId",
@@ -368,9 +368,9 @@ namespace Hexa_Hub.Migrations
                 column: "AssetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceRequests_UserId",
+                name: "IX_ServiceRequests_userId",
                 table: "ServiceRequests",
-                column: "UserId");
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubCategories_CategoryId",

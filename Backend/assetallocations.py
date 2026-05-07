@@ -82,7 +82,7 @@ def current_year():
 def to_allocation_dto(doc):
     # Mirrors AllocationDto
     return {
-        "UserId": doc.get("UserId"),
+        "userId": doc.get("userId"),
         "AssetName": doc.get("AssetName"),
         "AssetId": doc.get("AssetId"),
         "CategoryName": doc.get("CategoryName"),
@@ -98,8 +98,8 @@ def to_allocation_class_dto(doc):
         "AllocationId": doc.get("AllocationId"),
         "AssetName": doc.get("AssetName"),
         "AssetId": doc.get("AssetId"),
-        "UserId": doc.get("UserId"),
-        "UserName": doc.get("UserName"),
+        "userId": doc.get("userId"),
+        "userName": doc.get("userName"),
         "CategoryName": doc.get("CategoryName"),
         "SubCategoryName": doc.get("SubCategoryName"),
         "AssetReqDate": serialize_dates(doc.get("AssetReqDate")),
@@ -135,7 +135,7 @@ def find_by_id_or_allocation_id(id_str):
 @asset_allocations_bp.route("/user/<int:user_id>", methods=["GET"])
 def get_allocations_by_user_id(user_id):
     try:
-        docs = list(allocations_col.find({"UserId": user_id}))
+        docs = list(allocations_col.find({"userId": user_id}))
         if not docs:
             return jsonify({"message": "Not Found"}), 404
         dtos = [to_allocation_dto(d) for d in docs]
@@ -162,7 +162,7 @@ def get_asset_allocations():
             return jsonify(dtos), 200
         else:
             docs = list(
-                allocations_col.find({"UserId": uid})
+                allocations_col.find({"userId": uid})
                 .sort("AllocatedDate", DESCENDING)
             )
             if not docs:

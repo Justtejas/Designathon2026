@@ -8,7 +8,7 @@ namespace Hexa_Hub.Interface
     {
         Task<List<User>> GetAllUser();
         Task<User?> GetUserById(int id);
-        Task<User?> GetUserId(int id);
+        Task<User?> GetuserId(int id);
         Task<User> UpdateUser(User user);
         Task DeleteUser(int id);
         Task Save();

@@ -13,7 +13,7 @@ const Profile = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const [userPhone, setUserPhone] = useState('');
-  const [userId, setUserId] = useState('');
+  const [userId, setuserId] = useState('');
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [isPasswordFormVisible, setIsPasswordFormVisible] = useState(false);
@@ -377,7 +377,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Mail Address</label>
+              <label className="block text-sm font-medium text-gray-700">Mail address</label>
               <div className="mt-1 relative flex items-center">
                 <FontAwesomeIcon
                   icon={faEnvelope}
@@ -451,9 +451,9 @@ const [showNewPassword, setShowNewPassword] = useState(false);
               </div>
             </div>
 
-            {/* Designation */}
+            {/* designation */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Designation</label>
+              <label className="block text-sm font-medium text-gray-700">designation</label>
               <div className="mt-1 relative flex items-center">
                 <FontAwesomeIcon
                   icon={faFolderTree}
@@ -471,9 +471,9 @@ const [showNewPassword, setShowNewPassword] = useState(false);
             </div>
             
 
-            {/* Address */}
+            {/* address */}
             <div >
-              <label className="block text-sm font-medium text-gray-700">Address</label>
+              <label className="block text-sm font-medium text-gray-700">address</label>
               <div className="mt-1 relative flex items-center">
                 <FontAwesomeIcon
                   icon={faLocationDot}
@@ -492,7 +492,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
 
             {/* branch */}
             <div >
-              <label className="block text-sm font-medium text-gray-700">Branch</label>
+              <label className="block text-sm font-medium text-gray-700">branch</label>
               <div className="mt-1 relative flex items-center">
                 <FontAwesomeIcon
                   icon={faLocationDot}

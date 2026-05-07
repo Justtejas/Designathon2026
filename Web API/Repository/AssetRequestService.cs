@@ -38,8 +38,8 @@ namespace Hexa_Hub.Repository
                 .Select(ar => new AssetRequestClassDto
                 {
                     AssetReqId = ar.AssetReqId,
-                    UserName = ar.User.UserName,
-                    UserId = ar.User.UserId,
+                    userName = ar.User.userName,
+                    userId = ar.User.userId,
                     AssetId = ar.Asset.AssetId,
                     AssetName =ar.Asset.AssetName,
                     CategoryName = ar.Asset.Category.CategoryName,
@@ -97,7 +97,7 @@ namespace Hexa_Hub.Repository
                                         select new AssetRequestDto
                                         {
                                             AssetReqId = request.AssetReqId,
-                                            UserId = request.UserId,
+                                            userId = request.userId,
                                             AssetId = request.AssetId,
                                             CategoryId = request.CategoryId,
                                             AssetReqDate = request.AssetReqDate,
@@ -110,28 +110,28 @@ namespace Hexa_Hub.Repository
         }
 
 
-        //public async Task<List<AssetRequest>> GetAssetRequestsByUserId(int userId)
+        //public async Task<List<AssetRequest>> GetAssetRequestsByuserId(int userId)
         //{
         //    return await _context.AssetRequests
-        //        .Where(sr => sr.UserId == userId)
+        //        .Where(sr => sr.userId == userId)
         //        .Include(sr => sr.Asset)
         //        .Include(sr => sr.User)
         //        .ToListAsync();
         //}
 
-        public async Task<List<AssetRequestClassDto>> GetAssetRequestsByUserId(int userId)
+        public async Task<List<AssetRequestClassDto>> GetAssetRequestsByuserId(int userId)
         {
             _log.LogInfo("Fetching Asset Requests by user id");
 
             return await _context.AssetRequests
-                .Where(sr => sr.UserId == userId)
+                .Where(sr => sr.userId == userId)
                 .Include(sr => sr.Asset)
                 .Include(sr => sr.User)
                 .Select(ar => new AssetRequestClassDto
                 {
                     AssetReqId = ar.AssetReqId,
-                    UserName = ar.User.UserName,
-                    UserId = ar.User.UserId,
+                    userName = ar.User.userName,
+                    userId = ar.User.userId,
                     AssetId = ar.Asset.AssetId,
                     AssetName = ar.Asset.AssetName,
                     CategoryName = ar.Asset.Category.CategoryName,
@@ -162,8 +162,8 @@ namespace Hexa_Hub.Repository
                 .Select(ar => new AssetRequestClassDto
                 {
                     AssetReqId = ar.AssetReqId,
-                    UserName = ar.User.UserName,
-                    UserId = ar.User.UserId,
+                    userName = ar.User.userName,
+                    userId = ar.User.userId,
                     AssetName = ar.Asset.AssetName,
                     CategoryName = ar.Asset.Category.CategoryName,
                     AssetReqDate = ar.AssetReqDate,
@@ -181,7 +181,7 @@ namespace Hexa_Hub.Repository
             var req = new AssetRequest
             {
                 AssetReqId = dto.AssetReqId,
-                UserId = dto.UserId,
+                userId = dto.userId,
                 AssetId = dto.AssetId,
                 CategoryId = dto.CategoryId,
                 AssetReqDate = dto.AssetReqDate,
@@ -194,7 +194,7 @@ namespace Hexa_Hub.Repository
             foreach (var admin in adminUsers)
             {
 
-                await _notificationService.AssetRequestSent(admin.UserMail,  req.AssetId);
+                await _notificationService.AssetRequestSent(admin.userMail,  req.AssetId);
                 _log.LogInfo("Asset Requests mail has been sent");
 
             }
@@ -224,7 +224,7 @@ namespace Hexa_Hub.Repository
         //                    var assetAllocation = new AssetAllocation
         //                    {
         //                        AssetId = assetRequestDto.AssetId,
-        //                        UserId = assetRequestDto.UserId,
+        //                        userId = assetRequestDto.userId,
         //                        AssetReqId = assetRequestDto.AssetReqId,
         //                        AllocatedDate = DateTime.Now
         //                    };
@@ -236,7 +236,7 @@ namespace Hexa_Hub.Repository
         //                        asset.Asset_Status = AssetStatus.Allocated;
         //                        _asset.UpdateAsset(asset);
         //                    }
-        //                    var user = await _context.Users.FindAsync(assetRequestDto.UserId);
+        //                    var user = await _context.Users.FindAsync(assetRequestDto.userId);
         //                    if (user == null)
         //                    {
         //                        throw new ArgumentException("User not found.");
@@ -244,8 +244,8 @@ namespace Hexa_Hub.Repository
         //                    else
         //                    {
         //                        await _notificationService.SendAllocationApproved(
-        //                            user.UserMail,
-        //                            user.UserName,
+        //                            user.userMail,
+        //                            user.userName,
         //                            asset.AssetName,
         //                            asset.AssetId);
         //                    }
@@ -256,7 +256,7 @@ namespace Hexa_Hub.Repository
         //                var asset = await _asset.GetAssetById(assetRequestDto.AssetId);
         //                if (asset != null)
         //                {
-        //                    var user = await _context.Users.FindAsync(assetRequestDto.UserId);
+        //                    var user = await _context.Users.FindAsync(assetRequestDto.userId);
         //                    if (user == null)
         //                    {
         //                        throw new ArgumentException("User not found.");
@@ -264,8 +264,8 @@ namespace Hexa_Hub.Repository
         //                    else
         //                    {
         //                        await _notificationService.SendAllocationRejected(
-        //                            user.UserMail,
-        //                            user.UserName,
+        //                            user.userMail,
+        //                            user.userName,
         //                            asset.AssetName,
         //                            asset.AssetId);
         //                    }
@@ -344,7 +344,7 @@ namespace Hexa_Hub.Repository
                 var assetAllocation = new AssetAllocation
                 {
                     AssetId = assetRequestDto.AssetId,
-                    UserId = assetRequestDto.UserId,
+                    userId = assetRequestDto.userId,
                     AssetReqId = assetRequestDto.AssetReqId,
                     AllocatedDate = DateTime.Now
                 };
@@ -358,7 +358,7 @@ namespace Hexa_Hub.Repository
                     _asset.UpdateAsset(asset);
                 }
 
-                var user = await _context.Users.FindAsync(assetRequestDto.UserId);
+                var user = await _context.Users.FindAsync(assetRequestDto.userId);
                 if (user == null)
                 {
                     throw new ArgumentException("User not found.");
@@ -366,8 +366,8 @@ namespace Hexa_Hub.Repository
                 _log.LogInfo("Allocated Mail Asset Requests Sent");
 
                 await _notificationService.SendAllocationApproved(
-                    user.UserMail,
-                    user.UserName,
+                    user.userMail,
+                    user.userName,
                     asset.AssetName,
                     asset.AssetId);
             }
@@ -380,7 +380,7 @@ namespace Hexa_Hub.Repository
             var asset = await _asset.GetAssetById(assetRequestDto.AssetId);
             if (asset != null)
             {
-                var user = await _context.Users.FindAsync(assetRequestDto.UserId);
+                var user = await _context.Users.FindAsync(assetRequestDto.userId);
                 if (user == null)
                 {
                     throw new ArgumentException("User not found.");
@@ -388,8 +388,8 @@ namespace Hexa_Hub.Repository
                 _log.LogInfo("Rejected Mail Asset Requests Sent");
 
                 await _notificationService.SendAllocationRejected(
-                    user.UserMail,
-                    user.UserName,
+                    user.userMail,
+                    user.userName,
                     asset.AssetName,
                     asset.AssetId);
             }

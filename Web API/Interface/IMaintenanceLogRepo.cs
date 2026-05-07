@@ -13,6 +13,6 @@ namespace Hexa_Hub.Interface
         Task DeleteMaintenanceLog(int id);
         Task Save();
 
-        Task<List<MaintenanceLog>> GetMaintenanceLogByUserId(int userId);
+        Task<List<MaintenanceLog>> GetMaintenanceLogByuserId(int userId);
     }
 }

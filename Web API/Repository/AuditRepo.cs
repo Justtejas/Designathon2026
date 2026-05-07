@@ -24,8 +24,8 @@ namespace Hexa_Hub.Repository
                 {
                     AssetId = a.AssetId,
                     AssetName = a.Asset.AssetName,
-                    UserId = a.UserId,
-                    UserName = a.User.UserName 
+                    userId = a.userId,
+                    userName = a.User.userName 
                 })
                 .ToListAsync();
 
@@ -38,7 +38,7 @@ namespace Hexa_Hub.Repository
             {
                 AuditId = auditDto.AuditId,
                 AssetId = auditDto.AssetId,
-                UserId = auditDto.UserId,
+                userId = auditDto.userId,
                 AuditDate = auditDto.AuditDate,
                 AuditMessage = auditDto.AuditMessage
             };
@@ -74,12 +74,12 @@ namespace Hexa_Hub.Repository
                 {
                     AuditId = a.AuditId,
                     AssetId = a.AssetId,
-                    UserId = a.UserId,
+                    userId = a.userId,
                     AuditDate = a.AuditDate,
                     AuditMessage = a.AuditMessage,
                     Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" : a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
                     AssetName = a.Asset.AssetName,
-                    UserName = a.User.UserName
+                    userName = a.User.userName
                 })
                 .OrderByDescending(a => a.AuditDate)
                 .ToListAsync();
@@ -97,13 +97,13 @@ namespace Hexa_Hub.Repository
             {
                 AuditId = a.AuditId,
                 AssetId = a.AssetId,
-                UserId = a.UserId,
+                userId = a.userId,
                 AuditDate = a.AuditDate,
                 AuditMessage = a.AuditMessage,
                 Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" :
                a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
                 AssetName = a.Asset?.AssetName,
-                UserName = a.User?.UserName
+                userName = a.User?.userName
             }).ToList();
         }
         public async Task<Audit?> GetAuditById(int id)
@@ -123,43 +123,43 @@ namespace Hexa_Hub.Repository
                     {
                         AuditId = a.AuditId,
                         AssetId = a.AssetId,
-                        UserId = a.UserId,
+                        userId = a.userId,
                         AuditDate = a.AuditDate,
                         AuditMessage = a.AuditMessage,
                         Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" :
                a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
                         AssetName = a.Asset.AssetName,
-                        UserName = a.User.UserName
+                        userName = a.User.userName
                     })
                     .FirstOrDefaultAsync(a => a.AuditId == id);
         }
 
-        //public async Task<List<Audit>> GetAuditsByUserId(int userId)
+        //public async Task<List<Audit>> GetAuditsByuserId(int userId)
         //{
         //    return await _context.Audits
-        //        .Where(a => a.UserId == userId)
+        //        .Where(a => a.userId == userId)
         //        .Include(a => a.Asset)
         //        .Include(a => a.User)
         //        .ToListAsync();
         //}
 
-        public async Task<List<AuditsDto>> GetAuditsByUserId(int userId)
+        public async Task<List<AuditsDto>> GetAuditsByuserId(int userId)
         {
             return await _context.Audits
-                .Where(a => a.UserId == userId)
+                .Where(a => a.userId == userId)
                 .Include(a => a.Asset)
                 .Include(a => a.User)
                 .Select(a => new AuditsDto
                 {
                     AuditId = a.AuditId,
                     AssetId = a.AssetId,
-                    UserId = a.UserId,
+                    userId = a.userId,
                     AuditDate = a.AuditDate,
                     AuditMessage = a.AuditMessage,
                     Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" :
                a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
                     AssetName = a.Asset.AssetName,
-                    UserName = a.User.UserName
+                    userName = a.User.userName
                 })
                 .ToListAsync();
         }

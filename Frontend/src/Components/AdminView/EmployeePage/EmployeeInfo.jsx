@@ -113,10 +113,10 @@ const UserDetails = () => {
                                 <InfoItem icon={<EmailIcon />} label="Email" value={user.userMail} />
                                 <InfoItem icon={<PersonIcon />} label="Gender" value={user.gender} />
                                 <InfoItem icon={<BusinessIcon />} label="Department" value={user.dept} />
-                                <InfoItem icon={<WorkIcon />} label="Designation" value={user.designation} />
+                                <InfoItem icon={<WorkIcon />} label="designation" value={user.designation} />
                                 <InfoItem icon={<PhoneIcon />} label="Phone" value={user.phoneNumber} />
-                                <InfoItem icon={<LocationIcon />} label="Address" value={user.address} />
-                                <InfoItem icon={<BusinessIcon />} label="Branch" value={user.branch} />
+                                <InfoItem icon={<LocationIcon />} label="address" value={user.address} />
+                                <InfoItem icon={<BusinessIcon />} label="branch" value={user.branch} />
                             </Grid>
                         </CardContent>
                     </Card>

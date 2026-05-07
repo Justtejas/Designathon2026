@@ -5,7 +5,7 @@ namespace Hexa_Hub.DTO
     public class AllocationDto
     {
         [Required]
-        public int UserId { get; set; }
+        public int userId { get; set; }
         [Required]
         public int AssetId { get; set; }
         [Required]

@@ -27,8 +27,8 @@ namespace AssetHubTests
         {
             var expectedMaintenanceLog = new List<MaintenanceLog>()
             {
-                new MaintenanceLog{MaintenanceId = 1,Maintenance_Description = "Test Log 1", UserId= 8},
-                new MaintenanceLog{MaintenanceId = 2,Maintenance_Description = "Test Log 2", UserId = 9}
+                new MaintenanceLog{MaintenanceId = 1,Maintenance_Description = "Test Log 1", userId= 8},
+                new MaintenanceLog{MaintenanceId = 2,Maintenance_Description = "Test Log 2", userId = 9}
             };
 
             _repoMock.Setup(ml => ml.GetAllMaintenanceLog())
@@ -48,8 +48,8 @@ namespace AssetHubTests
             var id = 1;
             var expectedMaintenanceLog = new List<MaintenanceLog>()
             {
-                new MaintenanceLog{MaintenanceId = 1,Maintenance_Description = "Test Log 1", UserId= id},
-                new MaintenanceLog{MaintenanceId = 2,Maintenance_Description = "Test Log 2", UserId = id}
+                new MaintenanceLog{MaintenanceId = 1,Maintenance_Description = "Test Log 1", userId= id},
+                new MaintenanceLog{MaintenanceId = 2,Maintenance_Description = "Test Log 2", userId = id}
             };
             _repoMock.Setup(ml => ml.GetMaintenanceLogById(id))
                 .ReturnsAsync(expectedMaintenanceLog);
@@ -63,7 +63,7 @@ namespace AssetHubTests
         [TestCase]
         public async Task AddMaintenanceLog()
         {
-            var Log = new MaintenanceLog { MaintenanceId = 3, Maintenance_Description = "Test Log 1", UserId = 8 };
+            var Log = new MaintenanceLog { MaintenanceId = 3, Maintenance_Description = "Test Log 1", userId = 8 };
 
             _repoMock.Setup(ml => ml.AddMaintenanceLog(Log))
                 .Callback((MaintenanceLog maintenanceLog) => { });
@@ -76,7 +76,7 @@ namespace AssetHubTests
         [TestCase]
         public async Task UpdateLog()
         {
-            var Log = new MaintenanceClassDto { MaintenanceId = 3, Maintenance_Description = "Test Log 1", UserId = 8 };
+            var Log = new MaintenanceClassDto { MaintenanceId = 3, Maintenance_Description = "Test Log 1", userId = 8 };
 
             _repoMock.Setup(ml => ml.UpdateMaintenanceLog(Log)).ReturnsAsync(true);
 

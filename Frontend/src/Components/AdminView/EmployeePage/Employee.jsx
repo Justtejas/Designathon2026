@@ -56,7 +56,8 @@ export default function Employee() {
             try {
                 const response = await axios.get('http://localhost:7287/api/users/role?role=Employee');
                 console.log(response)
-                setEmployees(response.data.$values || []);
+                setEmployees(response.data || []);
+                console.log(response.data)
             } catch (error) {
                 console.error("Error fetching employees:", error);
             }
@@ -115,7 +116,7 @@ export default function Employee() {
             format: 'a4'
         });
 
-        const tableColumn = ["UserId", "Name", "Email", "Department", "Designation", "Phone Number", "Address", "Branch"];
+        const tableColumn = ["userId", "Name", "Email", "Department", "designation", "Phone Number", "address", "branch"];
         const tableRows = [];
 
         filteredEmployees.forEach(employee => {
@@ -235,7 +236,7 @@ export default function Employee() {
                             onInputChange={handleSearch}
                             renderInput={(params) => (
                                 <TextField
-                                    placeholder='by Name, Id, Branch, Dept, Designation'
+                                    placeholder='by Name, Id, branch, dept, designation'
                                     {...params}
                                     label="Search "
                                     InputProps={{
@@ -275,14 +276,14 @@ export default function Employee() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell></TableCell>
-                                    <TableCell>UserId</TableCell>
+                                    <TableCell>userId</TableCell>
                                     <TableCell>Name</TableCell>
                                     <TableCell>Email</TableCell>
                                     <TableCell>Department</TableCell>
-                                    <TableCell>Designation</TableCell>
+                                    <TableCell>designation</TableCell>
                                     <TableCell>Phone Number</TableCell>
-                                    <TableCell>Address</TableCell>
-                                    <TableCell>Branch</TableCell>
+                                    <TableCell>address</TableCell>
+                                    <TableCell>branch</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>

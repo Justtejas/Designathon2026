@@ -20,7 +20,7 @@ const AddAudit = () => {
     const { darkMode } = useTheme();
     const [formData, setFormData] = useState({
         AssetId: '',
-        UserId: '',
+        userId: '',
         AuditDate: new Date().toISOString().split('T')[0], 
         AuditMessage: '',
         Audit_Status: 'Sent',
@@ -80,7 +80,7 @@ const AddAudit = () => {
             navigate('/admin/audit');
             setFormData({
                 AssetId: '',
-                UserId: '',
+                userId: '',
                 AuditDate: new Date().toISOString().split('T')[0], 
                 AuditMessage: '', 
                 Audit_Status: 'Sent',
@@ -146,9 +146,9 @@ const AddAudit = () => {
                                         <TextField
                                             fullWidth
                                             select
-                                            name="UserId"
+                                            name="userId"
                                             label="Select User"
-                                            value={formData.UserId}
+                                            value={formData.userId}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"

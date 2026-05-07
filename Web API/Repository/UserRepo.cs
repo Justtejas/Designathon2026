@@ -31,10 +31,10 @@ namespace Hexa_Hub.Repository
             _log.LogInfo("Registering a new user");
             var user = new User
             {
-                UserName = dto.UserName,
-                UserMail = dto.UserMail,
-                PhoneNumber = dto.PhoneNumber,
-                Branch = dto.Branch,
+                userName = dto.userName,
+                userMail = dto.userMail,
+                phoneNumber = dto.phoneNumber,
+                branch = dto.branch,
                 User_Type = Models.MultiValues.UserType.Employee,
                 Password = "Maventory@123"
             };
@@ -63,7 +63,7 @@ namespace Hexa_Hub.Repository
             //user.ProfileImage = Encoding.UTF8.GetBytes(defaultImageFileName);
             //_context.Users.Update(user);
             //await _context.SaveChangesAsync();
-            //await _notificationService.UserProfileCreated(dto.UserMail, dto.UserName, user.Password);
+            //await _notificationService.UserProfileCreated(dto.userMail, dto.userName, user.Password);
             //return user;
             try
             {
@@ -84,7 +84,7 @@ namespace Hexa_Hub.Repository
                 user.ProfileImage = Encoding.UTF8.GetBytes(defaultImageFileName);
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
-                await _notificationService.UserProfileCreated(dto.UserMail, dto.UserName, user.Password);
+                await _notificationService.UserProfileCreated(dto.userMail, dto.userName, user.Password);
                 _log.LogInfo("Registered New User");
             }
             catch (Exception ex)
@@ -128,12 +128,12 @@ namespace Hexa_Hub.Repository
         }
 
 
-        public async Task<User?> GetUserId(int id)
+        public async Task<User?> GetuserId(int id)
         {
             _log.LogInfo("Fetching Users by id");
 
             return await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == id);
+                .FirstOrDefaultAsync(u => u.userId == id);
         }
 
         public async Task<User?> GetUserById(int id)
@@ -147,7 +147,7 @@ namespace Hexa_Hub.Repository
                 .Include(u => u.ServiceRequests)
                 .Include(u => u.Audits)
                 .Include(u => u.MaintenanceLogs)
-                .FirstOrDefaultAsync(u=>u.UserId==id);
+                .FirstOrDefaultAsync(u=>u.userId==id);
         }
 
         public async Task Save()
@@ -168,7 +168,7 @@ namespace Hexa_Hub.Repository
             {
                 _log.LogInfo("Validating User");
                 var user = await _context.Users
-                .FirstOrDefaultAsync(vu => EF.Functions.Collate(vu.UserMail, "Latin1_General_BIN") == email &&
+                .FirstOrDefaultAsync(vu => EF.Functions.Collate(vu.userMail, "Latin1_General_BIN") == email &&
                          EF.Functions.Collate(vu.Password, "Latin1_General_BIN") == password);
 
                 if (user != null)

@@ -13,8 +13,8 @@ namespace Hexa_Hub.Interface
         Task<Audit> UpdateAudit(Audit audit);
         Task DeleteAuditReq(int id);
         Task Save();
-        //Task<List<Audit>> GetAuditsByUserId(int userId);
-        Task<List<AuditsDto>> GetAuditsByUserId(int userId);
+        //Task<List<Audit>> GetAuditsByuserId(int userId);
+        Task<List<AuditsDto>> GetAuditsByuserId(int userId);
 
         Task<List<AuditsDto>> GetAllAudit();
     }

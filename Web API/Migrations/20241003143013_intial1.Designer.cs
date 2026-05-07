@@ -100,7 +100,7 @@ namespace Hexa_Hub.Migrations
                     b.Property<int>("AssetReqId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("AllocationId");
@@ -110,7 +110,7 @@ namespace Hexa_Hub.Migrations
                     b.HasIndex("AssetReqId")
                         .IsUnique();
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("AssetAllocations");
                 });
@@ -139,14 +139,14 @@ namespace Hexa_Hub.Migrations
                     b.Property<string>("Request_Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("AssetReqId");
 
                     b.HasIndex("AssetId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("AssetRequests");
                 });
@@ -171,14 +171,14 @@ namespace Hexa_Hub.Migrations
                     b.Property<string>("Audit_Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("AuditId");
 
                     b.HasIndex("AssetId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("Audits");
                 });
@@ -221,14 +221,14 @@ namespace Hexa_Hub.Migrations
                     b.Property<DateTime>("Maintenance_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("MaintenanceId");
 
                     b.HasIndex("AssetId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("MaintenanceLogs");
                 });
@@ -261,14 +261,14 @@ namespace Hexa_Hub.Migrations
                     b.Property<string>("ReturnStatus")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("ReturnId");
 
                     b.HasIndex("AssetId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("ReturnRequests");
                 });
@@ -298,14 +298,14 @@ namespace Hexa_Hub.Migrations
                     b.Property<DateTime>("ServiceRequestDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("ServiceId");
 
                     b.HasIndex("AssetId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("ServiceRequests");
                 });
@@ -338,23 +338,23 @@ namespace Hexa_Hub.Migrations
 
             modelBuilder.Entity("User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("userId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("userId"));
 
-                    b.Property<string>("Address")
+                    b.Property<string>("address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Branch")
+                    b.Property<string>("branch")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Dept")
+                    b.Property<string>("dept")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Designation")
+                    b.Property<string>("designation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
@@ -364,18 +364,18 @@ namespace Hexa_Hub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("phoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("ProfileImage")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("UserMail")
+                    b.Property<string>("userMail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("userName")
                         .IsRequired()
                         .HasMaxLength(55)
                         .HasColumnType("nvarchar(55)");
@@ -383,7 +383,7 @@ namespace Hexa_Hub.Migrations
                     b.Property<string>("User_Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("userId");
 
                     b.ToTable("Users");
                 });
@@ -423,7 +423,7 @@ namespace Hexa_Hub.Migrations
 
                     b.HasOne("User", "User")
                         .WithMany("AssetAllocations")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -444,7 +444,7 @@ namespace Hexa_Hub.Migrations
 
                     b.HasOne("User", "User")
                         .WithMany("AssetRequests")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -463,7 +463,7 @@ namespace Hexa_Hub.Migrations
 
                     b.HasOne("User", "User")
                         .WithMany("Audits")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -482,7 +482,7 @@ namespace Hexa_Hub.Migrations
 
                     b.HasOne("User", "User")
                         .WithMany("MaintenanceLogs")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -501,7 +501,7 @@ namespace Hexa_Hub.Migrations
 
                     b.HasOne("User", "User")
                         .WithMany("ReturnRequests")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -520,7 +520,7 @@ namespace Hexa_Hub.Migrations
 
                     b.HasOne("User", "User")
                         .WithMany("ServiceRequests")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 

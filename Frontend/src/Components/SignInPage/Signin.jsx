@@ -22,7 +22,7 @@ const SignInPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const loginData = {
-      UserMail: email,
+      userMail: email,
       Password: password,
     };
 

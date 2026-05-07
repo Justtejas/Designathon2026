@@ -6,31 +6,31 @@ namespace Hexa_Hub.DTO
 {
     public class UserDto
     {
-        public int UserId { get; set; }
+        public int userId { get; set; }
 
         [Required]
         [MaxLength(55)]
-        public string UserName { get; set; }
+        public string userName { get; set; }
 
         [Required]
-        [EmailAddress]
-        public string UserMail { get; set; }
+        [Emailaddress]
+        public string userMail { get; set; }
 
 
         public string Gender { get; set; }
 
 
-        public string Dept { get; set; }
+        public string dept { get; set; }
 
 
-        public string Designation { get; set; }
+        public string designation { get; set; }
 
 
         [Phone(ErrorMessage = "Please enter a valid phone number")]
-        public string PhoneNumber { get; set; }
+        public string phoneNumber { get; set; }
 
  
-        public string Address { get; set; }
+        public string address { get; set; }
 
         //[Required]
         //[MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
@@ -38,7 +38,7 @@ namespace Hexa_Hub.DTO
         //    ErrorMessage = "Password must contain Uppercase, alphanumeric and special characters")]
         //public string Password { get; set; }
 
-        public string Branch { get; set; }
+        public string branch { get; set; }
 
         
         public string User_Type { get; set; } 

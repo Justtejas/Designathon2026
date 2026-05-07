@@ -22,7 +22,7 @@ namespace Hexa_Hub.Repository
             var req = new ReturnRequest
             {
                 ReturnId = returnRequestDto.ReturnId,
-                UserId = returnRequestDto.UserId,
+                userId = returnRequestDto.userId,
                 AssetId = returnRequestDto.AssetId,
                 CategoryId = returnRequestDto.CategoryId,
                 ReturnDate = returnRequestDto.ReturnDate,
@@ -36,7 +36,7 @@ namespace Hexa_Hub.Repository
             foreach (var admin in adminUsers)
             {
 
-                await _notificationService.ReturnRequestSent(admin.UserMail, returnRequestDto.AssetId, req.ReturnId);
+                await _notificationService.ReturnRequestSent(admin.userMail, returnRequestDto.AssetId, req.ReturnId);
             }
             return req;
         }
@@ -57,8 +57,8 @@ namespace Hexa_Hub.Repository
                 .Select(rr=>new ReturnClassDto
                 {
                     ReturnId = rr.ReturnId,
-                    UserId = rr.UserId,
-                    UserName = rr.User.UserName,
+                    userId = rr.userId,
+                    userName = rr.User.userName,
                     AssetName = rr.Asset.AssetName,
                     AssetId = rr.AssetId,
                     CategoryId = rr.CategoryId,
@@ -89,8 +89,8 @@ namespace Hexa_Hub.Repository
                 .Select(rr => new ReturnClassDto
                 {
                     ReturnId = rr.ReturnId,
-                    UserId = rr.UserId,
-                    UserName = rr.User.UserName,
+                    userId = rr.userId,
+                    userName = rr.User.userName,
                     AssetName = rr.Asset.AssetName,
                     AssetId = rr.AssetId,
                     CategoryId = rr.CategoryId,
@@ -124,17 +124,17 @@ namespace Hexa_Hub.Repository
             }
         }
 
-        public async Task<List<ReturnClassDto>> GetReturnRequestsByUserId(int userId)
+        public async Task<List<ReturnClassDto>> GetReturnRequestsByuserId(int userId)
         {
             return await _context.ReturnRequests
-                .Where(rr => rr.UserId == userId)
+                .Where(rr => rr.userId == userId)
                 .Include(rr => rr.Asset)
                 .Include(rr => rr.User)
                 .Select(rr => new ReturnClassDto
                 {
                     ReturnId = rr.ReturnId,
-                    UserId = rr.UserId,
-                    UserName = rr.User.UserName,
+                    userId = rr.userId,
+                    userName = rr.User.userName,
                     AssetName = rr.Asset.AssetName,
                     AssetId = rr.AssetId,
                     CategoryId = rr.CategoryId,
@@ -151,7 +151,7 @@ namespace Hexa_Hub.Repository
         public async Task<bool> UserHasAsset(int id)
         {
             return await _context.AssetAllocations
-                 .AnyAsync(aa => aa.UserId == id);
+                 .AnyAsync(aa => aa.userId == id);
         }
     }
 }

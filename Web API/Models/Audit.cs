@@ -14,7 +14,7 @@ public class Audit
     public int AssetId { get; set; }
 
     [Required]
-    public int UserId { get; set; }
+    public int userId { get; set; }
 
     [DataType(DataType.Date)]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]

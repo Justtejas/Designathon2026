@@ -81,12 +81,12 @@ def serialize_audit_doc(doc):
         return {
             "AuditId": doc.get('AuditId'),
             "AssetId": doc.get('AssetId'),
-            "UserId": doc.get('UserId'),
+            "userId": doc.get('userId'),
             "AuditDate": doc.get('AuditDate'),
             "AuditMessage": doc.get('AuditMessage'),
             "Audit_Status": display_status,
             "AssetName": doc.get('AssetName'),
-            "UserName": doc.get('UserName')
+            "userName": doc.get('userName')
         }
     return None
  
@@ -104,8 +104,8 @@ def get_allocated_assets():
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -114,8 +114,8 @@ def get_allocated_assets():
                     "_id": 0,
                     "AssetId": "$AssetId",
                     "AssetName": "$asset.AssetName",
-                    "UserId": "$UserId",
-                    "UserName": "$user.UserName"
+                    "userId": "$userId",
+                    "userName": "$user.userName"
                 }
             }
         ]
@@ -135,7 +135,7 @@ def get_audits():
             audits_list = list(audits.find({}).sort("AuditDate", -1))
         else:
             # Employee sees only their audits
-            audits_list = list(audits.find({"UserId": user_id}).sort("AuditDate", -1))
+            audits_list = list(audits.find({"userId": user_id}).sort("AuditDate", -1))
         if not audits_list:
             return jsonify({"error": "id not Found"}), 404
         serialized_audits = [serialize_audit_doc(audit) for audit in audits_list]
@@ -153,8 +153,8 @@ def get_all_audits():
         pipeline = [
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -169,12 +169,12 @@ def get_all_audits():
                 "$project": {
                     "AuditId": 1,
                     "AssetId": 1,
-                    "UserId": 1,
+                    "userId": 1,
                     "AuditDate": 1,
                     "AuditMessage": 1,
                     "Audit_Status": 1,
                     "AssetName": "$asset.AssetName",
-                    "UserName": "$user.UserName"
+                    "userName": "$user.userName"
                 }
             },
             {"$sort": {"AuditDate": -1}},
@@ -196,8 +196,8 @@ def get_audit_by_id(audit_id):
             {"$match": {"AuditId": audit_id}},
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -212,12 +212,12 @@ def get_audit_by_id(audit_id):
                 "$project": {
                     "AuditId": 1,
                     "AssetId": 1,
-                    "UserId": 1,
+                    "userId": 1,
                     "AuditDate": 1,
                     "AuditMessage": 1,
                     "Audit_Status": 1,
                     "AssetName": "$asset.AssetName",
-                    "UserName": "$user.UserName"
+                    "userName": "$user.userName"
                 }
             }
         ]
@@ -241,12 +241,12 @@ def get_audit(audit_id):
             pipeline = [{"$match": {"AuditId": audit_id}}]
         else:
             # Employee can only see their own audits
-            pipeline = [{"$match": {"AuditId": audit_id, "UserId": user_id}}]
+            pipeline = [{"$match": {"AuditId": audit_id, "userId": user_id}}]
         pipeline += [
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -282,7 +282,7 @@ def put_audit(audit_id):
         existing_audit = audits.find_one({"AuditId": audit_id})
         if not existing_audit:
             return jsonify({"error": "id not Found"}), 404
-        if existing_audit.get("UserId") != user_id:
+        if existing_audit.get("userId") != user_id:
             return jsonify({"error": f"Sorry you are not User {user_id}"}), 403
         # Validate status
         new_status = data.get("Audit_Status")
@@ -306,7 +306,7 @@ def put_audit(audit_id):
         admin_users = get_admin_users()
         for admin in admin_users:
             send_audit_notification(
-                admin.get("UserMail"), 
+                admin.get("userMail"), 
                 audit_id, 
                 new_status
             )
@@ -326,7 +326,7 @@ def post_audit():
         audit_doc = {
             "AuditId": data.get("AuditId"),
             "AssetId": data.get("AssetId"),
-            "UserId": data.get("UserId"),
+            "userId": data.get("userId"),
             "AuditDate": data.get("AuditDate", datetime.now().isoformat()),
             "AuditMessage": data.get("AuditMessage"),
             "Audit_Status": "Sent"
@@ -334,12 +334,12 @@ def post_audit():
         result = audits.insert_one(audit_doc)
         logger.info(f"Created audit with ID: {result.inserted_id}")
         # Notify employee
-        employee = users.find_one({"UserId": audit_doc["UserId"]})
+        employee = users.find_one({"userId": audit_doc["userId"]})
         if employee:
             send_email(
-                employee["UserMail"],
+                employee["userMail"],
                 "Audit Request",
-                f"Dear {employee['UserName']},<br><br>You have been assigned an Audit Request {audit_doc['AuditId']} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory"
+                f"Dear {employee['userName']},<br><br>You have been assigned an Audit Request {audit_doc['AuditId']} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory"
             )
         else:
             return jsonify({"error": "Employee not found"}), 404

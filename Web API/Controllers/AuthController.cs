@@ -27,7 +27,7 @@ namespace JWT_Application.Controllers
         public async Task<IActionResult> Auth([FromBody] UserLoginDto loginDto)
         {
             IActionResult response = Unauthorized();
-            var dbUser = await _userRepo.validateUser(loginDto.UserMail, loginDto.Password);
+            var dbUser = await _userRepo.validateUser(loginDto.userMail, loginDto.Password);
 
             if (dbUser != null)
             {
@@ -40,8 +40,8 @@ namespace JWT_Application.Controllers
 
                 var subject = new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier, dbUser.UserId.ToString()),
-                    new Claim(ClaimTypes.Name, dbUser.UserName)
+                    new Claim(ClaimTypes.NameIdentifier, dbUser.userId.ToString()),
+                    new Claim(ClaimTypes.Name, dbUser.userName)
                 };
 
                 if (dbUser.User_Type != null)

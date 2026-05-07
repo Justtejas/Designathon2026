@@ -12,7 +12,7 @@ namespace Hexa_Hub.Interface
 
         Task DeleteReturnRequest(int id);
         Task Save();
-        Task<List<ReturnClassDto>> GetReturnRequestsByUserId(int userId);
+        Task<List<ReturnClassDto>> GetReturnRequestsByuserId(int userId);
         Task<bool> UserHasAsset(int id);
     }
 }

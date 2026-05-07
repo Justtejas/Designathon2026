@@ -20,10 +20,10 @@ import ToastNotification, { showToast } from '../../Utils/ToastNotification';
 const AddEmployee = () => {
     const { darkMode } = useTheme();
     const [formData, setFormData] = useState({
-        UserName: '',
-        UserMail: '',
-        PhoneNumber: '',
-        Branch: '',
+        userName: '',
+        userMail: '',
+        phoneNumber: '',
+        branch: '',
         Role: "Employee",
     });
     const navigate = useNavigate();
@@ -51,10 +51,10 @@ const AddEmployee = () => {
             alert('Employee added successfully!');
             navigate('/admin/employee');
             setFormData({
-                UserName: '',
-                UserMail: '',
-                PhoneNumber: '',
-                Branch: '',
+                userName: '',
+                userMail: '',
+                phoneNumber: '',
+                branch: '',
             });
         } catch (error) {
             console.error("Error adding employee:", error);
@@ -103,9 +103,9 @@ const AddEmployee = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="UserName"
+                                            name="userName"
                                             label="User Name"
-                                            value={formData.UserName}
+                                            value={formData.userName}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"
@@ -114,10 +114,10 @@ const AddEmployee = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="UserMail"
+                                            name="userMail"
                                             label="User Email"
                                             type="email"
-                                            value={formData.UserMail}
+                                            value={formData.userMail}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"
@@ -126,10 +126,10 @@ const AddEmployee = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="PhoneNumber"
+                                            name="phoneNumber"
                                             label="Phone Number"
                                             type="tel"
-                                            value={formData.PhoneNumber}
+                                            value={formData.phoneNumber}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"
@@ -138,9 +138,9 @@ const AddEmployee = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="Branch"
-                                            label="Branch"
-                                            value={formData.Branch}
+                                            name="branch"
+                                            label="branch"
+                                            value={formData.branch}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"

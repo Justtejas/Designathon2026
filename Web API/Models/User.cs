@@ -12,34 +12,34 @@ public class User
 {
     [Required]
     [Key]
-    public int UserId { get; set; }
+    public int userId { get; set; }
 
     [Required]
     [MaxLength(55)]
-    public string UserName { get; set; }
+    public string userName { get; set; }
 
     [Required]
-    [EmailAddress]
-    public string UserMail { get; set; }
+    [Emailaddress]
+    public string userMail { get; set; }
 
     //[Required]
     public string? Gender { get; set; }
 
     //[Required]
-    public string? Dept { get; set; }
+    public string? dept { get; set; }
 
     //[Required]
-    public string? Designation { get; set; }
+    public string? designation { get; set; }
 
     [Required]
     [Phone(ErrorMessage = "Please enter a valid phone number")]
-    public string PhoneNumber { get; set; }
+    public string phoneNumber { get; set; }
 
     //[Required]
-    public string? Address { get; set; }
+    public string? address { get; set; }
 
     [Required]
-    public string Branch { get; set; }
+    public string branch { get; set; }
 
     [Required]
     [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]

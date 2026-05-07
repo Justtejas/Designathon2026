@@ -66,15 +66,15 @@ const UpdateUser = () => {
 
         try {
             await axios.put(`http://localhost:7287/api/Users/${id}`, {
-                UserId: id,
-                UserName: userDetails.userName,
-                UserMail: userDetails.userMail,
+                userId: id,
+                userName: userDetails.userName,
+                userMail: userDetails.userMail,
                 Gender: userDetails.gender,
-                Dept: userDetails.dept,
-                Designation: userDetails.designation,
-                PhoneNumber: userDetails.phoneNumber,
-                Address: userDetails.address,
-                Branch: userDetails.branch,
+                dept: userDetails.dept,
+                designation: userDetails.designation,
+                phoneNumber: userDetails.phoneNumber,
+                address: userDetails.address,
+                branch: userDetails.branch,
                 User_Type: userDetails.user_Type
             });
             navigate('/admin/employee');
@@ -156,7 +156,7 @@ const UpdateUser = () => {
                             InputProps={{ readOnly: true }}
                         />
                         <TextField
-                            label="Designation"
+                            label="designation"
                             name="designation"
                             value={userDetails.designation}
                             onChange={handleChange}
@@ -174,7 +174,7 @@ const UpdateUser = () => {
                             InputProps={{ readOnly: true }}
                         />
                         <TextField
-                            label="Address"
+                            label="address"
                             name="address"
                             value={userDetails.address}
                             onChange={handleChange}
@@ -183,7 +183,7 @@ const UpdateUser = () => {
                             InputProps={{ readOnly: true }}
                         />
                         <TextField
-                            label="Branch"
+                            label="branch"
                             name="branch"
                             value={userDetails.branch}
                             onChange={handleChange}

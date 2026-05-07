@@ -98,7 +98,7 @@ export default function AllocationPage() {
             format: 'a4'
         });
 
-        const tableColumn = ["Allocation ID", "Request ID", "Asset Name", "UserName", "Allocated Date"];
+        const tableColumn = ["Allocation ID", "Request ID", "Asset Name", "userName", "Allocated Date"];
         const tableRows = [];
 
         filteredRequests.forEach(allocation => {

@@ -33,7 +33,7 @@ def serialize_return_simple(doc):
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
             "ReturnId": doc.get('ReturnId'),
-            "UserId": doc.get('UserId'),
+            "userId": doc.get('userId'),
             "AssetId": doc.get('AssetId'),
             "CategoryId": doc.get('CategoryId'),
             "ReturnDate": doc.get('ReturnDate'),
@@ -50,8 +50,8 @@ def serialize_return_class(doc):
         return_status = doc.get('ReturnStatus', 'Sent')
         return {
             "ReturnId": doc.get('ReturnId'),
-            "UserId": doc.get('UserId'),
-            "UserName": doc.get('UserName'),
+            "userId": doc.get('userId'),
+            "userName": doc.get('userName'),
             "AssetName": doc.get('AssetName'),
             "AssetId": doc.get('AssetId'),
             "CategoryId": doc.get('CategoryId'),
@@ -65,7 +65,7 @@ def serialize_return_class(doc):
  
 def user_has_asset(user_id):
     """Check if user has allocated assets"""
-    return asset_allocations.find_one({"UserId": user_id}) is not None
+    return asset_allocations.find_one({"userId": user_id}) is not None
  
 def handle_return_status_update(return_doc, return_status):
     """Handle complex return status logic"""
@@ -80,12 +80,12 @@ def handle_return_status_update(return_doc, return_status):
             # Delete allocation
             asset_allocations.delete_one({
                 "AssetId": return_doc["AssetId"],
-                "UserId": return_doc["UserId"]
+                "userId": return_doc["userId"]
             })
             # Delete related asset request
             asset_requests.delete_one({
                 "AssetId": return_doc["AssetId"],
-                "UserId": return_doc["UserId"],
+                "userId": return_doc["userId"],
                 "Request_Status": "Allocated"
             })
  
@@ -96,8 +96,8 @@ def get_all_return_requests():
         pipeline = [
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -119,8 +119,8 @@ def get_all_return_requests():
                 "$project": {
                     "_id": 0,
                     "ReturnId": "$ReturnId",
-                    "UserId": "$UserId",
-                    "UserName": "$user.UserName",
+                    "userId": "$userId",
+                    "userName": "$user.userName",
                     "AssetName": "$asset.AssetName",
                     "AssetId": "$AssetId",
                     "CategoryId": "$CategoryId",
@@ -146,7 +146,7 @@ def get_user_return_requests():
     try:
         user_id = get_user_id()
         logger.info(f"Fetching return requests for user: {user_id}")
-        requests_list = list(return_requests.find({"UserId": user_id}).sort("ReturnDate", -1))
+        requests_list = list(return_requests.find({"userId": user_id}).sort("ReturnDate", -1))
         if not requests_list:
             return jsonify({"error": "No details found"}), 404
         serialized_requests = [serialize_return_simple(req) for req in requests_list]
@@ -163,8 +163,8 @@ def get_return_request_by_id(return_id):
             {"$match": {"ReturnId": return_id}},
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -186,8 +186,8 @@ def get_return_request_by_id(return_id):
                 "$project": {
                     "_id": 0,
                     "ReturnId": "$ReturnId",
-                    "UserId": "$UserId",
-                    "UserName": "$user.UserName",
+                    "userId": "$userId",
+                    "userName": "$user.userName",
                     "AssetName": "$asset.AssetName",
                     "AssetId": "$AssetId",
                     "CategoryId": "$CategoryId",
@@ -219,8 +219,8 @@ def get_return_request_admin(return_id):
             {"$match": {"ReturnId": return_id}},
             {"$lookup": {
                 "from": "Users",
-                "localField": "UserId",
-                "foreignField": "UserId",
+                "localField": "userId",
+                "foreignField": "userId",
                 "as": "user"
             }},
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
@@ -264,7 +264,7 @@ def put_return_request(return_id):
         # Update fields
         update_data = {
             "$set": {
-                "UserId": data.get("UserId", existing_request.get("UserId")),
+                "userId": data.get("userId", existing_request.get("userId")),
                 "AssetId": data.get("AssetId", existing_request.get("AssetId")),
                 "CategoryId": data.get("CategoryId", existing_request.get("CategoryId")),
                 "ReturnDate": data.get("ReturnDate", existing_request.get("ReturnDate")),
@@ -298,7 +298,7 @@ def post_return_request():
             return jsonify({"error": "User does not have an asset to return"}), 400
         return_request_doc = {
             "ReturnId": data.get("ReturnId"),
-            "UserId": user_id,
+            "userId": user_id,
             "AssetId": data.get("AssetId"),
             "CategoryId": data.get("CategoryId"),
             "ReturnDate": data.get("ReturnDate"),
@@ -322,10 +322,10 @@ def delete_return_request(return_id):
             return jsonify({"error": "Employee access required"}), 403
         logger.info(f"Deleting return request {return_id} for user {user_id}")
         # Check ownership
-        request_doc = return_requests.find_one({"ReturnId": return_id, "UserId": user_id})
+        request_doc = return_requests.find_one({"ReturnId": return_id, "userId": user_id})
         if not request_doc:
             return jsonify({"error": f"Details for the request ID {return_id} not found"}), 404
-        if request_doc.get("UserId") != user_id:
+        if request_doc.get("userId") != user_id:
             return jsonify({"error": "You are not allowed to delete other records"}), 403
         result = return_requests.delete_one({"ReturnId": return_id})
         if result.deleted_count == 0:

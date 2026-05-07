@@ -27,9 +27,9 @@ namespace Hexa_Hub.Controllers
         }
         // GET: api/allocation/user/{userId}
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<AllocationDto>>> GetAllocationsByUserId(int userId)
+        public async Task<ActionResult<IEnumerable<AllocationDto>>> GetAllocationsByuserId(int userId)
         {
-            var allocations = await _assetallocation.GetAllocationsByUserIdAsync(userId);
+            var allocations = await _assetallocation.GetAllocationsByuserIdAsync(userId);
             if (allocations == null || !allocations.Any())
             {
                 return NotFound();

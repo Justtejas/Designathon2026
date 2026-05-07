@@ -27,8 +27,8 @@ namespace Hexa_Hub.Repository
                     MaintenanceId = ml.MaintenanceId,
                     AssetId = ml.Asset.AssetId,
                     AssetName = ml.Asset.AssetName,
-                    UserId = ml.User.UserId,
-                    UserName = ml.User.UserName,
+                    userId = ml.User.userId,
+                    userName = ml.User.userName,
                     Maintenance_date = ml.Maintenance_date,
                     Cost = ml.Cost,
                     Maintenance_Description = ml.Maintenance_Description,
@@ -56,8 +56,8 @@ namespace Hexa_Hub.Repository
                     MaintenanceId = ml.MaintenanceId,
                     AssetId = ml.Asset.AssetId,
                     AssetName = ml.Asset.AssetName,
-                    UserId = ml.User.UserId,
-                    UserName = ml.User.UserName,
+                    userId = ml.User.userId,
+                    userName = ml.User.userName,
                     Maintenance_date = ml.Maintenance_date,
                     Cost = ml.Cost,
                     Maintenance_Description = ml.Maintenance_Description,
@@ -70,7 +70,7 @@ namespace Hexa_Hub.Repository
             return await _context.MaintenanceLogs
                 .Include(ml => ml.Asset)
                 .Include(ml => ml.User)
-                .Where(ml => ml.UserId == userId)
+                .Where(ml => ml.userId == userId)
                 .ToListAsync();
         }
 
@@ -131,10 +131,10 @@ namespace Hexa_Hub.Repository
 
 
 
-        public async Task<List<MaintenanceLog>> GetMaintenanceLogByUserId(int userId)
+        public async Task<List<MaintenanceLog>> GetMaintenanceLogByuserId(int userId)
         {
             return await _context.MaintenanceLogs
-                .Where(ml => ml.UserId == userId)
+                .Where(ml => ml.userId == userId)
                 .Include(ml => ml.Asset)
                 .Include(ml => ml.User)
                 .ToListAsync();

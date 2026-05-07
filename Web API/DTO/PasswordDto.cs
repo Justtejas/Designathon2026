@@ -5,7 +5,7 @@ namespace Hexa_Hub.DTO
     public class PasswordDto
     {
         [Required]
-        public int UserId { get; set; }
+        public int userId { get; set; }
 
         [Required]
         [MinLength(8, ErrorMessage = "Current password must be at least 8 characters long")]

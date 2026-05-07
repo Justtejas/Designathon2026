@@ -13,7 +13,7 @@ public class AssetAllocation
     public int AssetId { get; set; }
 
     [Required]
-    public int UserId { get; set; }
+    public int userId { get; set; }
 
     [Required]
     public int AssetReqId { get; set; }

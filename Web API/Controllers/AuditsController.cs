@@ -53,7 +53,7 @@ namespace Hexa_Hub.Controllers
             }
             else
             {
-                var req = await _auditRepo.GetAuditsByUserId(userId);
+                var req = await _auditRepo.GetAuditsByuserId(userId);
                 if (req == null)
                 {
                     return NotFound("id not Found");
@@ -128,7 +128,7 @@ namespace Hexa_Hub.Controllers
                 return NotFound("id not Found");
             }
 
-            if (existingAudit.UserId != userId)
+            if (existingAudit.userId != userId)
             {
                 return Forbid($"Sorry you are not User {userId}");
             }
@@ -155,7 +155,7 @@ namespace Hexa_Hub.Controllers
                     foreach (var admin in adminUsers)
                     {
 
-                        await _notificationService.AduitCompleted(admin.UserMail, existingAudit.AuditId);
+                        await _notificationService.AduitCompleted(admin.userMail, existingAudit.AuditId);
                     }
                     var admins = await _userRepo.GetUsersByRole(UserType.Admin);
                 }
@@ -166,7 +166,7 @@ namespace Hexa_Hub.Controllers
                     foreach (var admin in adminUsers)
                     {
 
-                        await _notificationService.AuditInProgress(admin.UserMail, existingAudit.AuditId);
+                        await _notificationService.AuditInProgress(admin.userMail, existingAudit.AuditId);
                     }
                     var admins = await _userRepo.GetUsersByRole(UserType.Admin);
                 }
@@ -198,12 +198,12 @@ namespace Hexa_Hub.Controllers
             }
             var audit = await _auditRepo.AddAduit(auditDto);
             await _auditRepo.Save();
-            var employee = await _userRepo.GetUserId(audit.UserId);
+            var employee = await _userRepo.GetuserId(audit.userId);
             if (employee != null)
             {
                 await _notificationService.SendAudit(
-                    employee.UserMail,
-                    employee.UserName,
+                    employee.userMail,
+                    employee.userName,
                     audit.AuditId
                 );
             }
