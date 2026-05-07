@@ -48,7 +48,7 @@ def send_email(recipient_email, subject, message):
         logger.info(f"Email sent to {recipient_email}: {subject}")
         return True
     except Exception as e:
-        logger.error(f"Failed to send email to {recipient_email}: {str(e)}")
+        logger.info(f"Failed to send email to {recipient_email}: {str(e)}")
         return False
  
 def send_audit_notification(user_email, audit_id, notification_type):
@@ -122,7 +122,7 @@ def get_allocated_assets():
         allocated_assets = list(asset_allocations.aggregate(pipeline))
         return jsonify(allocated_assets), 200
     except Exception as e:
-        logger.error(f"Error fetching allocated assets: {str(e)}")
+        logger.info(f"Error fetching allocated assets: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @audits_blueprint.route("/api/Audits", methods=["GET"])
@@ -141,7 +141,7 @@ def get_audits():
         serialized_audits = [serialize_audit_doc(audit) for audit in audits_list]
         return jsonify(serialized_audits), 200
     except Exception as e:
-        logger.error(f"Error fetching audits: {str(e)}")
+        logger.info(f"Error fetching audits: {str(e)}")
         return jsonify({"error": "An error occurred while fetching audits"}), 500
  
 @audits_blueprint.route("/api/Audits/All", methods=["GET"])
@@ -185,7 +185,7 @@ def get_all_audits():
         serialized_audits = [serialize_audit_doc(audit) for audit in audits_list]
         return jsonify(serialized_audits), 200
     except Exception as e:
-        logger.error(f"Error fetching all audits: {str(e)}")
+        logger.info(f"Error fetching all audits: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @audits_blueprint.route("/api/Audits/Audis/<int:audit_id>", methods=["GET"])
@@ -228,7 +228,7 @@ def get_audit_by_id(audit_id):
         serialized_audit = serialize_audit_doc(audit_list[0])
         return jsonify(serialized_audit), 200
     except Exception as e:
-        logger.error(f"Error fetching audit {audit_id}: {str(e)}")
+        logger.info(f"Error fetching audit {audit_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @audits_blueprint.route("/api/Audits/<int:audit_id>", methods=["GET"])
@@ -265,7 +265,7 @@ def get_audit(audit_id):
         serialized_audit = serialize_audit_doc(audit_list[0])
         return jsonify(serialized_audit), 200
     except Exception as e:
-        logger.error(f"Error fetching audit {audit_id}: {str(e)}")
+        logger.info(f"Error fetching audit {audit_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @audits_blueprint.route("/api/Audits/<int:audit_id>", methods=["PUT"])
@@ -313,7 +313,7 @@ def put_audit(audit_id):
         logger.info(f"Updated audit {audit_id} to status: {new_status}")
         return jsonify({"message": "Audit Sent Successfully"}), 200
     except Exception as e:
-        logger.error(f"Error updating audit {audit_id}: {str(e)}")
+        logger.info(f"Error updating audit {audit_id}: {str(e)}")
         return jsonify({"error": "An error occurred while updating audit"}), 500
  
 @audits_blueprint.route("/api/Audits", methods=["POST"])
@@ -346,7 +346,7 @@ def post_audit():
         audit_doc["_id"] = str(result.inserted_id)
         return jsonify(audit_doc), 201
     except Exception as e:
-        logger.error(f"Error creating audit: {str(e)}")
+        logger.info(f"Error creating audit: {str(e)}")
         return jsonify({"error": "An error occurred while creating audit"}), 500
  
 @audits_blueprint.route("/api/Audits/<int:audit_id>", methods=["DELETE"])
@@ -366,5 +366,5 @@ def delete_audit(audit_id):
         logger.info(f"Deleted audit {audit_id}")
         return jsonify({"message": "Audit Deleted Successfully"}), 200
     except Exception as e:
-        logger.error(f"Error deleting audit {audit_id}: {str(e)}")
+        logger.info(f"Error deleting audit {audit_id}: {str(e)}")
         return jsonify({"error": "An error occurred while deleting audit"}), 500

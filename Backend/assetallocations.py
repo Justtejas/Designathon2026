@@ -141,7 +141,7 @@ def get_allocations_by_user_id(user_id):
         dtos = [to_allocation_dto(d) for d in docs]
         return jsonify(dtos), 200
     except Exception as e:
-        logger.error(f"Error fetching allocations for user {user_id}: {e}")
+        logger.info(f"Error fetching allocations for user {user_id}: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 # GET: /api/AssetAllocations (auth required)
@@ -170,7 +170,7 @@ def get_asset_allocations():
             # Controller returns entity list here; we mirror by returning raw docs
             return jsonify(serialize_list(docs)), 200
     except Exception as e:
-        logger.error(f"Error in get_asset_allocations: {e}")
+        logger.info(f"Error in get_asset_allocations: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 # GET: /api/AssetAllocations/filter-by-month?month=January
@@ -191,7 +191,7 @@ def filter_by_month():
     except ValueError:
         return jsonify({"error": "Invalid month name. Please provide a valid month name (e.g., January, February)."}), 400
     except Exception as e:
-        logger.error(f"Error filtering by month {month}: {e}")
+        logger.info(f"Error filtering by month {month}: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 # GET: /api/AssetAllocations/filter-by-year?year=2024
@@ -214,7 +214,7 @@ def filter_by_year():
             return jsonify({"error": f"No allocations found for the year {year}."}), 404
         return jsonify(serialize_list(docs)), 200
     except Exception as e:
-        logger.error(f"Error filtering by year {year}: {e}")
+        logger.info(f"Error filtering by year {year}: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 # GET: /api/AssetAllocations/filter-by-month-and-year?month=January&year=2024
@@ -246,7 +246,7 @@ def filter_by_month_and_year():
     except ValueError:
         return jsonify({"error": "Invalid month name. Please provide a valid month name (e.g., January, February)."}), 400
     except Exception as e:
-        logger.error(f"Error filtering by month/year {month}/{year}: {e}")
+        logger.info(f"Error filtering by month/year {month}/{year}: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 # GET: /api/AssetAllocations/filter-by-date-range?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
@@ -272,7 +272,7 @@ def filter_by_date_range():
     except ValueError as ve:
         return jsonify({"error": str(ve)}), 400
     except Exception as e:
-        logger.error(f"Error filtering by date range {start_str} - {end_str}: {e}")
+        logger.info(f"Error filtering by date range {start_str} - {end_str}: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 # GET: /api/AssetAllocations/{id} (auth required)
@@ -291,5 +291,5 @@ def get_asset_allocation_by_id(id):
         dto = to_allocation_class_dto(doc)
         return jsonify(dto), 200
     except Exception as e:
-        logger.error(f"Error retrieving allocation by id {id}: {e}")
+        logger.info(f"Error retrieving allocation by id {id}: {e}")
         return jsonify({"error": "Internal Server Error"}), 500

@@ -35,7 +35,7 @@ const AddAudit = () => {
     useEffect(() => {
         const fetchUsersAndAllocatedAssets = async () => {
             try {
-                const userResponse = await axios.get('http://localhost:7287/api/Users');
+                const userResponse = await axios.get('http://localhost:7287/api/users');
                 console.log('User Response:', userResponse.data);
                 setUsers(userResponse.data.$values || []);
 

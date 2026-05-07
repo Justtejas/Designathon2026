@@ -95,7 +95,7 @@ def get_all_maintenance_log():
         serialized_logs = [serialize_maintenance_class(log) for log in logs_list]
         return jsonify(serialized_logs), 200
     except Exception as e:
-        logger.error(f"Error fetching all maintenance logs: {str(e)}")
+        logger.info(f"Error fetching all maintenance logs: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @maintenance_logs_blueprint.route("/api/MaintenanceLogs", methods=["GET"])
@@ -111,12 +111,12 @@ def get_maintenance_logs():
             logs_list = list(maintenance_logs.find({"userId": user_id}).sort("Maintenance_date", -1))
         if not logs_list:
             user_msg = f"No maintenance logs found for user {user_id}"
-            logger.debug(user_msg)
+            logger.info(user_msg)
             return jsonify({"error": user_msg}), 404
         serialized_logs = [serialize_maintenance_simple(log) for log in logs_list]
         return jsonify(serialized_logs), 200
     except Exception as e:
-        logger.error(f"Error fetching maintenance logs: {str(e)}")
+        logger.info(f"Error fetching maintenance logs: {str(e)}")
         return jsonify({"error": "An error occurred while fetching maintenance logs"}), 500
  
 @maintenance_logs_blueprint.route("/api/MaintenanceLogs/id/<int:log_id>", methods=["GET"])
@@ -162,7 +162,7 @@ def get_maintenance_log_by_id(log_id):
         serialized_log = serialize_maintenance_class(logs_list[0])
         return jsonify(serialized_log), 200
     except Exception as e:
-        logger.error(f"Error fetching maintenance log {log_id}: {str(e)}")
+        logger.info(f"Error fetching maintenance log {log_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @maintenance_logs_blueprint.route("/api/MaintenanceLogs/<int:user_id>", methods=["GET"])
@@ -177,7 +177,7 @@ def get_maintenance_log_by_user(user_id):
         serialized_logs = [serialize_maintenance_simple(log) for log in logs_list]
         return jsonify(serialized_logs), 200
     except Exception as e:
-        logger.error(f"Error fetching maintenance logs for user {user_id}: {str(e)}")
+        logger.info(f"Error fetching maintenance logs for user {user_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @maintenance_logs_blueprint.route("/api/MaintenanceLogs/<int:log_id>", methods=["PUT"])
@@ -209,7 +209,7 @@ def put_maintenance_log(log_id):
         logger.info(f"Updated maintenance log {log_id}")
         return jsonify({"message": "Update successful"}), 200
     except Exception as e:
-        logger.error(f"Error updating maintenance log {log_id}: {str(e)}")
+        logger.info(f"Error updating maintenance log {log_id}: {str(e)}")
         return jsonify({"error": "An error occurred while updating maintenance log"}), 500
  
 @maintenance_logs_blueprint.route("/api/MaintenanceLogs/<int:log_id>", methods=["DELETE"])
@@ -225,5 +225,5 @@ def delete_maintenance_log(log_id):
         logger.info(f"Deleted maintenance log {log_id}")
         return jsonify({"message": f"Deletion occurred for ID {log_id}"}), 200
     except Exception as e:
-        logger.error(f"Error deleting maintenance log {log_id}: {str(e)}")
+        logger.info(f"Error deleting maintenance log {log_id}: {str(e)}")
         return jsonify({"error": "An error occurred while deleting maintenance log"}), 500

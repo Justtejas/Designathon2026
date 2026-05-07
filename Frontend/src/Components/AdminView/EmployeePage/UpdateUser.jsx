@@ -30,7 +30,7 @@ const UpdateUser = () => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:7287/api/Users/${id}`);
+                const response = await axios.get(`http://localhost:7287/api/users/${id}`);
                 setUserDetails(response.data);
             } catch (error) {
                 console.error('Error fetching user details:', error);
@@ -65,7 +65,7 @@ const UpdateUser = () => {
         console.log("Updating user with details:", userDetails);
 
         try {
-            await axios.put(`http://localhost:7287/api/Users/${id}`, {
+            await axios.put(`http://localhost:7287/api/users/${id}`, {
                 userId: id,
                 userName: userDetails.userName,
                 userMail: userDetails.userMail,

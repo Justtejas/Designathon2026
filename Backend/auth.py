@@ -33,7 +33,7 @@ def get_user_role():
                 return payload["User_Type"]  # Returns "Admin", "Employee", etc.
         return None  # Default if no token or invalid
     except Exception as e:
-        logger.error(f"Error getting user role: {str(e)}")
+        logger.info(f"Error getting user role: {str(e)}")
         return None
 
 def create_admin():
@@ -58,7 +58,7 @@ def create_admin():
         logger.info(f"Registered new admin: {user_doc['userMail']}")
         return "Admin created Successfully"
     except Exception as e:
-        logger.error(f"Error registering user: {str(e)}")
+        logger.info(f"Error registering user: {str(e)}")
         return "An error occurred while registering user"
  
 def is_admin():
@@ -87,7 +87,7 @@ def get_user_id():
                 return int(payload["userId"])
         return None
     except Exception as e:
-        logger.error(f"Error getting user ID: {str(e)}")
+        logger.info(f"Error getting user ID: {str(e)}")
         return None
  
 def get_user_email():
@@ -100,7 +100,7 @@ def get_user_email():
                 return payload["userMail"]
         return None
     except Exception as e:
-        logger.error(f"Error getting user email: {str(e)}")
+        logger.info(f"Error getting user email: {str(e)}")
         return None
  
 @auth_bp.route('/api/auth', methods=['POST'])
@@ -143,7 +143,7 @@ def login():
         })
  
     except Exception as e:
-        logger.error(f"Login error: {str(e)}")
+        logger.info(f"Login error: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
  
 @auth_bp.route('/api/users', methods=['GET'])
@@ -152,7 +152,7 @@ def get_users():
         logger.info("Fetching all users")
         users_list = list(users.find({}))
         if not users_list:
-            logger.debug("No users found")
+            logger.info("No users found")
             return jsonify([]), 200
         # Serialize users (exclude password)
         serialized_users = []
@@ -163,7 +163,7 @@ def get_users():
             serialized_users.append(user_doc)
         return jsonify(serialized_users), 200
     except Exception as e:
-        logger.error(f"Error fetching users: {str(e)}")
+        logger.info(f"Error fetching users: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @auth_bp.route('/api/users/role', methods=['GET'])
@@ -175,7 +175,7 @@ def get_users_by_role():
         logger.info(f"Fetching users by role: {role}")
         users_list = list(users.find({"User_Type": role}))
         if not users_list:
-            logger.debug(f"No users found with role: {role}")
+            logger.info(f"No users found with role: {role}")
             return jsonify({"error": "No users found with the specified role"}), 404
         # Serialize users (exclude password)
         serialized_users = []
@@ -186,7 +186,7 @@ def get_users_by_role():
             serialized_users.append(user_doc)
         return jsonify(serialized_users), 200
     except Exception as e:
-        logger.error(f"Error fetching users by role: {str(e)}")
+        logger.info(f"Error fetching users by role: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @auth_bp.route('/api/users/profile', methods=['GET'])
@@ -205,7 +205,7 @@ def get_user_profile():
         user_doc['_id'] = str(user_doc.get('_id'))
         return jsonify(user_doc), 200
     except Exception as e:
-        logger.error(f"Error fetching user profile: {str(e)}")
+        logger.info(f"Error fetching user profile: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @auth_bp.route('/api/users/<int:user_id>', methods=['GET'])
@@ -221,7 +221,7 @@ def get_user(user_id):
         user_doc['_id'] = str(user_doc.get('_id'))
         return jsonify(user_doc), 200
     except Exception as e:
-        logger.error(f"Error fetching user {user_id}: {str(e)}")
+        logger.info(f"Error fetching user {user_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @auth_bp.route('/api/users/<int:user_id>', methods=['PUT'])
@@ -379,7 +379,7 @@ def register_user():
         user_doc.pop("Password", None)  # Remove password from response
         return jsonify(user_doc), 201
     except Exception as e:
-        logger.error(f"Error registering user: {str(e)}")
+        logger.info(f"Error registering user: {str(e)}")
         return jsonify({"error": "An error occurred while registering user"}), 500
  
 @auth_bp.route('/api/users/<int:user_id>', methods=['DELETE'])
@@ -394,7 +394,7 @@ def delete_user(user_id):
         logger.info(f"Deleted user {user_id}")
         return jsonify({"message": f"{user_id} has been deleted"}), 200
     except Exception as e:
-        logger.error(f"Error deleting user {user_id}: {str(e)}")
+        logger.info(f"Error deleting user {user_id}: {str(e)}")
         return jsonify({"error": "An error occurred while deleting user"}), 500
  
 @auth_bp.route('/api/users/<int:user_id>/upload', methods=['PUT'])
@@ -423,7 +423,7 @@ def upload_profile_image(user_id):
         logger.info(f"Uploaded profile image for user {user_id}")
         return jsonify({"FileName": filename}), 200
     except Exception as e:
-        logger.error(f"Error uploading profile image: {str(e)}")
+        logger.info(f"Error uploading profile image: {str(e)}")
         return jsonify({"error": "Failed to upload image"}), 500
  
 @auth_bp.route('/api/users/<int:user_id>/profileImage', methods=['GET'])
@@ -438,5 +438,5 @@ def get_profile_image(user_id):
         # For now, return filename
         return jsonify({"ProfileImage": user["ProfileImage"]}), 200
     except Exception as e:
-        logger.error(f"Error fetching profile image: {str(e)}")
+        logger.info(f"Error fetching profile image: {str(e)}")
         return jsonify({"error": "Image not found"}), 404

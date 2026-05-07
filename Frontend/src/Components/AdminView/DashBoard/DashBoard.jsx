@@ -95,7 +95,7 @@ export default function Dashboard() {
                 }
 
                 //Fetching Users data
-                const usersResponse = await axios.get('http://localhost:7287/api/Users');
+                const usersResponse = await axios.get('http://localhost:7287/api/users');
                 if (usersResponse.data && usersResponse.data.$values) {
                     setUsers(usersResponse.data.$values);
                     setTotalEmployees(usersResponse.data.$values.length);

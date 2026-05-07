@@ -50,7 +50,7 @@ def get_subcategories():
         serialized_subcats = [serialize_subcategory(sc) for sc in subcats_list]
         return jsonify(serialized_subcats), 200
     except Exception as e:
-        logger.error(f"Error fetching subcategories: {str(e)}")
+        logger.info(f"Error fetching subcategories: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @subcategories_blueprint.route("/api/SubCategories/by-quantity", methods=["GET"])
@@ -66,7 +66,7 @@ def get_subcategories_by_quantity():
     except ValueError:
         return jsonify({"error": "Invalid quantity parameter"}), 400
     except Exception as e:
-        logger.error(f"Error fetching subcategories by quantity: {str(e)}")
+        logger.info(f"Error fetching subcategories by quantity: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @subcategories_blueprint.route("/api/SubCategories/by-category-name", methods=["GET"])
@@ -87,7 +87,7 @@ def get_subcategories_by_category_name():
         serialized_subcats = [serialize_subcategory(sc) for sc in subcats_list]
         return jsonify(serialized_subcats), 200
     except Exception as e:
-        logger.error(f"Error fetching subcategories by category name: {str(e)}")
+        logger.info(f"Error fetching subcategories by category name: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @subcategories_blueprint.route("/api/SubCategories/<int:subcategory_id>", methods=["PUT"])
@@ -116,7 +116,7 @@ def put_subcategory(subcategory_id):
         logger.info(f"Updated subcategory {subcategory_id}")
         return jsonify({"message": "Updation Success"}), 200
     except Exception as e:
-        logger.error(f"Error updating subcategory {subcategory_id}: {str(e)}")
+        logger.info(f"Error updating subcategory {subcategory_id}: {str(e)}")
         return jsonify({"error": "An error occurred while updating subcategory"}), 500
  
 @subcategories_blueprint.route("/api/SubCategories", methods=["POST"])
@@ -141,7 +141,7 @@ def post_subcategory():
         subcategory_doc["_id"] = str(result.inserted_id)
         return jsonify(subcategory_doc), 201
     except Exception as e:
-        logger.error(f"Error creating subcategory: {str(e)}")
+        logger.info(f"Error creating subcategory: {str(e)}")
         return jsonify({"error": "An error occurred while creating subcategory"}), 500
  
 @subcategories_blueprint.route("/api/SubCategories/<int:subcategory_id>", methods=["DELETE"])
@@ -157,5 +157,5 @@ def delete_subcategory(subcategory_id):
         logger.info(f"Deleted subcategory {subcategory_id}")
         return jsonify({"message": "Subcategory deleted successfully"}), 204
     except Exception as e:
-        logger.error(f"Error deleting subcategory {subcategory_id}: {str(e)}")
+        logger.info(f"Error deleting subcategory {subcategory_id}: {str(e)}")
         return jsonify({"error": "An error occurred while deleting subcategory"}), 500

@@ -43,7 +43,7 @@ def signup():
         return jsonify({"message": "User created successfully"}), 201
 
     except Exception as e:
-        logger.error(f"Signup error: {str(e)}")
+        logger.info(f"Signup error: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
 @bp.route('/api/login', methods=['POST'])
@@ -76,7 +76,7 @@ def login():
         })
 
     except Exception as e:
-        logger.error(f"Login error: {str(e)}")
+        logger.info(f"Login error: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
 def decode_token(token):
@@ -100,7 +100,7 @@ def get_user_id():
                 return payload["id"]
         return None
     except Exception as e:
-        logger.error(f"Error getting user ID: {str(e)}")
+        logger.info(f"Error getting user ID: {str(e)}")
         return None
 
 def get_user_email():
@@ -113,5 +113,5 @@ def get_user_email():
                 return payload["email"]
         return None
     except Exception as e:
-        logger.error(f"Error getting user email: {str(e)}")
+        logger.info(f"Error getting user email: {str(e)}")
         return None

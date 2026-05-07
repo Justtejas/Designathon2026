@@ -57,7 +57,7 @@ def get_all_categories():
         serialized_categories = [serialize_category_simple(cat) for cat in categories_list]
         return jsonify(serialized_categories), 200
     except Exception as e:
-        logger.error(f"Error fetching all categories: {str(e)}")
+        logger.info(f"Error fetching all categories: {str(e)}")
         return jsonify({"error": "An error occurred while fetching categories"}), 500
  
 @categories_blueprint.route("/api/Categories/category-names", methods=["GET"])
@@ -69,7 +69,7 @@ def get_category_names():
             return jsonify({"error": "No categories available"}), 404
         return jsonify(category_names), 200
     except Exception as e:
-        logger.error(f"Error fetching category names: {str(e)}")
+        logger.info(f"Error fetching category names: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @categories_blueprint.route("/api/Categories/<int:category_id>", methods=["GET"])
@@ -99,7 +99,7 @@ def get_category_by_id(category_id):
         serialized_category = serialize_category_detailed(category_list[0])
         return jsonify(serialized_category), 200
     except Exception as e:
-        logger.error(f"Error fetching category {category_id}: {str(e)}")
+        logger.info(f"Error fetching category {category_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @categories_blueprint.route("/api/Categories/<int:category_id>", methods=["PUT"])
@@ -120,7 +120,7 @@ def put_category(category_id):
         logger.info(f"Updated category {category_id}")
         return jsonify({"message": "Category updated successfully"}), 200
     except Exception as e:
-        logger.error(f"Error updating category {category_id}: {str(e)}")
+        logger.info(f"Error updating category {category_id}: {str(e)}")
         return jsonify({"error": "An error occurred while updating category"}), 500
  
 @categories_blueprint.route("/api/Categories", methods=["POST"])
@@ -145,7 +145,7 @@ def post_category():
         category_doc["_id"] = str(result.inserted_id)
         return jsonify(category_doc), 201
     except Exception as e:
-        logger.error(f"Error creating category: {str(e)}")
+        logger.info(f"Error creating category: {str(e)}")
         return jsonify({"error": "An error occurred while creating category"}), 500
  
 @categories_blueprint.route("/api/Categories/<int:category_id>", methods=["DELETE"])
@@ -163,5 +163,5 @@ def delete_category(category_id):
         logger.info(f"Deleted category {category_id}")
         return jsonify({"message": "Category deleted successfully"}), 204
     except Exception as e:
-        logger.error(f"Error deleting category {category_id}: {str(e)}")
+        logger.info(f"Error deleting category {category_id}: {str(e)}")
         return jsonify({"error": "An error occurred while deleting category"}), 500

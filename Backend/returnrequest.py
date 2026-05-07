@@ -138,7 +138,7 @@ def get_all_return_requests():
         serialized_requests = [serialize_return_class(req) for req in requests_list]
         return jsonify(serialized_requests), 200
     except Exception as e:
-        logger.error(f"Error fetching all return requests: {str(e)}")
+        logger.info(f"Error fetching all return requests: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @return_requests_blueprint.route("/api/ReturnRequests", methods=["GET"])
@@ -152,7 +152,7 @@ def get_user_return_requests():
         serialized_requests = [serialize_return_simple(req) for req in requests_list]
         return jsonify(serialized_requests), 200
     except Exception as e:
-        logger.error(f"Error fetching user return requests: {str(e)}")
+        logger.info(f"Error fetching user return requests: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @return_requests_blueprint.route("/api/ReturnRequests/GetByReturnId/<int:return_id>", methods=["GET"])
@@ -206,7 +206,7 @@ def get_return_request_by_id(return_id):
         serialized_request = serialize_return_class(request_list[0])
         return jsonify(serialized_request), 200
     except Exception as e:
-        logger.error(f"Error fetching return request {return_id}: {str(e)}")
+        logger.info(f"Error fetching return request {return_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @return_requests_blueprint.route("/api/ReturnRequests/<int:return_id>", methods=["GET"])
@@ -245,7 +245,7 @@ def get_return_request_admin(return_id):
             return jsonify({"error": f"Details for the request ID {return_id} not found"}), 404
         return jsonify(request_list[0]), 200
     except Exception as e:
-        logger.error(f"Error fetching admin return request {return_id}: {str(e)}")
+        logger.info(f"Error fetching admin return request {return_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @return_requests_blueprint.route("/api/ReturnRequests/<int:return_id>", methods=["PUT"])
@@ -282,7 +282,7 @@ def put_return_request(return_id):
         logger.info(f"Updated return request {return_id} to status: {new_status}")
         return jsonify({"message": "Return request updated successfully"}), 204
     except Exception as e:
-        logger.error(f"Error updating return request {return_id}: {str(e)}")
+        logger.info(f"Error updating return request {return_id}: {str(e)}")
         return jsonify({"error": "An error occurred while updating return request"}), 500
  
 @return_requests_blueprint.route("/api/ReturnRequests", methods=["POST"])
@@ -311,7 +311,7 @@ def post_return_request():
         return_request_doc["_id"] = str(result.inserted_id)
         return jsonify(return_request_doc), 201
     except Exception as e:
-        logger.error(f"Error creating return request: {str(e)}")
+        logger.info(f"Error creating return request: {str(e)}")
         return jsonify({"error": "An error occurred while creating return request"}), 500
  
 @return_requests_blueprint.route("/api/ReturnRequests/<int:return_id>", methods=["DELETE"])
@@ -333,5 +333,5 @@ def delete_return_request(return_id):
         logger.info(f"Deleted return request {return_id}")
         return jsonify({"message": f"Deletion occurred for ID {return_id}"}), 200
     except Exception as e:
-        logger.error(f"Error deleting return request {return_id}: {str(e)}")
+        logger.info(f"Error deleting return request {return_id}: {str(e)}")
         return jsonify({"error": f"Failed to delete return request: {str(e)}"}), 400

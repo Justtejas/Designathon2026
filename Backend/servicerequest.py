@@ -139,12 +139,12 @@ def get_service_requests():
             user_msg = f"No service requests found for user {user_id}"
             if is_admin():
                 user_msg = "No service requests found"
-            logger.debug(user_msg)
+            logger.info(user_msg)
             return jsonify({"error": user_msg}), 404
         serialized_requests = [serialize_service_class(req) for req in requests_list]
         return jsonify(serialized_requests), 200
     except Exception as e:
-        logger.error(f"Error fetching service requests: {str(e)}")
+        logger.info(f"Error fetching service requests: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @service_requests_blueprint.route("/api/ServiceRequests/<int:service_id>", methods=["PUT"])
@@ -203,7 +203,7 @@ def put_service_request(service_id):
         logger.info(f"Updated service request {service_id} to status: {new_status}")
         return jsonify({"message": "Data modified successfully"}), 200
     except Exception as e:
-        logger.error(f"Error updating service request {service_id}: {str(e)}")
+        logger.info(f"Error updating service request {service_id}: {str(e)}")
         return jsonify({"error": "An error occurred while updating service request"}), 500
  
 @service_requests_blueprint.route("/api/ServiceRequests", methods=["POST"])
@@ -231,7 +231,7 @@ def post_service_request():
         service_request_doc["_id"] = str(result.inserted_id)
         return jsonify(service_request_doc), 201
     except Exception as e:
-        logger.error(f"Error creating service request: {str(e)}")
+        logger.info(f"Error creating service request: {str(e)}")
         return jsonify({"error": "An error occurred while creating service request"}), 500
  
 @service_requests_blueprint.route("/api/ServiceRequests/<int:service_id>", methods=["DELETE"])
@@ -258,7 +258,7 @@ def delete_service_request(service_id):
         logger.info(f"Deleted service request {service_id}")
         return jsonify({"message": "Deletion of data occurred"}), 200
     except Exception as e:
-        logger.error(f"Error deleting service request {service_id}: {str(e)}")
+        logger.info(f"Error deleting service request {service_id}: {str(e)}")
         return jsonify({"error": str(e)}), 400
  
 @service_requests_blueprint.route("/api/ServiceRequests/Status/<status>", methods=["GET"])
@@ -271,7 +271,7 @@ def get_service_requests_by_status(status):
         serialized_requests = [serialize_service_simple(req) for req in requests_list]
         return jsonify(serialized_requests), 200
     except Exception as e:
-        logger.error(f"Error fetching service requests by status {status}: {str(e)}")
+        logger.info(f"Error fetching service requests by status {status}: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
  
 @service_requests_blueprint.route("/api/ServiceRequests/<int:service_id>", methods=["GET"])
@@ -316,5 +316,5 @@ def get_service_request_by_id(service_id):
         serialized_request = serialize_service_class(request_list[0])
         return jsonify(serialized_request), 200
     except Exception as e:
-        logger.error(f"Error fetching service request {service_id}: {str(e)}")
+        logger.info(f"Error fetching service request {service_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500

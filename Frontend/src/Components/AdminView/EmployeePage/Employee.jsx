@@ -89,7 +89,7 @@ export default function Employee() {
     const handleDelete = async () => {
         if (deleteId) {
             try {
-                await axios.delete(`http://localhost:7287/api/Users/${deleteId}`);
+                await axios.delete(`http://localhost:7287/api/users/${deleteId}`);
                 setEmployees(employees.filter(employee => employee.userId !== deleteId));
                 setOpenDialog(false);
                 setDeleteId(null);

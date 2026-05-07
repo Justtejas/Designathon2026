@@ -75,7 +75,7 @@ def get_assets():
         serialized_assets = [serialize_asset_simple(asset) for asset in assets_list]
         return jsonify(serialized_assets), 200
     except Exception as e:
-        logger.error(f"Error fetching assets: {str(e)}")
+        logger.info(f"Error fetching assets: {str(e)}")
         return jsonify({"error": "An error occurred while fetching assets"}), 500
  
 @assets_blueprint.route("/api/Assets/assetall", methods=["GET"])
@@ -119,7 +119,7 @@ def get_all_assets():
         serialized_assets = [serialize_asset_dto_class(asset) for asset in assets_list]
         return jsonify(serialized_assets), 200
     except Exception as e:
-        logger.error(f"Error fetching all assets: {str(e)}")
+        logger.info(f"Error fetching all assets: {str(e)}")
         return jsonify({"error": "An error occurred while fetching all assets"}), 500
  
 @assets_blueprint.route("/api/Assets/Details", methods=["GET"])
@@ -148,7 +148,7 @@ def get_all_details_of_assets():
         assets_list = list(assets_cursor)
         return jsonify(assets_list), 200
     except Exception as e:
-        logger.error(f"Error fetching assets details: {str(e)}")
+        logger.info(f"Error fetching assets details: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @assets_blueprint.route("/api/Assets/ByAssetName/<name>", methods=["GET"])
@@ -159,12 +159,12 @@ def get_asset_by_name(name):
             "AssetName": {"$regex": name, "$options": "i"}
         }))
         if not assets_list:
-            logger.debug(f"No assets found containing '{name}'")
+            logger.info(f"No assets found containing '{name}'")
             return jsonify({"error": f"No assets found containing '{name}'."}), 404
         serialized_assets = [serialize_asset_simple(asset) for asset in assets_list]
         return jsonify(serialized_assets), 200
     except Exception as e:
-        logger.error(f"Error fetching assets by name: {str(e)}")
+        logger.info(f"Error fetching assets by name: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @assets_blueprint.route("/api/Assets/PriceRange", methods=["GET"])
@@ -183,7 +183,7 @@ def get_assets_by_value():
         serialized_assets = [serialize_asset_simple(asset) for asset in assets_list]
         return jsonify(serialized_assets), 200
     except Exception as e:
-        logger.error(f"Error fetching assets by price range: {str(e)}")
+        logger.info(f"Error fetching assets by price range: {str(e)}")
         return jsonify({"error": "Invalid price range"}), 400
  
 @assets_blueprint.route("/api/Assets/ByAssetLocation/<location>", methods=["GET"])
@@ -194,12 +194,12 @@ def get_assets_by_location(location):
             "Location": {"$regex": location, "$options": "i"}
         }))
         if not assets_list:
-            logger.debug(f"No assets found containing '{location}'")
+            logger.info(f"No assets found containing '{location}'")
             return jsonify({"error": f"No assets found containing '{location}'."}), 404
         serialized_assets = [serialize_asset_simple(asset) for asset in assets_list]
         return jsonify(serialized_assets), 200
     except Exception as e:
-        logger.error(f"Error fetching assets by location: {str(e)}")
+        logger.info(f"Error fetching assets by location: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @assets_blueprint.route("/api/Assets/Status", methods=["GET"])
@@ -211,12 +211,12 @@ def get_assets_by_status():
         logger.info(f"Fetching assets by status: {status}")
         assets_list = list(assets.find({"Asset_Status": status}))
         if not assets_list:
-            logger.debug(f"No assets found with status '{status}'")
+            logger.info(f"No assets found with status '{status}'")
             return jsonify({"error": f"No assets found with status '{status}'"}), 404
         serialized_assets = [serialize_asset_simple(asset) for asset in assets_list]
         return jsonify(serialized_assets), 200
     except Exception as e:
-        logger.error(f"Error fetching assets by status: {str(e)}")
+        logger.info(f"Error fetching assets by status: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @assets_blueprint.route("/api/Assets/<int:asset_id>", methods=["GET"])
@@ -229,7 +229,7 @@ def get_asset_by_id(asset_id):
         serialized_asset = serialize_asset_dto_class(asset_doc)
         return jsonify(serialized_asset), 200
     except Exception as e:
-        logger.error(f"Error fetching asset by ID {asset_id}: {str(e)}")
+        logger.info(f"Error fetching asset by ID {asset_id}: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
 @assets_blueprint.route("/api/Assets/<int:asset_id>", methods=["PUT"])
@@ -261,7 +261,7 @@ def put_asset(asset_id):
         logger.info(f"Updated asset {asset_id}")
         return jsonify({"message": "Asset updated successfully"}), 204
     except Exception as e:
-        logger.error(f"Error updating asset {asset_id}: {str(e)}")
+        logger.info(f"Error updating asset {asset_id}: {str(e)}")
         return jsonify({"error": "An error occurred while updating asset"}), 500
  
 @assets_blueprint.route("/api/Assets/<int:asset_id>", methods=["DELETE"])
@@ -272,12 +272,12 @@ def delete_asset(asset_id):
         logger.info(f"Deleting asset {asset_id}")
         result = assets.delete_one({"AssetId": asset_id})
         if result.deleted_count == 0:
-            logger.debug(f"Asset with ID {asset_id} not found")
+            logger.info(f"Asset with ID {asset_id} not found")
             return jsonify({"error": f"Asset with ID {asset_id} not found"}), 404
         logger.info(f"Deleted asset {asset_id}")
         return jsonify({"message": "Asset deleted successfully"}), 204
     except Exception as e:
-        logger.error(f"Error deleting asset {asset_id}: {str(e)}")
+        logger.info(f"Error deleting asset {asset_id}: {str(e)}")
         return jsonify({"error": "An error occurred while deleting asset"}), 500
  
 @assets_blueprint.route("/api/Assets", methods=["POST"])
@@ -312,7 +312,7 @@ def add_asset():
         asset_doc["AssetId"] = asset_doc.get("AssetId", str(result.inserted_id))
         return jsonify(asset_doc), 201
     except Exception as e:
-        logger.error(f"Error creating asset: {str(e)}")
+        logger.info(f"Error creating asset: {str(e)}")
         return jsonify({"error": "An error occurred while creating asset"}), 500
  
 @assets_blueprint.route("/api/Assets/upload-image/<int:asset_id>", methods=["POST"])
@@ -338,7 +338,7 @@ def upload_asset_image(asset_id):
         logger.info("Asset image uploaded successfully")
         return jsonify({"message": "Image uploaded successfully"}), 200
     except Exception as e:
-        logger.error(f"Error uploading asset image: {str(e)}")
+        logger.info(f"Error uploading asset image: {str(e)}")
         return jsonify({"error": "Failed to upload image"}), 500
  
 @assets_blueprint.route("/api/Assets/get-image/<int:asset_id>", methods=["GET"])
@@ -347,7 +347,7 @@ def get_asset_image(asset_id):
         logger.info(f"Fetching asset image for {asset_id}")
         asset = assets.find_one({"AssetId": asset_id})
         if not asset or not asset.get("AssetImage"):
-            logger.debug("No asset image found")
+            logger.info("No asset image found")
             return jsonify({"error": "Asset not found or no image available"}), 404
         image_data = asset["AssetImage"]
         return send_file(
@@ -356,5 +356,5 @@ def get_asset_image(asset_id):
             as_attachment=False
         )
     except Exception as e:
-        logger.error(f"Error fetching asset image {asset_id}: {str(e)}")
+        logger.info(f"Error fetching asset image {asset_id}: {str(e)}")
         return jsonify({"error": "Image not found"}), 404

@@ -77,7 +77,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
       const fetchUserDetails = async () => {
         try {
           // Make an API request to fetch user details
-          const userResponse = await axios.get(`http://localhost:7287/api/Users/${userId}`, {
+          const userResponse = await axios.get(`http://localhost:7287/api/users/${userId}`, {
             headers: {
               Authorization: `Bearer ${token}` // Passing the token for authorization
             }
@@ -137,7 +137,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
         console.log('Data being sent:', updatedProfileData);
         try {
           const response = await axios.put(
-            `http://localhost:7287/api/Users/${userIdFromToken}`, 
+            `http://localhost:7287/api/users/${userIdFromToken}`, 
             updatedProfileData, 
             {
               headers: {
@@ -198,7 +198,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
   
     try {
       const response = await axios.put(
-        `http://localhost:7287/api/Users/${userIdFromToken}/password`,
+        `http://localhost:7287/api/users/${userIdFromToken}/password`,
         {
           userId: userIdFromToken, // Using the userId extracted from token
           currentPassword,

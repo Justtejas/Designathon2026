@@ -121,7 +121,7 @@ def get_asset_requests():
 
             if not requests:
 
-                logger.debug("Asset Request Not Found for user")
+                logger.info("Asset Request Not Found for user")
 
                 return jsonify({"error": "No requests found"}), 404
 
@@ -133,7 +133,7 @@ def get_asset_requests():
 
     except Exception as e:
 
-        logger.error(f"Error fetching asset requests: {str(e)}")
+        logger.info(f"Error fetching asset requests: {str(e)}")
 
         return jsonify({"error": "An error occurred while fetching requests"}), 500
  
@@ -153,7 +153,7 @@ def get_all_asset_requests():
 
     except Exception as e:
 
-        logger.error(f"Error fetching all asset requests: {str(e)}")
+        logger.info(f"Error fetching all asset requests: {str(e)}")
 
         return jsonify({"error": "An error occurred while fetching all requests"}), 500
  
@@ -177,7 +177,7 @@ def get_asset_request_by_id(asset_req_id):
 
     except Exception as e:
 
-        logger.error(f"Error fetching asset request by id {asset_req_id}: {str(e)}")
+        logger.info(f"Error fetching asset request by id {asset_req_id}: {str(e)}")
 
         return jsonify({"error": "An error occurred while fetching request"}), 500
  
@@ -211,7 +211,7 @@ def post_asset_request():
 
         if asset_status in ["Allocated", "UnderMaintenance"]:
 
-            logger.debug("Asset already allocated")
+            logger.info("Asset already allocated")
 
             return jsonify({"error": "The Requested Asset is currently locked (Allocated to another user)"}), 403
 
@@ -249,7 +249,7 @@ def post_asset_request():
 
     except Exception as e:
 
-        logger.error(f"Error creating asset request: {str(e)}")
+        logger.info(f"Error creating asset request: {str(e)}")
 
         return jsonify({"error": "An error occurred while creating request"}), 500
  
@@ -271,7 +271,7 @@ def put_asset_request(asset_req_id):
 
         if data.get("AssetReqId") != asset_req_id:
 
-            logger.debug("Asset Requests Id Doesn't match")
+            logger.info("Asset Requests Id Doesn't match")
 
             return jsonify({"error": "Id doesn't match"}), 400
 
@@ -281,7 +281,7 @@ def put_asset_request(asset_req_id):
 
         if not existing_request:
 
-            logger.debug("Asset Request not found")
+            logger.info("Asset Request not found")
 
             return jsonify({"error": "Request not found"}), 404
 
@@ -347,7 +347,7 @@ def put_asset_request(asset_req_id):
 
     except Exception as e:
 
-        logger.error(f"Error updating asset request {asset_req_id}: {str(e)}")
+        logger.info(f"Error updating asset request {asset_req_id}: {str(e)}")
 
         return jsonify({"error": "An error occurred while updating request"}), 500
  
@@ -385,7 +385,7 @@ def delete_asset_request(asset_req_id):
 
     except Exception as e:
 
-        logger.error(f"Error deleting asset request {asset_req_id}: {str(e)}")
+        logger.info(f"Error deleting asset request {asset_req_id}: {str(e)}")
 
         return jsonify({"error": "An error occurred while deleting request"}), 500
  
@@ -421,7 +421,7 @@ def filter_asset_requests_by_month():
 
     except Exception as e:
 
-        logger.error(f"Error filtering by month: {str(e)}")
+        logger.info(f"Error filtering by month: {str(e)}")
 
         return jsonify({"error": "Invalid month name"}), 400
  
@@ -455,7 +455,7 @@ def filter_asset_requests_by_year():
 
     except Exception as e:
 
-        logger.error(f"Error filtering by year: {str(e)}")
+        logger.info(f"Error filtering by year: {str(e)}")
 
         return jsonify({"error": "Invalid year"}), 400
  
@@ -507,7 +507,7 @@ def filter_asset_requests_by_month_and_year():
 
     except Exception as e:
 
-        logger.error(f"Error filtering by month and year: {str(e)}")
+        logger.info(f"Error filtering by month and year: {str(e)}")
 
         return jsonify({"error": "Invalid parameters"}), 400
  
@@ -553,7 +553,7 @@ def filter_asset_requests_by_date_range():
 
     except Exception as e:
 
-        logger.error(f"Error filtering by date range: {str(e)}")
+        logger.info(f"Error filtering by date range: {str(e)}")
 
         return jsonify({"error": "Invalid date format"}), 400
  
@@ -579,7 +579,7 @@ def get_asset_requests_by_status():
 
     except Exception as e:
 
-        logger.error(f"Error filtering by status: {str(e)}")
+        logger.info(f"Error filtering by status: {str(e)}")
 
         return jsonify({"error": "An error occurred"}), 500
  

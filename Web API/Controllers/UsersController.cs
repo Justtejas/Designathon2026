@@ -25,7 +25,7 @@ namespace Hexa_Hub.Controllers
             _log = iLogger;
         }
 
-        // GET: api/Users
+        // GET: api/users
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -89,7 +89,7 @@ namespace Hexa_Hub.Controllers
 
 
 
-        // GET: api/Users/5
+        // GET: api/users/5
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<User>> GetUser(int id)
@@ -238,7 +238,7 @@ namespace Hexa_Hub.Controllers
 
        
 
-        // POST: api/Users
+        // POST: api/users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<User>> PostUser([FromBody]UserRegisterDto dto)
@@ -256,7 +256,7 @@ namespace Hexa_Hub.Controllers
             
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/users/5
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]

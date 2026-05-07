@@ -53,7 +53,7 @@ const UserDetails = () => {
             }
 
             try {
-                const response = await axios.get(`http://localhost:7287/api/Users/${id}`);
+                const response = await axios.get(`http://localhost:7287/api/users/${id}`);
                 setUser(response.data);
                 setLoading(false);
             } catch (err) {
@@ -97,7 +97,7 @@ const UserDetails = () => {
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                 <Avatar
-                                    src={`http://localhost:7287/api/Users/${id}/profileImage`}
+                                    src={`http://localhost:7287/api/users/${id}/profileImage`}
                                     sx={{ width: 120, height: 120, mr: 3 }}
                                 />
                                 <Box>

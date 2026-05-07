@@ -17,12 +17,12 @@ public class Log4NetLogger : iLoggerService
 
     public void LogError(string message, Exception ex)
     {
-        _logger.Error(message, ex);
+        _logger.info(message, ex);
     }
 
     public void LogDebug(string message)
     {
-        _logger.Debug(message);
+        _logger.info(message);
     }
 
 }
