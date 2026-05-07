@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime, timedelta
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument
 import os
 import logging
 import base64
@@ -22,7 +22,16 @@ users = db["users"]
  
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 JWT_EXPIRY_HOURS = 1
- 
+
+def get_next_sequence(name: str) -> int:
+    doc = db.counters.find_one_and_update(
+        {"_id": name},
+        {"$inc": {"seq": 1}},
+        upsert=True,
+        return_document=ReturnDocument.AFTER
+    )
+    return int(doc["seq"])
+
 def get_user_role():
     try:
         auth_header = request.headers.get("Authorization")
@@ -355,11 +364,11 @@ def register_user():
         role = data.get("Role", "").strip()
         if "@" not in email:
             return jsonify({"error": "userMail must be a valid email"}), 400
-        local_part = email.split("@", 1)[0]
-        user_id = f"{local_part}_{role}".lower().replace(" ", "_")
+        user_id = get_next_sequence("users")
 
         # Ensure the generated userId is unique; if taken, return error (simple behavior)
         if users.find_one({"userId": user_id}):
+            get_next_sequence("users")
             return jsonify({"error": "userId already exists. Please use a different role or email"}), 409
         # Create user with default password
         hashed_pw = generate_password_hash("Maventory@123")
