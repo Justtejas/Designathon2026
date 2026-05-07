@@ -44,7 +44,7 @@ namespace Hexa_Hub.Controllers
         {
             try
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.userIdentifier));
                 var userRole = User.FindFirstValue(ClaimTypes.Role);
                 if (userRole == "Admin")
                 {

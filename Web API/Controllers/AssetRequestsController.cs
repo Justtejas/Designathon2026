@@ -42,7 +42,7 @@ namespace Hexa_Hub.Controllers
         {
             //User can see his own details whereas Admin can see all users details
             _log.LogInfo("Fetching Asset Requests");
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.userIdentifier));
             var userRole = User.FindFirstValue(ClaimTypes.Role);
             if (userRole == "Admin")
             {
@@ -119,7 +119,7 @@ namespace Hexa_Hub.Controllers
         {
             _log.LogInfo("Adding Asset Requests Process Started");
 
-            var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.userIdentifier)?.Value);
             assetRequestDto.userId = loggedInuserId;
             if (assetRequestDto.userId != loggedInuserId)
             {
@@ -151,7 +151,7 @@ namespace Hexa_Hub.Controllers
 
             try
             {
-                var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.userIdentifier)?.Value);
                 var assetRequest = await _assetRequest.GetAssetRequestById(id);
                 if (assetRequest == null)
                 {

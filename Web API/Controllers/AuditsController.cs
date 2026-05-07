@@ -45,7 +45,7 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<AuditsDto>>> GetAudits()
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.userIdentifier));
             var userRole = User.FindFirstValue(ClaimTypes.Role);
             if (userRole == "Admin")
             {
@@ -96,7 +96,7 @@ namespace Hexa_Hub.Controllers
             }
             else
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.userIdentifier));
                 var audit = await _auditRepo.GetAuditById(userId);
                 if (audit == null)
                 {
@@ -121,7 +121,7 @@ namespace Hexa_Hub.Controllers
                 return BadRequest("Audit ID mismatch.");
             }
 
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.userIdentifier));
             var existingAudit = await _auditRepo.GetAuditById(id);
             if (existingAudit == null)
             {

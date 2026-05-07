@@ -48,7 +48,7 @@ const AddEmployee = () => {
 
         try {
             await axios.post('http://localhost:7287/api/users', dataToSend);
-            alert('Employee added successfully!');
+            showToast('Employee added successfully!', 'success');
             navigate('/admin/employee');
             setFormData({
                 userName: '',
@@ -59,7 +59,6 @@ const AddEmployee = () => {
         } catch (error) {
             console.error("Error adding employee:", error);
             showToast('Employee Addition Failed', 'error');
-            alert('Failed to add employee. Please try again.');
         }
     };
 

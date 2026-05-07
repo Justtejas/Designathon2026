@@ -96,8 +96,8 @@ const EmpDashboard = () => {
             return;
         }
 
-        // Extract the userId from the 'nameid' field
-        const userId = decoded.nameid;
+        // Extract the userId from the 'userId' field
+        const userId = decoded.userId;
         const fetchData = async () => {
             const decodedToken = jwtToken();
             if (!decodedToken) {

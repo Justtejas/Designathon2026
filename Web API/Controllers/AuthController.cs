@@ -40,7 +40,7 @@ namespace JWT_Application.Controllers
 
                 var subject = new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier, dbUser.userId.ToString()),
+                    new Claim(ClaimTypes.userIdentifier, dbUser.userId.ToString()),
                     new Claim(ClaimTypes.Name, dbUser.userName)
                 };
 

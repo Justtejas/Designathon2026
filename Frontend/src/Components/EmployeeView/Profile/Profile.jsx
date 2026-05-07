@@ -71,8 +71,8 @@ const [showNewPassword, setShowNewPassword] = useState(false);
       const decode = jwtDecode(token);
       console.log('Decoded token payload:', decode);
       
-      // Extract the userId from the 'nameid' field
-      const userId = decode.nameid;
+      // Extract the userId from the 'userId' field
+      const userId = decode.userId;
 
       const fetchUserDetails = async () => {
         try {
@@ -117,7 +117,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
       const token = Cookies.get('token');
       if (token) {
         const decode = jwtDecode(token);
-        const userIdFromToken = decode.nameid; 
+        const userIdFromToken = decode.userId; 
         const userRole = decode.User_Type;
 
         // Prepare updated profile data, filtering out empty or undefined fields
@@ -193,7 +193,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
     }
   
     const decode = jwtDecode(token);
-    const userIdFromToken = decode.nameid;  // Extract user ID from token
+    const userIdFromToken = decode.userId;  // Extract user ID from token
     const userRole = decode.User_Type;           // Extract user role from token
   
     try {

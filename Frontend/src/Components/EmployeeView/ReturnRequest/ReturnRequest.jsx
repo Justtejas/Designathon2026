@@ -43,8 +43,8 @@ const ReturnRequest = () => {
             if (token) {
                 const decode = jwtDecode(token);
                 console.log('Decoded token payload:', decode);
-                // Extract the userId from the 'nameid' field
-                const userId = decode.nameid;
+                // Extract the userId from the 'userId' field
+                const userId = decode.userId;
                 if (userId) {
                     setFormData((prevFormData) => ({
                         ...prevFormData,

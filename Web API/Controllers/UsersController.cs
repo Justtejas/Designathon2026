@@ -55,7 +55,7 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<ActionResult<User>> GetUserProfile()
         {
-            var currentuserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentuserId = User.FindFirstValue(ClaimTypes.userIdentifier);
 
             if (int.TryParse(currentuserId, out int userId))
             {
@@ -114,7 +114,7 @@ namespace Hexa_Hub.Controllers
                 _log.LogDebug("Id doesnt match");
                 return BadRequest("Check Id");
             }
-            var currentuserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentuserId = User.FindFirstValue(ClaimTypes.userIdentifier);
 
             if (id.ToString() != currentuserId && !User.IsInRole("Admin"))
             {
@@ -187,7 +187,7 @@ namespace Hexa_Hub.Controllers
 
                 return BadRequest("Check Your Id");
             }
-            var currentuserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentuserId = User.FindFirstValue(ClaimTypes.userIdentifier);
 
             if (id.ToString() != currentuserId)
             {
@@ -298,7 +298,7 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<IActionResult> UploadProfileImage(int userId, IFormFile file)
         {
-            var loggedUser = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var loggedUser = int.Parse(User.FindFirst(ClaimTypes.userIdentifier)?.Value);
             if (loggedUser != userId)
             {
                 return Unauthorized("You are not authorized to update this image.");

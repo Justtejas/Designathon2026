@@ -182,7 +182,7 @@ const Assets = () => {
     const token = Cookies.get('token');
     if (token) {
       const decode = jwtDecode(token);
-      const userId = decode.nameid;
+      const userId = decode.userId;
 
       if (userId) {
         setFormData((prevFormData) => ({

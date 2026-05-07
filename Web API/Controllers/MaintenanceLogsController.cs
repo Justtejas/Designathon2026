@@ -37,7 +37,7 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<MaintenanceLog>>> GetMaintenanceLogs()
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.userIdentifier));
             var userRole = User.FindFirstValue(ClaimTypes.Role);
             if (userRole == "Admin")
             {

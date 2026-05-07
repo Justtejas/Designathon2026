@@ -46,11 +46,11 @@ const Notifications = () => {
         const token = Cookies.get('token');
         if (token) {
             const decode = jwtDecode(token);
-            setuserId(decode.nameid); 
+            setuserId(decode.userId); 
             
             const fetchAuditRequests = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:7287/api/Audits?userId=${decode.nameid}`);
+                    const response = await axios.get(`http://localhost:7287/api/Audits?userId=${decode.userId}`);
                     const requests = response.data.$values;
 
                     const today = new Date();
@@ -104,7 +104,7 @@ const Notifications = () => {
         const token = Cookies.get('token');
         if (token) {
             const decode = jwtDecode(token);
-            const userId = decode.nameid;
+            const userId = decode.userId;
             const userName = decode.unique_name;
 
             const fetchAssetAllocations = async () => {
@@ -176,7 +176,7 @@ const Notifications = () => {
     
             if (token) {
                 const decode = jwtDecode(token); // Decode the token
-                userId = decode.nameid; // Extract the user ID
+                userId = decode.userId; // Extract the user ID
             } else {
                 console.error('No token found');
                 return; // Exit if no token is found
@@ -230,7 +230,7 @@ const Notifications = () => {
 
     //         if (token) {
     //             const decode = jwtDecode(token); // Decode the token
-    //             userId = decode.nameid; // Extract the user ID
+    //             userId = decode.userId; // Extract the user ID
     //         } else {
     //             console.error('No token found');
     //             return; // Exit if no token is found

@@ -38,7 +38,7 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<ServiceClassDto>>> GetServiceRequests()
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.userIdentifier));
             var userRole = User.FindFirstValue(ClaimTypes.Role);
 
             if (userRole == "Admin")
@@ -247,7 +247,7 @@ namespace Hexa_Hub.Controllers
         [Authorize(Roles = "Employee")]
         public async Task<ActionResult<ServiceRequest>> PostServiceRequest(ServiceRequestDto serviceRequestDto)
         {
-            var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.userIdentifier)?.Value);
             serviceRequestDto.userId = loggedInuserId;
             var serviceRequest = new ServiceRequest
             {
@@ -282,7 +282,7 @@ namespace Hexa_Hub.Controllers
         {
             try
             {
-                var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.userIdentifier)?.Value);
                 var serviceRequest = await _serviceRequest.GetServiceRequestById(id);
                 if (serviceRequest == null)
                 {

@@ -40,7 +40,7 @@ namespace Hexa_Hub.Controllers
         //public async Task<ActionResult<IEnumerable<ReturnClassDto>>> GetReturnRequestsall()
         //{
         //    //return await _context.ReturnRequests.ToListAsync();
-        //    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        //    var userId = int.Parse(User.FindFirstValue(ClaimTypes.userIdentifier));
         //    var userRole = User.FindFirstValue(ClaimTypes.Role);
         //    if (userRole == "Admin")
         //    {
@@ -73,7 +73,7 @@ namespace Hexa_Hub.Controllers
         public async Task<ActionResult<IEnumerable<ReturnRequest>>> GetReturnRequests()
         {
             //return await _context.ReturnRequests.ToListAsync();
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.userIdentifier));
            
             var req = await _returnRequestRepo.GetReturnRequestsByuserId(userId);
             if (req == null || req.Count == 0)
@@ -438,7 +438,7 @@ namespace Hexa_Hub.Controllers
         [Authorize(Roles = "Employee")]
         public async Task<ActionResult<ReturnRequest>> PostReturnRequest(ReturnRequestDto returnRequestDto)
         {
-            var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.userIdentifier)?.Value);
 
             var userHasAsset = await _returnRequestRepo.UserHasAsset(loggedInuserId);
             if (!userHasAsset)
@@ -462,7 +462,7 @@ namespace Hexa_Hub.Controllers
         {
             try
             {
-                var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.userIdentifier)?.Value);
                 var returnRequest = await _returnRequestRepo.GetReturnRequestById(id);
                 if (returnRequest == null)
                 {
