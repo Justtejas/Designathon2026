@@ -19,17 +19,17 @@ const Assets = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isCategoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [isLocationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [isAssetStatusDropdownOpen, setAssetStatusDropdownOpen] = useState(false);
+  const [isassetStatusDropdownOpen, setassetStatusDropdownOpen] = useState(false);
   const [locations, setLocations] = useState([]);
   const [categories, setCategory] = useState([]);
-  const [assetStatuses, setAssetStatuses] = useState([]);
+  const [assetStatuses, setassetStatuses] = useState([]);
   const [minValue, setMinValue] = useState(0);
   const [currentMaxValue, setCurrentMaxValue] = useState(maxValue);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState('');
-  const [selectedAssetStatus, setSelectedAssetStatus] = useState('');
+  const [selectedassetStatus, setSelectedassetStatus] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [assetImages, setAssetImages] = useState({});
+  const [assetImages, setassetImages] = useState({});
   const defaultImage = "Images/AssetDefault.jpg";
 
 
@@ -37,7 +37,7 @@ const Assets = () => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setLocationDropdownOpen(false);
       setCategoryDropdownOpen(false);
-      setAssetStatusDropdownOpen(false);
+      setassetStatusDropdownOpen(false);
     }
   };
 
@@ -68,26 +68,26 @@ const Assets = () => {
     fetchAssets();
   }, []);
 
-  const fetchAssetImage = async (assetId) => {
+  const fetchassetImage = async (assetId) => {
     try {
       const response = await fetch(`http://localhost:7287/api/Assets/get-image/${assetId}`);
       if (response.ok) {
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob); 
-        setAssetImages((prevImages) => ({
+        setassetImages((prevImages) => ({
           ...prevImages,
           [assetId]: imageUrl, 
         }));
       } else {
         console.error(`Failed to fetch image for asset ${assetId}`);
-        setAssetImages((prevImages) => ({
+        setassetImages((prevImages) => ({
           ...prevImages,
           [assetId]: defaultImage, // Set default image if fetching fails
         }));
       }
     } catch (error) {
         console.error('Error fetching asset image:', error);
-        setAssetImages((prevImages) => ({
+        setassetImages((prevImages) => ({
         ...prevImages,
         [assetId]: defaultImage, // Set default image if there's an error
       }));
@@ -102,14 +102,14 @@ const Assets = () => {
       console.log('Fetched assets:', response.data);
 
       // Check if response data is in the expected format
-      if (response.data && response.data.$values && Array.isArray(response.data.$values)) {
-        const data = response.data.$values;
+      if (response.data && response.data && Array.isArray(response.data)) {
+        const data = response.data;
         const assetsWithImages = await Promise.all(
           data.map(async (asset) => {
             console.log('Fetching image for asset ID:', asset.assetId); // Log asset ID
 
-            // Fetch image URL using the fetchAssetImage function
-            const imageUrl = await fetchAssetImage(asset.assetId);
+            // Fetch image URL using the fetchassetImage function
+            const imageUrl = await fetchassetImage(asset.assetId);
 
             return {
               ...asset,
@@ -131,7 +131,7 @@ const Assets = () => {
 
         // Extract unique asset statuses
         const uniqueStatuses = [...new Set(data.map(asset => asset.assetStatusName))];
-        setAssetStatuses(uniqueStatuses);
+        setassetStatuses(uniqueStatuses);
 
         if (data.length > 0) {
           const values = data.map(asset => asset.value);
@@ -249,11 +249,11 @@ const Assets = () => {
       const matchesSearch = asset.assetName.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesLocation = selectedLocation ? asset.location === selectedLocation : true;
       const matchesCategory = selectedCategory ? asset.categoryName === selectedCategory : true;
-      const matchesStatus = selectedAssetStatus ? asset.assetStatusName === selectedAssetStatus : true;
+      const matchesStatus = selectedassetStatus ? asset.assetStatusName === selectedassetStatus : true;
       return matchesSearch && matchesLocation && matchesCategory && matchesStatus;
     });
     setFilteredAssets(filtered);
-  }, [searchTerm, selectedLocation, selectedCategory, selectedAssetStatus, assetsData]);
+  }, [searchTerm, selectedLocation, selectedCategory, selectedassetStatus, assetsData]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -272,7 +272,7 @@ const Assets = () => {
   // Fetch suggestions based on search term
   const fetchSuggestions = async (term) => {
     try {
-      const response = await axios.get(`http://localhost:7287/api/Assets/ByAssetName/${encodeURIComponent(term)}`);
+      const response = await axios.get(`http://localhost:7287/api/Assets/ByassetName/${encodeURIComponent(term)}`);
       console.log('API Response:', response.data);
       // Set suggestions to the response data
       const assets = Array.isArray(response.data) ? response.data : [];
@@ -289,7 +289,7 @@ const Assets = () => {
   const dropdownRef = useRef(null);
   // const locationDropdownRef = useRef(null);
   // const categorydropdownRef = useRef(null);
-  // const assetstatusdropdownRef = useRef(null);
+  // const assetStatusdropdownRef = useRef(null);
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
@@ -297,17 +297,17 @@ const Assets = () => {
   const toggleCategoryDropdown = () => {
     setCategoryDropdownOpen((prev) => !prev);
     setLocationDropdownOpen(false);
-    setAssetStatusDropdownOpen(false);
+    setassetStatusDropdownOpen(false);
   };
 
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen((prev) => !prev);
     setCategoryDropdownOpen(false);
-    setAssetStatusDropdownOpen(false);
+    setassetStatusDropdownOpen(false);
   };
 
-  const toggleAssetStatusDropdown = () => {
-    setAssetStatusDropdownOpen((prev) => !prev);
+  const toggleassetStatusDropdown = () => {
+    setassetStatusDropdownOpen((prev) => !prev);
     setLocationDropdownOpen(false);
     setCategoryDropdownOpen(false);
   };
@@ -321,12 +321,12 @@ const Assets = () => {
   };
 
 
-  const handleAssetStatusSelect = (status) => {
-    setSelectedAssetStatus(status);
-    setAssetStatusDropdownOpen(false); // Close dropdown after selection
+  const handleassetStatusSelect = (status) => {
+    setSelectedassetStatus(status);
+    setassetStatusDropdownOpen(false); // Close dropdown after selection
 
     // Optionally, filter assets based on the selected asset status
-    const filtered = assetsData.filter(asset => asset.asset_Status === status);
+    const filtered = assetsData.filter(asset => asset.assetStatus === status);
     setFilteredAssets(filtered);
   };
 
@@ -428,16 +428,16 @@ const Assets = () => {
                       </li>
 
                       {/* Asset Status Dropdown */}
-                      <li className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer relative" onClick={toggleAssetStatusDropdown}>
+                      <li className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer relative" onClick={toggleassetStatusDropdown}>
                         Asset Status
-                        {isAssetStatusDropdownOpen && (
+                        {isassetStatusDropdownOpen && (
                           <div className="absolute left-full top-0 mt-2 w-40 bg-indigo-950 border rounded-lg shadow-lg z-10">
                             <ul className="py-2">
                               {assetStatuses.map(status => (
                                 <li
                                   key={status}
                                   className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer"
-                                  onClick={() => handleAssetStatusSelect(status)}
+                                  onClick={() => handleassetStatusSelect(status)}
                                 >{status}</li>
                               ))}
                             </ul>
@@ -494,7 +494,7 @@ const Assets = () => {
                 <p className="text-red-400 font-bold">₹{asset.value}</p>
                 <p className="text-gray-800">Location: {asset.location}</p>
                 <p className="text-gray-800 font-semibold" >{asset.categoryName}</p>
-                <p className="text-gray-800">Model: {asset.model}</p>
+                <p className="text-gray-800">Model: {asset.Model}</p>
                 <span className={`text-sm font-semibold ${asset.assetStatusName === 'OpenToRequest' ? 'text-green-500' : 'text-red-500'}`}>
                   {asset.assetStatusName}
                 </span>

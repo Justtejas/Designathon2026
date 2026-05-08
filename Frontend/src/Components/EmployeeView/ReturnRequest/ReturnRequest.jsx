@@ -61,7 +61,7 @@ const ReturnRequest = () => {
                         console.log('Return Requests fetched:', returnResponse.data);
 
                         // Set return requests regardless of the allocation fetch
-                        setReturnRequests(returnResponse.data.$values || []);
+                        setReturnRequests(returnResponse.data || []);
                         
                     } catch (error) {
                         // Handle error fetching return requests if necessary
@@ -75,7 +75,7 @@ const ReturnRequest = () => {
                             },
                         });
                         console.log('Asset Allocations fetched:', assetResponse.data);
-                        setAssetAllocations(assetResponse.data.$values || []);
+                        setAssetAllocations(assetResponse.data || []);
                     } catch (assetError) {
                         // Log the error but do not set error state; just indicate no asset allocations were found
                         console.error('Error fetching asset allocations:', assetError.response ? assetError.response.data : assetError.message);
@@ -97,11 +97,11 @@ const ReturnRequest = () => {
     }, []); // Empty dependency array to run only on mount
 
 
-    const handleAssetNameChange = (e) => {
-        const selectedAssetName = e.target.value.trim();
-        const selectedAsset = assetAllocations.find(asset => asset.assetName.toLowerCase() === selectedAssetName.toLowerCase());
+    const handleassetNameChange = (e) => {
+        const selectedassetName = e.target.value.trim();
+        const selectedAsset = assetAllocations.find(asset => asset.assetName.toLowerCase() === selectedassetName.toLowerCase());
 
-        console.log("Selected Asset Name:", selectedAssetName);
+        console.log("Selected Asset Name:", selectedassetName);
         console.log("Available Assets:", assetAllocations);
         console.log("Selected Asset:", selectedAsset);
 
@@ -110,15 +110,15 @@ const ReturnRequest = () => {
             console.log("Category Id found", selectedAsset.categoryId);
             setFormData({
                 ...formData,
-                assetName: selectedAssetName,
+                assetName: selectedassetName,
                 assetId: selectedAsset.assetId,
                 categoryId: selectedAsset.categoryId
             });
         } else {
-            console.warn("No matching asset found for:", selectedAssetName);
+            console.warn("No matching asset found for:", selectedassetName);
             setFormData({
                 ...formData,
-                assetName: selectedAssetName,
+                assetName: selectedassetName,
                 assetId: ''
             });
         }
@@ -281,7 +281,7 @@ const ReturnRequest = () => {
                                                         <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Asset Name</label>
                                                         <select
                                                             value={formData.assetName}
-                                                            onChange={handleAssetNameChange}
+                                                            onChange={handleassetNameChange}
                                                             className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
                                                             required
                                                         >

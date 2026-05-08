@@ -65,11 +65,11 @@ namespace Hexa_Hub.Controllers
 
         //    var assetDtos = assets.Select(asset => new AssetClassDto
         //    {
-        //        AssetId = asset.AssetId,
-        //        AssetName = asset.AssetName,
+        //        assetId = asset.assetId,
+        //        assetName = asset.assetName,
         //        Location = asset.Location,
         //        Value = asset.Value,
-        //        AssetStatus = asset.Asset_Status?.ToString() ?? "N/A",
+        //        assetStatus = asset.assetStatus?.ToString() ?? "N/A",
         //        categoryName = asset.Category?.categoryName ?? "Unknown",
         //        subCategoryName = asset.SubCategories?.subCategoryName ?? "Unknown"
         //    }).ToList();
@@ -88,8 +88,8 @@ namespace Hexa_Hub.Controllers
             return await _asset.GetAllDetailsOfAssets();
         }
 
-        // GET: api/Assets/ByAssetName/{name}
-        [HttpGet("ByAssetName/{name}")]
+        // GET: api/Assets/ByassetName/{name}
+        [HttpGet("ByassetName/{name}")]
         [Authorize]
         public async Task<ActionResult<AssetDto>> GetAssetByName(string name)
         {
@@ -150,7 +150,7 @@ namespace Hexa_Hub.Controllers
         // GET: api/Assets/Status?status=OpenToRequest
         [HttpGet("Status")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<AssetDto>>> GetAssetsByStatus([FromQuery] AssetStatus status)
+        public async Task<ActionResult<IEnumerable<AssetDto>>> GetAssetsByStatus([FromQuery] assetStatus status)
         {
             var assetDtos = await _asset.GetAssetsByStatus(status);
 
@@ -168,7 +168,7 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<IActionResult> GetAssetByAsset(int id)
         {
-            var asset = await _asset.GetAssetByAssetId(id);
+            var asset = await _asset.GetAssetByassetId(id);
             return Ok(asset);
         }
 
@@ -177,7 +177,7 @@ namespace Hexa_Hub.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutAsset(int id, [FromBody] AssetUpdateDto assetDto)
         {
-            if (id != assetDto.AssetId)
+            if (id != assetDto.assetId)
             {
                 return BadRequest();
             }
@@ -223,22 +223,22 @@ namespace Hexa_Hub.Controllers
 
         //[HttpPost]
         //[Authorize(Roles = "Admin")]
-        //public async Task<ActionResult<Asset>> PostAsset([FromBody] AssetDto assetDto,IFormFile AssetImage)
+        //public async Task<ActionResult<Asset>> PostAsset([FromBody] AssetDto assetDto,IFormFile assetImage)
         //{
         //    if (!ModelState.IsValid)
         //    {
         //        return BadRequest(ModelState);
         //    }
-        //    if (AssetImage != null)
+        //    if (assetImage != null)
         //    {
         //        using (var memoryStream = new MemoryStream())
         //        {
-        //            await AssetImage.CopyToAsync(memoryStream);
-        //            assetDto.AssetImage = memoryStream.ToArray(); // Convert to byte array
+        //            await assetImage.CopyToAsync(memoryStream);
+        //            assetDto.assetImage = memoryStream.ToArray(); // Convert to byte array
         //        }
         //    }
         //    var asset = await _asset.AddAsset(assetDto);
-        //    return CreatedAtAction("GetAssets", new { id = asset.AssetId }, asset);
+        //    return CreatedAtAction("GetAssets", new { id = asset.assetId }, asset);
         //}
 
         //[HttpPost]
@@ -259,7 +259,7 @@ namespace Hexa_Hub.Controllers
         //            using (var memoryStream = new MemoryStream())
         //            {
         //                await assetImage.CopyToAsync(memoryStream);
-        //                assetDto.AssetImage = memoryStream.ToArray(); // Convert to byte array
+        //                assetDto.assetImage = memoryStream.ToArray(); // Convert to byte array
         //            }
         //        }
         //        catch (Exception ex)
@@ -282,7 +282,7 @@ namespace Hexa_Hub.Controllers
         //    }
 
         //    // Scenario 1: Valid Request with Image (successful)
-        //    return CreatedAtAction("GetAssets", new { id = asset.AssetId }, asset);
+        //    return CreatedAtAction("GetAssets", new { id = asset.assetId }, asset);
         //}
 
 
@@ -304,7 +304,7 @@ namespace Hexa_Hub.Controllers
         //            using (var memoryStream = new MemoryStream())
         //            {
         //                await assetImage.CopyToAsync(memoryStream);
-        //                assetDto.AssetImage = memoryStream.ToArray(); // Convert to byte array
+        //                assetDto.assetImage = memoryStream.ToArray(); // Convert to byte array
         //            }
         //        }
         //        catch (Exception ex)
@@ -327,7 +327,7 @@ namespace Hexa_Hub.Controllers
         //    }
 
         //    // Scenario 1: Valid Request with Image (successful)
-        //    return CreatedAtAction("GetAssets", new { id = asset.AssetId }, asset);
+        //    return CreatedAtAction("GetAssets", new { id = asset.assetId }, asset);
         //}
 
 
@@ -367,18 +367,18 @@ namespace Hexa_Hub.Controllers
         //    }
 
         //    var asset = await _asset.AddAsset(assetDto);
-        //    return CreatedAtAction("GetAssets", new { id = asset.AssetId }, asset);
+        //    return CreatedAtAction("GetAssets", new { id = asset.assetId }, asset);
         //}
 
 
         private bool AssetExists(int id)
         {
-            return _context.Assets.Any(e => e.AssetId == id);
+            return _context.Assets.Any(e => e.assetId == id);
         }
 
         //[HttpPut("{assetId}/upload")]
         //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> UploadAssetImage(int assetId, IFormFile file)
+        //public async Task<IActionResult> UploadassetImage(int assetId, IFormFile file)
         //{
         //    if (file == null || file.Length == 0)
         //    {
@@ -389,7 +389,7 @@ namespace Hexa_Hub.Controllers
         //    {
         //        return BadRequest("Only JPEG or PNG format are allowed");
         //    }
-        //    var fileName = await _asset.UploadAssetImageAsync(assetId, file);
+        //    var fileName = await _asset.UploadassetImageAsync(assetId, file);
         //    if (fileName == null)
         //    {
         //        return NotFound();
@@ -400,7 +400,7 @@ namespace Hexa_Hub.Controllers
 
         //[HttpPost("{assetId}/upload")]
         //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> UploadAssetImage(int assetId, IFormFile file)
+        //public async Task<IActionResult> UploadassetImage(int assetId, IFormFile file)
         //{
         //    if (file == null || file.Length == 0)
         //    {
@@ -411,7 +411,7 @@ namespace Hexa_Hub.Controllers
         //    {
         //        return BadRequest("Only JPEG or PNG format are allowed");
         //    }
-        //    var fileName = await _asset.UploadAssetImageAsync(assetId, file);
+        //    var fileName = await _asset.UploadassetImageAsync(assetId, file);
         //    if (fileName == null)
         //    {
         //        return NotFound();
@@ -423,9 +423,9 @@ namespace Hexa_Hub.Controllers
 
 
         [HttpPost("upload-image/{assetId}")]
-        public async Task<ActionResult<string>> UploadAssetImage(int assetId, IFormFile file)
+        public async Task<ActionResult<string>> UploadassetImage(int assetId, IFormFile file)
         {
-            var result = await _asset.UploadAssetImageAsync(assetId, file);
+            var result = await _asset.UploadassetImageAsync(assetId, file);
             if (result == null)
             {
                 return NotFound("Asset not found.");
@@ -437,20 +437,20 @@ namespace Hexa_Hub.Controllers
         public async Task<ActionResult<Asset>> AddAsset([FromForm] AssetDto assetDto)
         {
             var asset = await _asset.AddAsset(assetDto);
-            return CreatedAtAction(nameof(GetAssetByAsset), new { id = asset.AssetId }, asset);
+            return CreatedAtAction(nameof(GetAssetByAsset), new { id = asset.assetId }, asset);
         }
 
         //[HttpGet("get-image/{assetId}")]
-        //public IActionResult GetAssetImage(int assetId)
+        //public IActionResult GetassetImage(int assetId)
         //{
         //    var asset = _context.Assets.Find(assetId);
-        //    if (asset == null || asset.AssetImage == null)
+        //    if (asset == null || asset.assetImage == null)
         //    {
         //        return NotFound("Asset not found or no image available.");
         //    }
 
-        //    var fileName = Encoding.UTF8.GetString(asset.AssetImage);
-        //    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "AssetImages", fileName);
+        //    var fileName = Encoding.UTF8.GetString(asset.assetImage);
+        //    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "assetImages", fileName);
 
         //    if (!System.IO.File.Exists(imagePath))
         //    {
@@ -470,26 +470,26 @@ namespace Hexa_Hub.Controllers
         /// <returns></returns>
 
         //[HttpGet("get-image/{assetId}")]
-        //public async Task<IActionResult> GetAssetImage(int assetId)
+        //public async Task<IActionResult> GetassetImage(int assetId)
         //{
         //    var asset = await _context.Assets.FindAsync(assetId);
-        //    if (asset == null || asset.AssetImage == null)
+        //    if (asset == null || asset.assetImage == null)
         //    {
         //        return NotFound("Asset not found or no image available.");
         //    }
 
         //    // Use the byte array directly
-        //    var fileBytes = asset.AssetImage;
+        //    var fileBytes = asset.assetImage;
 
         //    return File(fileBytes, "image/jpeg"); // Adjust the content type based on your image type
         //}
 
         [HttpGet("get-image/{assetId}")]
-        public async Task<IActionResult> GetAssetImage(int assetId)
+        public async Task<IActionResult> GetassetImage(int assetId)
         {
 
             var asset = await _context.Assets.FindAsync(assetId);
-            if (asset == null || asset.AssetImage == null || asset.AssetImage.Length == 0)
+            if (asset == null || asset.assetImage == null || asset.assetImage.Length == 0)
             {
                 _log.LogDebug($"No asset image Fetched");
 
@@ -497,7 +497,7 @@ namespace Hexa_Hub.Controllers
             }
 
             
-            var fileBytes = asset.AssetImage;
+            var fileBytes = asset.assetImage;
             _log.LogInfo("asset image fetched");
 
             return File(fileBytes, "image/jpeg");
@@ -508,15 +508,15 @@ namespace Hexa_Hub.Controllers
         ////image
         //[HttpGet("{assetId}/assetImage")]
         //[Authorize]
-        //public async Task<IActionResult> GetAssetImage(int assetId)
+        //public async Task<IActionResult> GetassetImage(int assetId)
         //{
         //    var asset = await _asset.GetAssetById(assetId);
-        //    if (asset == null || asset.AssetImage == null)
+        //    if (asset == null || asset.assetImage == null)
         //    {
         //        var defualtImagePath = _asset.GetImagePath("AssetDefault.jpg");
         //        return PhysicalFile(Path.Combine(Directory.GetCurrentDirectory(), defualtImagePath), "image/jpeg");
         //    }
-        //    string fileName = Encoding.UTF8.GetString(asset.AssetImage);
+        //    string fileName = Encoding.UTF8.GetString(asset.assetImage);
         //    string imagePath = Path.Combine(Directory.GetCurrentDirectory(), _asset.GetImagePath(fileName));
 
         //    if (!System.IO.File.Exists(imagePath))

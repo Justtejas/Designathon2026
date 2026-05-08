@@ -111,7 +111,7 @@ const EmpDashboard = () => {
             // Separate try-catch blocks for each request
             try {
                 const response = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`);
-                const assetAllocations = Array.isArray(response.data.$values) ? response.data.$values : response.data;
+                const assetAllocations = Array.isArray(response.data) ? response.data : response.data;
                 setAssetTableData(assetAllocations);
                 console.log("Asset Allocations:", assetAllocations);
             } catch (error) {
@@ -122,7 +122,7 @@ const EmpDashboard = () => {
             let serviceRequests = [];
             try {
                 const serviceResponse = await axios.get(`http://localhost:7287/api/ServiceRequests`);
-                const allServiceRequests = Array.isArray(serviceResponse.data.$values) ? serviceResponse.data.$values : serviceResponse.data;
+                const allServiceRequests = Array.isArray(serviceResponse.data) ? serviceResponse.data : serviceResponse.data;
                 serviceRequests = allServiceRequests.filter(request => request.userId === parseInt(userId));
                 setServiceRequestsData(groupRequestsByWeek(serviceRequests));
             } catch (error) {
@@ -133,7 +133,7 @@ const EmpDashboard = () => {
             let returnRequests = [];
             try {
                 const returnResponse = await axios.get(`http://localhost:7287/api/ReturnRequests`);
-                const allReturnRequests = Array.isArray(returnResponse.data.$values) ? returnResponse.data.$values : returnResponse.data;
+                const allReturnRequests = Array.isArray(returnResponse.data) ? returnResponse.data : returnResponse.data;
                 returnRequests = allReturnRequests.filter(request => request.userId === parseInt(userId));
                 setReturnRequests(returnRequests);
                 setReturnedAssetsCount(returnRequests.length);
@@ -145,7 +145,7 @@ const EmpDashboard = () => {
             let assetRequests = [];
             try {
                 const assetRequestsResponse = await axios.get(`http://localhost:7287/api/AssetRequests`);
-                const allAssetRequests = Array.isArray(assetRequestsResponse.data.$values) ? assetRequestsResponse.data.$values : assetRequestsResponse.data;
+                const allAssetRequests = Array.isArray(assetRequestsResponse.data) ? assetRequestsResponse.data : assetRequestsResponse.data;
                 assetRequests = allAssetRequests.filter(request => request.userId === parseInt(userId));
                 setAssetRequestsData(groupRequestsByWeek(assetRequests));
             } catch (error) {
@@ -173,7 +173,7 @@ const EmpDashboard = () => {
         //         console.log("Fetched Data:", response.data);
 
         //         // Check if data is directly an array or inside a $values property
-        //         const assetAllocations = Array.isArray(response.data.$values) ? response.data.$values : response.data;
+        //         const assetAllocations = Array.isArray(response.data) ? response.data : response.data;
 
         //         if (Array.isArray(assetAllocations)) {
         //             setAssetTableData(assetAllocations);
@@ -184,19 +184,19 @@ const EmpDashboard = () => {
         //         // Fetch all Service Requests
         //         const serviceResponse = await axios.get(`http://localhost:7287/api/ServiceRequests`);
 
-        //         const allServiceRequests = Array.isArray(serviceResponse.data.$values) ? serviceResponse.data.$values : serviceResponse.data;
+        //         const allServiceRequests = Array.isArray(serviceResponse.data) ? serviceResponse.data : serviceResponse.data;
         //         // Filter Service Requests by userId
         //         const serviceRequests = allServiceRequests.filter(request => request.userId === parseInt(userId));
 
         //         // Fetch all Return Requests
         //         const returnResponse = await axios.get(`http://localhost:7287/api/ReturnRequests`);
-        //         const allReturnRequests = Array.isArray(returnResponse.data.$values) ? returnResponse.data.$values : returnResponse.data;
+        //         const allReturnRequests = Array.isArray(returnResponse.data) ? returnResponse.data : returnResponse.data;
         //         // Filter Return Requests by userId
         //         const returnRequests = allReturnRequests.filter(request => request.userId === parseInt(userId));
 
         //         const assetRequestsResponse = await axios.get(`http://localhost:7287/api/AssetRequests`);
 
-        //         const allAssetRequests = Array.isArray(assetRequestsResponse.data.$values) ? assetRequestsResponse.data.$values : assetRequestsResponse.data;
+        //         const allAssetRequests = Array.isArray(assetRequestsResponse.data) ? assetRequestsResponse.data : assetRequestsResponse.data;
         //         const assetRequests = allAssetRequests.filter(request => request.userId === parseInt(userId));
 
         //         // Group requests by weeks (for asset and service requests)
@@ -246,7 +246,7 @@ const EmpDashboard = () => {
                 const response = await axios.get('http://localhost:7287/api/ReturnRequests');
 
                 // Make sure the data is valid JSON
-                const data = Array.isArray(response.data.$values) ? response.data.$values : response.data;
+                const data = Array.isArray(response.data) ? response.data : response.data;
 
                 // Check if data is valid before setting it
                 if (data) {
@@ -389,7 +389,7 @@ const EmpDashboard = () => {
                                                 <td>{allocation.assetName || 'No Asset Name'}</td>
                                                 <td>{allocation.categoryName || 'No Category'}</td>
                                                 <td>{allocation.value !== undefined ? allocation.value : 'No Value'}</td>
-                                                <td>{allocation.model}</td>
+                                                <td>{allocation.Model}</td>
                                                 <td>{new Date(allocation.allocatedDate).toLocaleDateString() || 'No Date'}</td> {/* Formatting the date */}
                                             </tr>
                                         );

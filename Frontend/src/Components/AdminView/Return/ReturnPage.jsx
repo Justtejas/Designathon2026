@@ -62,7 +62,7 @@ export default function ReturnPage() {
             try {
                 const response = await axios.get('http://localhost:7287/api/ReturnRequests/all');
                 console.log('Fetched Return Response:', JSON.stringify(response.data));
-                setReturnRequests(response.data.$values || []);
+                setReturnRequests(response.data || []);
             } catch (error) {
                 console.error('Error fetching Return:', error);
             }

@@ -62,7 +62,7 @@ export default function ServicePage() {
             try {
                 const response = await axios.get('http://localhost:7287/api/ServiceRequests');
                 console.log('Fetched Service Requests Response:', JSON.stringify(response.data));
-                setServiceRequest(response.data.$values || []);
+                setServiceRequest(response.data || []);
             } catch (error) {
                 console.error('Error fetching service requests:', error);
             }

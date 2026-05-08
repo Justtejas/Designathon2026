@@ -3,7 +3,7 @@
 namespace Hexa_Hub.Models;
 public class MultiValues
 {
-    public enum AssetStatus
+    public enum assetStatus
     {
         OpenToRequest=0,
         Allocated=1,

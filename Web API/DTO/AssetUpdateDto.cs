@@ -9,13 +9,13 @@ namespace Hexa_Hub.DTO
 
         [Required]
         [Key]
-        public int AssetId { get; set; }
+        public int assetId { get; set; }
 
         [Required]
         [MaxLength(55)]
-        public string AssetName { get; set; }
+        public string assetName { get; set; }
 
-        public string? AssetDescription { get; set; }
+        public string? assetDescription { get; set; }
 
         [Required]
         public int categoryId { get; set; }
@@ -23,10 +23,10 @@ namespace Hexa_Hub.DTO
         [Required]
         public int subCategoryId { get; set; }
 
-        public IFormFile? AssetImage { get; set; }
+        public IFormFile? assetImage { get; set; }
 
         [Required]
-        public string SerialNumber { get; set; }
+        public string serialNumber { get; set; }
 
         [Required]
         public string Model { get; set; }
@@ -34,7 +34,7 @@ namespace Hexa_Hub.DTO
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime ManufacturingDate { get; set; }
+        public DateTime manufacturingDate { get; set; }
 
         [Required]
         [MaxLength(55)]
@@ -45,8 +45,8 @@ namespace Hexa_Hub.DTO
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime? Expiry_Date { get; set; }
+        public DateTime? expiryDate { get; set; }
 
-        public string? Asset_Status { get; set; }
+        public string? assetStatus { get; set; }
     }
 }

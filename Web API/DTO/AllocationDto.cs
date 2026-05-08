@@ -7,9 +7,9 @@ namespace Hexa_Hub.DTO
         [Required]
         public int userId { get; set; }
         [Required]
-        public int AssetId { get; set; }
+        public int assetId { get; set; }
         [Required]
-        public string AssetName { get; set; }
+        public string assetName { get; set; }
 
         [Required]
         public int categoryId { get; set; }
@@ -20,7 +20,7 @@ namespace Hexa_Hub.DTO
         [Required]
         public decimal Value { get; set; }
         [Required]
-        public string Asset_Status { get; set; }
+        public string assetStatus { get; set; }
         [Required]
         public string Model { get; set; }
 

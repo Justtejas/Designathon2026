@@ -114,11 +114,11 @@ const AssetInfo = () => {
                                 <InfoItem label="Category" value={asset.categoryName} />
                                 <InfoItem label="Sub Category" value={asset.subCategoryName} />
                                 <InfoItem label="Serial Number" value={asset.serialNumber || 'N/A'} />
-                                <InfoItem label="Model" value={asset.model || 'N/A'} />
+                                <InfoItem label="Model" value={asset.Model || 'N/A'} />
                                 <InfoItem label="Location" value={asset.location} />
                                 <InfoItem label="Value" value={asset.value} />
                                 <InfoItem label="Manufacturing Date" value={new Date(asset.manufacturingDate).toLocaleDateString() || 'N/A'} />
-                                <InfoItem label="Expiry Date" value={asset.expiry_Date ? new Date(asset.expiry_Date).toLocaleDateString() : 'N/A'} />
+                                <InfoItem label="Expiry Date" value={asset.expiryDate ? new Date(asset.expiryDate).toLocaleDateString() : 'N/A'} />
                             </Grid>
                         </CardContent>
                     </Card>

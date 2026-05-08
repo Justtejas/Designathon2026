@@ -3,7 +3,7 @@
 //    public class UpdateAuditDto
 //    {
 //        public int AuditId { get; set; }
-//        public string AssetName { get; set; }
+//        public string assetName { get; set; }
 //        public 
 //    }
 //}

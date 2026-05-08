@@ -47,9 +47,9 @@ def serialize_asset_request(doc):
 
             "userId": doc.get('userId'),
 
-            "AssetId": doc.get('AssetId'),
+            "assetId": doc.get('assetId'),
 
-            "AssetName": doc.get('AssetName'),
+            "assetName": doc.get('assetName'),
 
             "categoryName": doc.get('categoryName'),
 
@@ -201,15 +201,15 @@ def post_asset_request():
 
         # Check if asset is available
 
-        asset = assets.find_one({"AssetId": data.get("AssetId")})
+        asset = assets.find_one({"assetId": data.get("assetId")})
 
         if not asset:
 
             return jsonify({"error": "Asset not found"}), 404
 
-        asset_status = asset.get("Asset_Status", "Available")
+        assetStatus = asset.get("assetStatus", "Available")
 
-        if asset_status in ["Allocated", "UnderMaintenance"]:
+        if assetStatus in ["Allocated", "UnderMaintenance"]:
 
             logger.info("Asset already allocated")
 
@@ -223,7 +223,7 @@ def post_asset_request():
 
             "userId": user_id,
 
-            "AssetId": data.get("AssetId"),
+            "assetId": data.get("assetId"),
 
             "categoryId": data.get("categoryId"),
 
@@ -235,7 +235,7 @@ def post_asset_request():
 
             "userName": data.get("userName"),
 
-            "AssetName": data.get("AssetName"),
+            "assetName": data.get("assetName"),
 
             "categoryName": data.get("categoryName")
 
@@ -307,7 +307,7 @@ def put_asset_request(asset_req_id):
 
                 allocation_doc = {
 
-                    "AssetId": data.get("AssetId"),
+                    "assetId": data.get("assetId"),
 
                     "userId": data.get("userId"),
 
@@ -323,9 +323,9 @@ def put_asset_request(asset_req_id):
 
                 assets.update_one(
 
-                    {"AssetId": data.get("AssetId")},
+                    {"assetId": data.get("assetId")},
 
-                    {"$set": {"Asset_Status": "Allocated"}}
+                    {"$set": {"assetStatus": "Allocated"}}
 
                 )
 

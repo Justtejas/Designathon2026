@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, send_file
 from pymongo import MongoClient
-from auth import get_user_id, get_user_role
+from auth import get_next_sequence, get_user_role
 from datetime import datetime
 import os
 import logging
@@ -32,19 +32,19 @@ def serialize_asset_simple(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "AssetId": doc.get('AssetId'),
-            "AssetName": doc.get('AssetName'),
-            "AssetDescription": doc.get('AssetDescription'),
+            "assetId": doc.get('assetId'),
+            "assetName": doc.get('assetName'),
+            "assetDescription": doc.get('assetDescription'),
             "categoryId": doc.get('categoryId'),
             "subCategoryId": doc.get('subCategoryId'),
-            "AssetImage": doc.get('AssetImage'),
-            "SerialNumber": doc.get('SerialNumber'),
+            "assetImage": doc.get('assetImage'),
+            "serialNumber": doc.get('serialNumber'),
             "Model": doc.get('Model'),
-            "ManufacturingDate": doc.get('ManufacturingDate'),
+            "manufacturingDate": doc.get('manufacturingDate'),
             "Location": doc.get('Location'),
             "Value": doc.get('Value'),
-            "Expiry_Date": doc.get('Expiry_Date'),
-            "Asset_Status": doc.get('Asset_Status', 'OpenToRequest')
+            "expiryDate": doc.get('expiryDate'),
+            "assetStatus": doc.get('assetStatus', 'OpenToRequest')
         }
     return None
  
@@ -53,17 +53,17 @@ def serialize_asset_dto_class(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "AssetId": doc.get('AssetId'),
-            "AssetName": doc.get('AssetName'),
+            "assetId": doc.get('assetId'),
+            "assetName": doc.get('assetName'),
             "Location": doc.get('Location'),
             "Value": doc.get('Value'),
             "Model": doc.get('Model'),
-            "SerialNumber": doc.get('SerialNumber'),
+            "serialNumber": doc.get('serialNumber'),
             "categoryName": doc.get('categoryName'),
             "categoryId": doc.get('categoryId'),
             "subCategoryId": doc.get('subCategoryId'),
             "subCategoryName": doc.get('subCategoryName'),
-            "AssetStatus": doc.get('Asset_Status', 'OpenToRequest')
+            "assetStatus": doc.get('assetStatus', 'OpenToRequest')
         }
     return None
  
@@ -100,17 +100,17 @@ def get_all_assets():
             {"$unwind": {"path": "$subcategory", "preserveNullAndEmptyArrays": True}},
             {
                 "$project": {
-                    "AssetId": 1,
-                    "AssetName": 1,
+                    "assetId": 1,
+                    "assetName": 1,
                     "Location": 1,
                     "Value": 1,
                     "Model": 1,
-                    "SerialNumber": 1,
+                    "serialNumber": 1,
                     "categoryName": "$category.categoryName",
                     "categoryId": "$category.categoryId",
                     "subCategoryId": "$subcategory.subCategoryId",
                     "subCategoryName": "$subcategory.subCategoryName",
-                    "Asset_Status": {"$ifNull": ["$Asset_Status", "OpenToRequest"]}
+                    "assetStatus": {"$ifNull": ["$assetStatus", "OpenToRequest"]}
                 }
             }
         ]
@@ -151,12 +151,12 @@ def get_all_details_of_assets():
         logger.info(f"Error fetching assets details: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
-@assets_blueprint.route("/api/Assets/ByAssetName/<name>", methods=["GET"])
+@assets_blueprint.route("/api/Assets/ByassetName/<name>", methods=["GET"])
 def get_asset_by_name(name):
     try:
         logger.info(f"Fetching assets by name: {name}")
         assets_list = list(assets.find({
-            "AssetName": {"$regex": name, "$options": "i"}
+            "assetName": {"$regex": name, "$options": "i"}
         }))
         if not assets_list:
             logger.info(f"No assets found containing '{name}'")
@@ -209,7 +209,7 @@ def get_assets_by_status():
         if not status:
             return jsonify({"error": "Status parameter is required"}), 400
         logger.info(f"Fetching assets by status: {status}")
-        assets_list = list(assets.find({"Asset_Status": status}))
+        assets_list = list(assets.find({"assetStatus": status}))
         if not assets_list:
             logger.info(f"No assets found with status '{status}'")
             return jsonify({"error": f"No assets found with status '{status}'"}), 404
@@ -223,7 +223,7 @@ def get_assets_by_status():
 def get_asset_by_id(asset_id):
     try:
         logger.info(f"Fetching asset by ID: {asset_id}")
-        asset_doc = assets.find_one({"AssetId": asset_id})
+        asset_doc = assets.find_one({"assetId": asset_id})
         if not asset_doc:
             return jsonify({"error": "Asset not found"}), 404
         serialized_asset = serialize_asset_dto_class(asset_doc)
@@ -239,23 +239,23 @@ def put_asset(asset_id):
             return jsonify({"error": "Admin access required"}), 403
         data = request.get_json()
         logger.info(f"Updating asset {asset_id}")
-        if data.get("AssetId") != asset_id:
+        if data.get("assetId") != asset_id:
             return jsonify({"error": "ID mismatch"}), 400
         update_data = {
             "$set": {
-                "AssetName": data.get("AssetName"),
-                "AssetDescription": data.get("AssetDescription"),
+                "assetName": data.get("assetName"),
+                "assetDescription": data.get("assetDescription"),
                 "categoryId": data.get("categoryId"),
                 "subCategoryId": data.get("subCategoryId"),
-                "SerialNumber": data.get("SerialNumber"),
+                "serialNumber": data.get("serialNumber"),
                 "Model": data.get("Model"),
-                "ManufacturingDate": data.get("ManufacturingDate"),
+                "manufacturingDate": data.get("manufacturingDate"),
                 "Location": data.get("Location"),
                 "Value": data.get("Value"),
-                "Expiry_Date": data.get("Expiry_Date")
+                "expiryDate": data.get("expiryDate")
             }
         }
-        result = assets.update_one({"AssetId": asset_id}, update_data)
+        result = assets.update_one({"assetId": asset_id}, update_data)
         if result.matched_count == 0:
             return jsonify({"error": "Asset not found"}), 404
         logger.info(f"Updated asset {asset_id}")
@@ -270,7 +270,7 @@ def delete_asset(asset_id):
         if not is_admin():
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Deleting asset {asset_id}")
-        result = assets.delete_one({"AssetId": asset_id})
+        result = assets.delete_one({"assetId": asset_id})
         if result.deleted_count == 0:
             logger.info(f"Asset with ID {asset_id} not found")
             return jsonify({"error": f"Asset with ID {asset_id} not found"}), 404
@@ -289,27 +289,29 @@ def add_asset():
         logger.info("Adding asset process started")
         # Handle file upload if present
         asset_image = None
-        if 'AssetImage' in request.files:
-            file = request.files['AssetImage']
+        if 'assetImage' in request.files:
+            file = request.files['assetImage']
             if file and file.filename:
                 asset_image = file.read()
+        assetId = get_next_sequence("asset")
         asset_doc = {
-            "AssetName": data.get("AssetName"),
-            "AssetDescription": data.get("AssetDescription"),
+            "assetId": assetId,
+            "assetName": data.get("assetName"),
+            "assetDescription": data.get("assetDescription"),
             "categoryId": int(data.get("categoryId", 0)),
             "subCategoryId": int(data.get("subCategoryId", 0)),
-            "SerialNumber": data.get("SerialNumber"),
+            "serialNumber": data.get("serialNumber"),
             "Model": data.get("Model"),
-            "ManufacturingDate": data.get("ManufacturingDate"),
+            "manufacturingDate": data.get("manufacturingDate"),
             "Location": data.get("Location"),
             "Value": float(data.get("Value", 0)),
-            "Expiry_Date": data.get("Expiry_Date"),
-            "Asset_Status": "OpenToRequest",
-            "AssetImage": asset_image  # Store as binary
+            "expiryDate": data.get("expiryDate"),
+            "assetStatus": "OpenToRequest",
+            "assetImage": asset_image  # Store as binary
         }
         result = assets.insert_one(asset_doc)
-        logger.info(f"Added asset with ID: {result.inserted_id}")
-        asset_doc["AssetId"] = asset_doc.get("AssetId", str(result.inserted_id))
+        logger.info(f"Added asset with ID: {assetId}")
+        asset_doc["_id"] = str(result.inserted_id)
         return jsonify(asset_doc), 201
     except Exception as e:
         logger.info(f"Error creating asset: {str(e)}")
@@ -332,8 +334,8 @@ def upload_asset_image(asset_id):
         logger.info(f"Uploading image for asset {asset_id}")
         image_data = file.read()
         assets.update_one(
-            {"AssetId": asset_id},
-            {"$set": {"AssetImage": image_data}}
+            {"assetId": asset_id},
+            {"$set": {"assetImage": image_data}}
         )
         logger.info("Asset image uploaded successfully")
         return jsonify({"message": "Image uploaded successfully"}), 200
@@ -345,11 +347,11 @@ def upload_asset_image(asset_id):
 def get_asset_image(asset_id):
     try:
         logger.info(f"Fetching asset image for {asset_id}")
-        asset = assets.find_one({"AssetId": asset_id})
-        if not asset or not asset.get("AssetImage"):
+        asset = assets.find_one({"assetId": asset_id})
+        if not asset or not asset.get("assetImage"):
             logger.info("No asset image found")
             return jsonify({"error": "Asset not found or no image available"}), 404
-        image_data = asset["AssetImage"]
+        image_data = asset["assetImage"]
         return send_file(
             io.BytesIO(image_data),
             mimetype='image/jpeg',

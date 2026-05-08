@@ -15,7 +15,7 @@ const Notifications = () => {
     const [showTrackDetails, setShowTrackDetails] = useState(false);
     const [assetAllocations, setAssetAllocations] = useState([]); // Store asset allocations
     const [isLoading, setIsLoading] = useState(true); // For loading state
-    const [assetImages, setAssetImages] = useState({});
+    const [assetImages, setassetImages] = useState({});
     const [assetRequest, setAssetRequest] = useState(null);
     const [serviceRequest, setServiceRequest] = useState(null);
     const [returnRequest, setReturnRequest] = useState(null);
@@ -23,16 +23,16 @@ const Notifications = () => {
     const [auditRequests, setAuditRequests] = useState([]);
     const [userId, setuserId] = useState(null);
     const [userName, setuserName] = useState(null);
-    const [assetName, setAssetName] = useState('');
+    const [assetName, setassetName] = useState('');
     const [selectedAuditId, setSelectedAuditId] = useState(null);
-    const [selectedAssetId, setSelectedAssetId] = useState(null);
+    const [selectedassetId, setSelectedassetId] = useState(null);
     const [auditMessage, setAuditMessage] = useState('');
     const [nextAuditDate, setNextAuditDate] = useState(new Date('2024-04-11'));
     const [showAuditUpdateSuccess, setShowAuditUpdateSuccess] = useState(false);
     const defaultImage = "Images/AssetDefault.jpg";
 
     const toggleAssetDetails = (assetId) => {
-        setSelectedAssetId(selectedAssetId === assetId ? null : assetId); // Toggle details for the clicked asset
+        setSelectedassetId(selectedassetId === assetId ? null : assetId); // Toggle details for the clicked asset
       };
 
     // Function to handle the audit completion
@@ -51,7 +51,7 @@ const Notifications = () => {
             const fetchAuditRequests = async () => {
                 try {
                     const response = await axios.get(`http://localhost:7287/api/Audits?userId=${decode.userId}`);
-                    const requests = response.data.$values;
+                    const requests = response.data;
 
                     const today = new Date();
                     const fiveDaysAgo = new Date();
@@ -79,7 +79,7 @@ const Notifications = () => {
 
     const acceptAuditRequest = async (auditId, assetId) => {
         setSelectedAuditId(auditId); // Set the ID of the audit to be updated
-        setSelectedAssetId(assetId);
+        setSelectedassetId(assetId);
         setNotificationStatus('completed'); // Show the audit update section
         setAuditMessage('');
         setShowSuccessPrompt(true);
@@ -89,7 +89,7 @@ const Notifications = () => {
             const assetResponse = await axios.get(`http://localhost:7287/api/Assets/${assetId}`);
             if (assetResponse.status === 200) {
                 const assetData = assetResponse.data;
-                setAssetName(assetData.assetName); // Set the asset name here
+                setassetName(assetData.assetName); // Set the asset name here
             }
         } catch (error) {
             console.error('Error fetching asset details:', error);
@@ -118,7 +118,7 @@ const Notifications = () => {
                           fiveDaysAgo.setDate(today.getDate() - 5);
 
                             // Filter allocations from the last five days
-                        const filteredAllocations = (data.$values || []).filter(allocation => {
+                        const filteredAllocations = (data || []).filter(allocation => {
                             const allocationDate = new Date(allocation.allocatedDate); 
                             console.log("Allocation Date:", allocationDate);// Replace with the actual date field
                             return allocationDate >= fiveDaysAgo && allocationDate <= today;
@@ -129,7 +129,7 @@ const Notifications = () => {
 
                         // Fetch images for filtered allocations
                         filteredAllocations.forEach((allocation) => {
-                            fetchAssetImage(allocation.assetId);
+                            fetchassetImage(allocation.assetId);
                         });
                     } else {
                         console.error('Failed to fetch asset allocations');
@@ -140,26 +140,26 @@ const Notifications = () => {
                     setIsLoading(false);
                 }
             };
-            const fetchAssetImage = async (assetId) => {
+            const fetchassetImage = async (assetId) => {
                 try {
                     const response = await fetch(`http://localhost:7287/api/Assets/get-image/${assetId}`);
                     if (response.ok) {
                         const blob = await response.blob();
                         const imageUrl = URL.createObjectURL(blob); // Convert blob to URL
-                        setAssetImages((prevImages) => ({
+                        setassetImages((prevImages) => ({
                             ...prevImages,
                             [assetId]: imageUrl, // Store the image URL by assetId
                         }));
                     } else {
                         console.error(`Failed to fetch image for asset ${assetId}`);
-                        setAssetImages((prevImages) => ({
+                        setassetImages((prevImages) => ({
                             ...prevImages,
                             [assetId]: defaultImage, // Set default image if fetching fails
                         }));
                     }
                 } catch (error) {
                     console.error('Error fetching asset image:', error);
-                    setAssetImages((prevImages) => ({
+                    setassetImages((prevImages) => ({
                         ...prevImages,
                         [assetId]: defaultImage, // Set default image if there's an error
                     }));
@@ -187,7 +187,7 @@ const Notifications = () => {
                 axios.get('http://localhost:7287/api/AssetRequests', {
                     headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
                 }).then(res => {
-                    setAssetRequest(res.data.$values);
+                    setAssetRequest(res.data);
                     console.log('Asset Requests:', res.data);
                 }).catch(error => {
                     console.error('Error fetching asset requests:', error.response ? error.response.data : error.message);
@@ -197,7 +197,7 @@ const Notifications = () => {
                 axios.get('http://localhost:7287/api/ServiceRequests', {
                     headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
                 }).then(res => {
-                    setServiceRequest(res.data.$values);
+                    setServiceRequest(res.data);
                     console.log('Service Requests:', res.data);
                 }).catch(error => {
                     console.error('Error fetching service requests:', error.response ? error.response.data : error.message);
@@ -207,7 +207,7 @@ const Notifications = () => {
                 axios.get('http://localhost:7287/api/ReturnRequests', {
                     headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
                 }).then(res => {
-                    setReturnRequest(res.data.$values);
+                    setReturnRequest(res.data);
                     console.log('Return Requests:', res.data);
                 }).catch(error => {
                     console.error('Error fetching return requests:', error.response ? error.response.data : error.message);
@@ -250,9 +250,9 @@ const Notifications = () => {
     //         ]);
 
     //         // Handle the responses
-    //         setAssetRequest(assetRes.data.$values);
-    //         setServiceRequest(serviceRes.data.$values);
-    //         setReturnRequest(returnRes.data.$values);
+    //         setAssetRequest(assetRes.data);
+    //         setServiceRequest(serviceRes.data);
+    //         setReturnRequest(returnRes.data);
 
     //         console.log('Asset Requests:', assetRes.data);
     //         console.log('Service Requests:', serviceRes.data);
@@ -269,9 +269,9 @@ const Notifications = () => {
 
     const updateAudit = async () => {
         try {
-            const assetResponse = await axios.get(`http://localhost:7287/api/Assets/${selectedAssetId}`);
+            const assetResponse = await axios.get(`http://localhost:7287/api/Assets/${selectedassetId}`);
             const assetData = assetResponse.data;
-            setAssetName(assetData.assetName);
+            setassetName(assetData.assetName);
 
             if (assetResponse.status !== 200) {
                 throw new Error('Failed to fetch asset details');
@@ -279,7 +279,7 @@ const Notifications = () => {
 
             const auditUpdateData = {
                 auditId: selectedAuditId,
-                assetId: selectedAssetId,
+                assetId: selectedassetId,
                 userId: userId,
                 auditDate: new Date().toISOString(),
                 auditMessage: auditMessage,
@@ -346,15 +346,15 @@ const Notifications = () => {
                                         onClick={() => toggleAssetDetails(allocation.assetId)}
                                         className="text-red-500 hover:underline cursor-pointer"
                                     >
-                                        {selectedAssetId === allocation.assetId ? 'Hide Details' : 'View Details'}
+                                        {selectedassetId === allocation.assetId ? 'Hide Details' : 'View Details'}
                                     </div>
                                 </div>
 
-                                {selectedAssetId === allocation.assetId && (
+                                {selectedassetId === allocation.assetId && (
                                     <div className="mt-4 p-4 bg-indigo-950 text-white rounded-lg shadow-lg flex">
                                         <div className="flex-1">
                                             <p><strong>Asset Name:</strong> {allocation.assetName}</p>
-                                            <p><strong>Model:</strong> {allocation.model}</p>
+                                            <p><strong>Model:</strong> {allocation.Model}</p>
                                             <p><strong>Allocation Date:</strong> {new Date(allocation.allocatedDate).toLocaleDateString()}</p>
                                             <p><strong>Category:</strong> {allocation.categoryName}</p>
                                         </div>
@@ -402,7 +402,7 @@ const Notifications = () => {
                         ) : notificationStatus === 'completed' && showSuccessPrompt ? (
                             <div className="mt-4 p-4 items-center bg-indigo-950 text-slate-200 rounded-lg shadow-lg">
                                 <p><strong>Update Audit Status</strong></p>
-                                <p>Asset ID: <span className="font-semibold text-yellow-400">{selectedAssetId}</span></p>
+                                <p>Asset ID: <span className="font-semibold text-yellow-400">{selectedassetId}</span></p>
                                 <p>Asset Name: <span className="font-semibold text-yellow-400">{assetName}</span></p>
                                 <select
                                     value={auditStatus}

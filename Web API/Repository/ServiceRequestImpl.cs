@@ -29,8 +29,8 @@ namespace Hexa_Hub.Repository
                     ServiceId = sr.ServiceId,
                     userName = sr.User.userName,
                     userId = sr.User.userId,
-                    AssetId = sr.Asset.AssetId,
-                    AssetName = sr.Asset.AssetName,
+                    assetId = sr.Asset.assetId,
+                    assetName = sr.Asset.assetName,
                     ServiceDescription = sr.ServiceDescription,
                     ServiceRequestDate = sr.ServiceRequestDate,
                     Issue_Type = sr.Issue_Type != default ? sr.Issue_Type : IssueType.Repair,
@@ -47,7 +47,7 @@ namespace Hexa_Hub.Repository
                                          select new ServiceRequestDto
                                          {
                                              ServiceId = service.ServiceId,
-                                             AssetId = service.AssetId,
+                                             assetId = service.assetId,
                                              userId = service.userId,
                                              ServiceRequestDate = service.ServiceRequestDate,
                                              Issue_Type = service.Issue_Type,
@@ -77,8 +77,8 @@ namespace Hexa_Hub.Repository
                      ServiceId = sr.ServiceId,
                      userName = sr.User.userName,
                      userId = sr.User.userId,
-                     AssetId = sr.Asset.AssetId,
-                     AssetName = sr.Asset.AssetName,
+                     assetId = sr.Asset.assetId,
+                     assetName = sr.Asset.assetName,
                      ServiceDescription = sr.ServiceDescription,
                      ServiceRequestDate = sr.ServiceRequestDate,
                      Issue_Type = sr.Issue_Type != default ? sr.Issue_Type : IssueType.Repair,
@@ -89,7 +89,7 @@ namespace Hexa_Hub.Repository
 
         public async Task AddServiceRequest(ServiceRequest serviceRequest)
         {
-            var assetExists = await _context.Assets.AnyAsync(a => a.AssetId == serviceRequest.AssetId);
+            var assetExists = await _context.Assets.AnyAsync(a => a.assetId == serviceRequest.assetId);
             if (!assetExists)
             {
                 throw new AssetNotFoundException("Invalid Asset. Asset Not Found");
@@ -101,7 +101,7 @@ namespace Hexa_Hub.Repository
             {
                 Console.WriteLine($"Sending email to: {admin.userMail}");
 
-                await _notificationService.ServiceRequestSent(admin.userMail, serviceRequest.AssetId, serviceRequest.ServiceId, serviceRequest.Issue_Type);
+                await _notificationService.ServiceRequestSent(admin.userMail, serviceRequest.assetId, serviceRequest.ServiceId, serviceRequest.Issue_Type);
             }
         }
 
@@ -146,8 +146,8 @@ namespace Hexa_Hub.Repository
                      ServiceId = sr.ServiceId,
                      userName = sr.User.userName,
                      userId = sr.User.userId,
-                     AssetId = sr.Asset.AssetId,
-                     AssetName = sr.Asset.AssetName,
+                     assetId = sr.Asset.assetId,
+                     assetName = sr.Asset.assetName,
                      ServiceDescription = sr.ServiceDescription,
                      ServiceRequestDate = sr.ServiceRequestDate,
                      Issue_Type = sr.Issue_Type != default ? sr.Issue_Type : IssueType.Repair,

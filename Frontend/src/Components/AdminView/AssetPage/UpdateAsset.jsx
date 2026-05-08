@@ -28,22 +28,22 @@ const UpdateAsset = () => {
     const { id } = useParams();
     
     const [formData, setFormData] = useState({
-        AssetName: '',
-        AssetDescription: '',
+        assetName: '',
+        assetDescription: '',
         categoryId: '',
         subCategoryId: '',
-        SerialNumber: '',
+        serialNumber: '',
         Model: '',
-        ManufacturingDate: '',
+        manufacturingDate: '',
         Location: '',
         Value: '',
-        Expiry_Date: '',
+        expiryDate: '',
     });
 
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
-    const [assetImage, setAssetImage] = useState('');
+    const [assetImage, setassetImage] = useState('');
 
     useEffect(() => {
         fetchCategories();
@@ -53,7 +53,7 @@ const UpdateAsset = () => {
     const fetchCategories = async () => {
         try {
             const response = await axios.get('http://localhost:7287/api/Categories/all-categories');
-            setCategories(response.data.$values || []);
+            setCategories(response.data || []);
         } catch (error) {
             console.error('Error fetching categories:', error);
             setErrorMessage('Error fetching categories. Please try again.');
@@ -63,7 +63,7 @@ const UpdateAsset = () => {
     const fetchSubCategories = async (categoryId) => {
         try {
             const response = await axios.get(`http://localhost:7287/api/SubCategories?categoryId=${categoryId}`);
-            setSubCategories(response.data.$values || []);
+            setSubCategories(response.data || []);
             setFormData((prev) => ({ ...prev, subCategoryId: '' }));
         } catch (error) {
             console.error('Error fetching subcategories:', error);
@@ -71,10 +71,10 @@ const UpdateAsset = () => {
         }
     };
 
-    const fetchAssetImage = async (assetId) => {
+    const fetchassetImage = async (assetId) => {
         try {
             const response = await axios.get(`http://localhost:7287/api/Assets/get-image/${assetId}`, { responseType: 'blob' });
-            setAssetImage(URL.createObjectURL(new Blob([response.data])));
+            setassetImage(URL.createObjectURL(new Blob([response.data])));
         } catch (error) {
             console.error('Error fetching asset image:', error);
             setErrorMessage('Error fetching asset image. Please try again.');
@@ -85,23 +85,23 @@ const UpdateAsset = () => {
         try {
             const response = await axios.get(`http://localhost:7287/api/Assets/${id}`);
             setFormData({
-                AssetName: response.data.assetName,
-                AssetDescription: response.data.assetDescription,
+                assetName: response.data.assetName,
+                assetDescription: response.data.assetDescription,
                 categoryId: response.data.categoryId || '',
                 subCategoryId: response.data.subCategoryId || '',
-                SerialNumber: response.data.serialNumber,
-                Model: response.data.model,
-                ManufacturingDate: response.data.manufacturingDate,
+                serialNumber: response.data.serialNumber,
+                Model: response.data.Model,
+                manufacturingDate: response.data.manufacturingDate,
                 Location: response.data.location,
                 Value: response.data.value,
-                Expiry_Date: response.data.expiry_Date,
+                expiryDate: response.data.expiryDate,
             });
 
             if (response.data.categoryId) {
                 fetchSubCategories(response.data.categoryId);
             }
             
-            fetchAssetImage(response.data.assetId);
+            fetchassetImage(response.data.assetId);
         } catch (error) {
             console.error('Error fetching asset:', error);
             setErrorMessage('Error fetching asset. Please try again.');
@@ -125,16 +125,16 @@ const UpdateAsset = () => {
         const token = Cookies.get('token');
         const payload = {
             assetId: id, 
-            assetName: formData.AssetName,
-            assetDescription: formData.AssetDescription,
+            assetName: formData.assetName,
+            assetDescription: formData.assetDescription,
             categoryId: formData.categoryId,
             subCategoryId: formData.subCategoryId,
-            serialNumber: formData.SerialNumber,
-            model: formData.Model,
-            manufacturingDate: formData.ManufacturingDate,
+            serialNumber: formData.serialNumber,
+            Model: formData.Model,
+            manufacturingDate: formData.manufacturingDate,
             location: formData.Location,
             value: parseFloat(formData.Value),
-            expiry_Date: formData.Expiry_Date,
+            expiryDate: formData.expiryDate,
         };
     
         console.log('Payload being sent:', JSON.stringify(payload, null, 2));
@@ -211,9 +211,9 @@ const UpdateAsset = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="AssetName"
+                                            name="assetName"
                                             label="Asset Name"
-                                            value={formData.AssetName}
+                                            value={formData.assetName}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"
@@ -222,9 +222,9 @@ const UpdateAsset = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="SerialNumber"
+                                            name="serialNumber"
                                             label="Serial Number"
-                                            value={formData.SerialNumber}
+                                            value={formData.serialNumber}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"
@@ -244,10 +244,10 @@ const UpdateAsset = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="ManufacturingDate"
+                                            name="manufacturingDate"
                                             label="Manufacturing Date"
                                             type="date"
-                                            value={formData.ManufacturingDate}
+                                            value={formData.manufacturingDate}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"
@@ -316,11 +316,11 @@ const UpdateAsset = () => {
                                     <Grid item xs={12}>
                                         <TextField
                                             fullWidth
-                                            name="AssetDescription"
+                                            name="assetDescription"
                                             label="Asset Description"
                                             multiline
                                             rows={4}
-                                            value={formData.AssetDescription}
+                                            value={formData.assetDescription}
                                             onChange={handleChange}
                                             variant="outlined"
                                         />
@@ -328,10 +328,10 @@ const UpdateAsset = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="Expiry_Date"
+                                            name="expiryDate"
                                             label="Expiry Date"
                                             type="date"
-                                            value={formData.Expiry_Date}
+                                            value={formData.expiryDate}
                                             onChange={handleChange}
                                             variant="outlined"
                                             InputLabelProps={{

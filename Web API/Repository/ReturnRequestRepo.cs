@@ -23,7 +23,7 @@ namespace Hexa_Hub.Repository
             {
                 ReturnId = returnRequestDto.ReturnId,
                 userId = returnRequestDto.userId,
-                AssetId = returnRequestDto.AssetId,
+                assetId = returnRequestDto.assetId,
                 categoryId = returnRequestDto.categoryId,
                 ReturnDate = returnRequestDto.ReturnDate,
                 Reason = returnRequestDto.Reason,
@@ -36,7 +36,7 @@ namespace Hexa_Hub.Repository
             foreach (var admin in adminUsers)
             {
 
-                await _notificationService.ReturnRequestSent(admin.userMail, returnRequestDto.AssetId, req.ReturnId);
+                await _notificationService.ReturnRequestSent(admin.userMail, returnRequestDto.assetId, req.ReturnId);
             }
             return req;
         }
@@ -59,8 +59,8 @@ namespace Hexa_Hub.Repository
                     ReturnId = rr.ReturnId,
                     userId = rr.userId,
                     userName = rr.User.userName,
-                    AssetName = rr.Asset.AssetName,
-                    AssetId = rr.AssetId,
+                    assetName = rr.Asset.assetName,
+                    assetId = rr.assetId,
                     categoryId = rr.categoryId,
                     categoryName = rr.Asset.Category.categoryName,
                     ReturnDate = rr.ReturnDate,
@@ -91,8 +91,8 @@ namespace Hexa_Hub.Repository
                     ReturnId = rr.ReturnId,
                     userId = rr.userId,
                     userName = rr.User.userName,
-                    AssetName = rr.Asset.AssetName,
-                    AssetId = rr.AssetId,
+                    assetName = rr.Asset.assetName,
+                    assetId = rr.assetId,
                     categoryId = rr.categoryId,
                     categoryName = rr.Asset.Category.categoryName,
                     ReturnDate = rr.ReturnDate,
@@ -135,8 +135,8 @@ namespace Hexa_Hub.Repository
                     ReturnId = rr.ReturnId,
                     userId = rr.userId,
                     userName = rr.User.userName,
-                    AssetName = rr.Asset.AssetName,
-                    AssetId = rr.AssetId,
+                    assetName = rr.Asset.assetName,
+                    assetId = rr.assetId,
                     categoryId = rr.categoryId,
                     categoryName = rr.Asset.Category.categoryName,
                     ReturnDate = rr.ReturnDate,

@@ -29,8 +29,8 @@ namespace AssetHubTests
             // Arrange
             var expectedAssets = new List<Asset>
                 {
-                new Asset { AssetId = 1, AssetName ="Dell Laptop", subCategoryId = 1,SerialNumber="7GHY5265",Model="G14",Location="Chennai"},
-                new Asset { AssetId = 2, AssetName = "Headphone" ,subCategoryId=2,SerialNumber="DT6788",Model="5G67",Location = "Mumbai"}
+                new Asset { assetId = 1, assetName ="Dell Laptop", subCategoryId = 1,serialNumber="7GHY5265",Model="G14",Location="Chennai"},
+                new Asset { assetId = 2, assetName = "Headphone" ,subCategoryId=2,serialNumber="DT6788",Model="5G67",Location = "Mumbai"}
                 };
 
             // Mock the repository methods
@@ -43,17 +43,17 @@ namespace AssetHubTests
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
             Assert.AreEqual(2, result.Count, "Asset count should be 2");
-            Assert.AreEqual("Dell Laptop", result[0].AssetName);
-            Assert.AreEqual("Headphone", result[1].AssetName);
+            Assert.AreEqual("Dell Laptop", result[0].assetName);
+            Assert.AreEqual("Headphone", result[1].assetName);
         }
 
         [TestCase]
         public async Task AddAsset_ShouldAddAsset()
         {
             // Arrange
-            var newAssetDto = new AssetDto {  AssetName = "DriverDisk" };
+            var newAssetDto = new AssetDto {  assetName = "DriverDisk" };
 
-            var newAsset = new Asset { AssetName = newAssetDto.AssetName };
+            var newAsset = new Asset { assetName = newAssetDto.assetName };
             // Mock
             assetMock.Setup(repo => repo.AddAsset(It.IsAny<AssetDto>())).ReturnsAsync(newAsset);
 
@@ -61,10 +61,10 @@ namespace AssetHubTests
             var reuslt = await asset.AddAsset(newAssetDto);
 
             Assert.IsNotNull(reuslt, "Result should not be null");
-            Assert.AreEqual(newAssetDto.AssetName, reuslt.AssetName, "Asset Name Should Match");
+            Assert.AreEqual(newAssetDto.assetName, reuslt.assetName, "Asset Name Should Match");
 
             //Assert
-            assetMock.Verify(repo => repo.AddAsset(It.Is<AssetDto>(c => c.AssetName == newAsset.AssetName)), Times.Once);
+            assetMock.Verify(repo => repo.AddAsset(It.Is<AssetDto>(c => c.assetName == newAsset.assetName)), Times.Once);
         }
 
         [TestCase]
@@ -99,7 +99,7 @@ namespace AssetHubTests
         public async Task UpdateAsset_ShouldUpdateAsset()
         {
             // Arrange
-            var updatedAsset = new Asset { AssetId = 1, AssetName = "Lenovo Laptop" };
+            var updatedAsset = new Asset { assetId = 1, assetName = "Lenovo Laptop" };
 
             // Mock
             assetMock.Setup(repo => repo.UpdateAsset(It.IsAny<Asset>())).ReturnsAsync((Asset set) => set);
@@ -109,11 +109,11 @@ namespace AssetHubTests
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
-            Assert.AreEqual(updatedAsset.AssetId, result.AssetId, "Asset ID should match");
-            Assert.AreEqual(updatedAsset.AssetName, result.AssetName, "Asset name should be updated");
+            Assert.AreEqual(updatedAsset.assetId, result.assetId, "Asset ID should match");
+            Assert.AreEqual(updatedAsset.assetName, result.assetName, "Asset name should be updated");
 
             assetMock.Verify(repo => repo.UpdateAsset(It.Is<Asset>(a =>
-                a.AssetId == updatedAsset.AssetId && a.AssetName == updatedAsset.AssetName)), Times.Once);
+                a.assetId == updatedAsset.assetId && a.assetName == updatedAsset.assetName)), Times.Once);
         }
 
 

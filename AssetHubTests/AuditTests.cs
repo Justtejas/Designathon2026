@@ -48,7 +48,7 @@ namespace AssetHubTests
             var newAuditDto = new AuditsDto
             {
                 AuditId = 3,
-                AssetId = 1,
+                assetId = 1,
                 userId = 2,
                 AuditDate = DateTime.Now,
                 AuditMessage = "Test audit"
@@ -57,7 +57,7 @@ namespace AssetHubTests
             var newAudit = new Audit
             {
                 AuditId = newAuditDto.AuditId,
-                AssetId = newAuditDto.AssetId,
+                assetId = newAuditDto.assetId,
                 userId = newAuditDto.userId,
                 AuditDate = newAuditDto.AuditDate,
                 AuditMessage = newAuditDto.AuditMessage
@@ -70,11 +70,11 @@ namespace AssetHubTests
 
             Assert.IsNotNull(result, "Result should not be null");
             Assert.AreEqual(newAuditDto.AuditId, result.AuditId, "AuditId should match");
-            Assert.AreEqual(newAuditDto.AssetId, result.AssetId, "AssetId should match");
+            Assert.AreEqual(newAuditDto.assetId, result.assetId, "assetId should match");
             Assert.AreEqual(newAuditDto.userId, result.userId, "userId should match");
 
             auditMock.Verify(repo => repo.AddAduit(It.Is<AuditsDto>(a =>
-                a.AuditId == newAuditDto.AuditId && a.AssetId == newAuditDto.AssetId && a.userId == newAuditDto.userId)), Times.Once);
+                a.AuditId == newAuditDto.AuditId && a.assetId == newAuditDto.assetId && a.userId == newAuditDto.userId)), Times.Once);
         }
 
 

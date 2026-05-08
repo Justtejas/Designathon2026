@@ -9,7 +9,7 @@ namespace Hexa_Hub.Interface
         //Task<List<AssetDto>> GetAllAssets();
         Task<List<AssetDtoClass>> GetAssetsAll();
         Task<Asset?> GetAssetById(int id);
-        Task<AssetDtoClass?> GetAssetByAssetId(int id);
+        Task<AssetDtoClass?> GetAssetByassetId(int id);
         Task<List<Asset>> GetAllDetailsOfAssets();
       
         Task<Asset> AddAsset(AssetDto assetDto);
@@ -17,7 +17,7 @@ namespace Hexa_Hub.Interface
         Task<Asset> UpdateAssetDto(int id, AssetUpdateDto assetDto);
         Task DeleteAsset(int id);
         Task Save();
-        Task<string?> UploadAssetImageAsync(int assetId, IFormFile file);
+        Task<string?> UploadassetImageAsync(int assetId, IFormFile file);
         public string GetImagePath(string fileName);
          
         Task<IEnumerable<AssetDto>> GetAssetByName(string name);    
@@ -26,7 +26,7 @@ namespace Hexa_Hub.Interface
 
         Task<IEnumerable<AssetDto>> GetAssetsByLocation(string location);
 
-        Task<IEnumerable<AssetDto>> GetAssetsByStatus(AssetStatus status);
+        Task<IEnumerable<AssetDto>> GetAssetsByStatus(assetStatus status);
     }
 
 }

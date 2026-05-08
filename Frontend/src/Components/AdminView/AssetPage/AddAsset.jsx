@@ -29,17 +29,17 @@ const AddAsset = () => {
     const { darkMode } = useTheme();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        AssetName: '',
-        AssetDescription: '',
+        assetName: '',
+        assetDescription: '',
         categoryId: '',
         subCategoryId: '',
-        SerialNumber: '',
+        serialNumber: '',
         Model: '',
-        ManufacturingDate: '',
+        manufacturingDate: '',
         Location: '',
         Value: '',
-        Expiry_Date: '',
-        AssetImage: null,
+        expiryDate: '',
+        assetImage: null,
     });
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
@@ -70,7 +70,7 @@ const AddAsset = () => {
     const fetchSubCategories = async (categoryId) => {
         try {
             const response = await axios.get(`http://localhost:7287/api/SubCategories?categoryId=${categoryId}`);
-            setSubCategories(response.data.$values || []);
+            setSubCategories(response.data || []);
             console.log(response.data)
         } catch (error) {
             console.error('Error fetching subcategories:', error);
@@ -83,6 +83,7 @@ const AddAsset = () => {
         setFormData({ ...formData, [name]: value });
         if (name === 'categoryId') {
             fetchSubCategories(value);
+            console.log(name+" "+value)
         }
     };
 
@@ -108,7 +109,7 @@ const AddAsset = () => {
             assetData.append(key, formData[key]);
         }
         if (file) {
-            assetData.append('AssetImage', file);
+            assetData.append('assetImage', file);
         }
 
         try {
@@ -140,10 +141,11 @@ const AddAsset = () => {
                 });
                 console.log(uploadFormData);
             }
+            showToast('Asset Added Successfully', 'success');
             setTimeout(() => {
-                showToast('Asset Added Successfully', 'success');
+                navigate('/admin/asset');
             }, 2000)
-            navigate('/admin/asset');
+            
         } catch (error) {
             console.error("Error adding asset:", error);
             showToast('Failed to add Asset. Please try again', 'error');
@@ -158,6 +160,7 @@ const AddAsset = () => {
             setNewCategory('');
             setTimeout(() => {
                 showToast('Category Added Successfully', 'success');
+
             }, 2000)
         } catch (error) {
             console.error('Error adding category:', error);
@@ -219,9 +222,9 @@ const AddAsset = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="AssetName"
+                                            name="assetName"
                                             label="Asset Name"
-                                            value={formData.AssetName}
+                                            value={formData.assetName}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"
@@ -230,9 +233,9 @@ const AddAsset = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="SerialNumber"
+                                            name="serialNumber"
                                             label="Serial Number"
-                                            value={formData.SerialNumber}
+                                            value={formData.serialNumber}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"
@@ -275,10 +278,10 @@ const AddAsset = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="ManufacturingDate"
+                                            name="manufacturingDate"
                                             label="Manufacturing Date"
                                             type="date"
-                                            value={formData.ManufacturingDate}
+                                            value={formData.manufacturingDate}
                                             onChange={handleChange}
                                             required
                                             InputLabelProps={{ shrink: true }}
@@ -288,10 +291,10 @@ const AddAsset = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="Expiry_Date"
+                                            name="expiryDate"
                                             label="Expiry Date"
                                             type="date"
-                                            value={formData.Expiry_Date}
+                                            value={formData.expiryDate}
                                             onChange={handleChange}
                                             InputLabelProps={{ shrink: true }}
                                             variant="outlined"
@@ -300,9 +303,9 @@ const AddAsset = () => {
                                     <Grid item xs={12}>
                                         <TextField
                                             fullWidth
-                                            name="AssetDescription"
+                                            name="assetDescription"
                                             label="Asset Description"
-                                            value={formData.AssetDescription}
+                                            value={formData.assetDescription}
                                             onChange={handleChange}
                                             variant="outlined"
                                             multiline

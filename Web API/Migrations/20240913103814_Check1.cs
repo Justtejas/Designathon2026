@@ -77,7 +77,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "datetime2");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Asset_Status",
+                name: "assetStatus",
                 table: "Assets",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -169,7 +169,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
-                name: "Asset_Status",
+                name: "assetStatus",
                 table: "Assets",
                 type: "int",
                 nullable: false,

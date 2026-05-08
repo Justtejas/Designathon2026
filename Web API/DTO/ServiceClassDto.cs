@@ -9,8 +9,8 @@ namespace Hexa_Hub.DTO
     {
 
         public int ServiceId { get; set; }
-        public int AssetId { get; set; }
-        public string AssetName { get; set; }
+        public int assetId { get; set; }
+        public string assetName { get; set; }
         public int userId { get; set; }
         public string userName { get; set; }
           

@@ -65,7 +65,7 @@ export default function AuditPage() {
             }
             try {
                 const response = await axios.get('http://localhost:7287/api/Audits');
-                setAudits(response.data.$values || []);
+                setAudits(response.data || []);
             } catch (error) {
                 console.error('Error fetching audits:', error);
             }

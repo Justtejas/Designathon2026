@@ -83,8 +83,8 @@ def to_allocation_dto(doc):
     # Mirrors AllocationDto
     return {
         "userId": doc.get("userId"),
-        "AssetName": doc.get("AssetName"),
-        "AssetId": doc.get("AssetId"),
+        "assetName": doc.get("assetName"),
+        "assetId": doc.get("assetId"),
         "categoryName": doc.get("categoryName"),
         "categoryId": doc.get("categoryId"),
         "Value": doc.get("Value"),
@@ -96,8 +96,8 @@ def to_allocation_class_dto(doc):
     # Mirrors AllocationClassDto
     return {
         "AllocationId": doc.get("AllocationId"),
-        "AssetName": doc.get("AssetName"),
-        "AssetId": doc.get("AssetId"),
+        "assetName": doc.get("assetName"),
+        "assetId": doc.get("assetId"),
         "userId": doc.get("userId"),
         "userName": doc.get("userName"),
         "categoryName": doc.get("categoryName"),

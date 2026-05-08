@@ -22,8 +22,8 @@ namespace Hexa_Hub.Repository
             var allocatedAssets = await _context.AssetAllocations
                 .Select(a => new AllocatedAssetDto
                 {
-                    AssetId = a.AssetId,
-                    AssetName = a.Asset.AssetName,
+                    assetId = a.assetId,
+                    assetName = a.Asset.assetName,
                     userId = a.userId,
                     userName = a.User.userName 
                 })
@@ -37,7 +37,7 @@ namespace Hexa_Hub.Repository
             var audit = new Audit
             {
                 AuditId = auditDto.AuditId,
-                AssetId = auditDto.AssetId,
+                assetId = auditDto.assetId,
                 userId = auditDto.userId,
                 AuditDate = auditDto.AuditDate,
                 AuditMessage = auditDto.AuditMessage
@@ -73,12 +73,12 @@ namespace Hexa_Hub.Repository
                 .Select(a => new AuditsDto
                 {
                     AuditId = a.AuditId,
-                    AssetId = a.AssetId,
+                    assetId = a.assetId,
                     userId = a.userId,
                     AuditDate = a.AuditDate,
                     AuditMessage = a.AuditMessage,
                     Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" : a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
-                    AssetName = a.Asset.AssetName,
+                    assetName = a.Asset.assetName,
                     userName = a.User.userName
                 })
                 .OrderByDescending(a => a.AuditDate)
@@ -96,13 +96,13 @@ namespace Hexa_Hub.Repository
             return audits.Select(a => new AuditsDto
             {
                 AuditId = a.AuditId,
-                AssetId = a.AssetId,
+                assetId = a.assetId,
                 userId = a.userId,
                 AuditDate = a.AuditDate,
                 AuditMessage = a.AuditMessage,
                 Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" :
                a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
-                AssetName = a.Asset?.AssetName,
+                assetName = a.Asset?.assetName,
                 userName = a.User?.userName
             }).ToList();
         }
@@ -122,13 +122,13 @@ namespace Hexa_Hub.Repository
                     .Select(a => new AuditsDto
                     {
                         AuditId = a.AuditId,
-                        AssetId = a.AssetId,
+                        assetId = a.assetId,
                         userId = a.userId,
                         AuditDate = a.AuditDate,
                         AuditMessage = a.AuditMessage,
                         Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" :
                a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
-                        AssetName = a.Asset.AssetName,
+                        assetName = a.Asset.assetName,
                         userName = a.User.userName
                     })
                     .FirstOrDefaultAsync(a => a.AuditId == id);
@@ -152,13 +152,13 @@ namespace Hexa_Hub.Repository
                 .Select(a => new AuditsDto
                 {
                     AuditId = a.AuditId,
-                    AssetId = a.AssetId,
+                    assetId = a.assetId,
                     userId = a.userId,
                     AuditDate = a.AuditDate,
                     AuditMessage = a.AuditMessage,
                     Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" :
                a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
-                    AssetName = a.Asset.AssetName,
+                    assetName = a.Asset.assetName,
                     userName = a.User.userName
                 })
                 .ToListAsync();

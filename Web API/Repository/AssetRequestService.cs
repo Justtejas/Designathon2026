@@ -40,8 +40,8 @@ namespace Hexa_Hub.Repository
                     AssetReqId = ar.AssetReqId,
                     userName = ar.User.userName,
                     userId = ar.User.userId,
-                    AssetId = ar.Asset.AssetId,
-                    AssetName =ar.Asset.AssetName,
+                    assetId = ar.Asset.assetId,
+                    assetName =ar.Asset.assetName,
                     categoryName = ar.Asset.Category.categoryName,
                     AssetReqDate = ar.AssetReqDate,
                     AssetReqReason = ar.AssetReqReason,
@@ -98,7 +98,7 @@ namespace Hexa_Hub.Repository
                                         {
                                             AssetReqId = request.AssetReqId,
                                             userId = request.userId,
-                                            AssetId = request.AssetId,
+                                            assetId = request.assetId,
                                             categoryId = request.categoryId,
                                             AssetReqDate = request.AssetReqDate,
                                             AssetReqReason= request.AssetReqReason, 
@@ -132,8 +132,8 @@ namespace Hexa_Hub.Repository
                     AssetReqId = ar.AssetReqId,
                     userName = ar.User.userName,
                     userId = ar.User.userId,
-                    AssetId = ar.Asset.AssetId,
-                    AssetName = ar.Asset.AssetName,
+                    assetId = ar.Asset.assetId,
+                    assetName = ar.Asset.assetName,
                     categoryName = ar.Asset.Category.categoryName,
                     AssetReqDate = ar.AssetReqDate,
                     AssetReqReason = ar.AssetReqReason,
@@ -164,12 +164,12 @@ namespace Hexa_Hub.Repository
                     AssetReqId = ar.AssetReqId,
                     userName = ar.User.userName,
                     userId = ar.User.userId,
-                    AssetName = ar.Asset.AssetName,
+                    assetName = ar.Asset.assetName,
                     categoryName = ar.Asset.Category.categoryName,
                     AssetReqDate = ar.AssetReqDate,
                     AssetReqReason = ar.AssetReqReason,
                     RequestStatus = ar.Request_Status ?? RequestStatus.Pending,
-                    AssetId = ar.Asset.AssetId,
+                    assetId = ar.Asset.assetId,
                 })
                 .FirstOrDefaultAsync(ar => ar.AssetReqId == id);
         }
@@ -182,7 +182,7 @@ namespace Hexa_Hub.Repository
             {
                 AssetReqId = dto.AssetReqId,
                 userId = dto.userId,
-                AssetId = dto.AssetId,
+                assetId = dto.assetId,
                 categoryId = dto.categoryId,
                 AssetReqDate = dto.AssetReqDate,
                 AssetReqReason = dto.AssetReqReason
@@ -194,7 +194,7 @@ namespace Hexa_Hub.Repository
             foreach (var admin in adminUsers)
             {
 
-                await _notificationService.AssetRequestSent(admin.userMail,  req.AssetId);
+                await _notificationService.AssetRequestSent(admin.userMail,  req.assetId);
                 _log.LogInfo("Asset Requests mail has been sent");
 
             }
@@ -223,17 +223,17 @@ namespace Hexa_Hub.Repository
         //                {
         //                    var assetAllocation = new AssetAllocation
         //                    {
-        //                        AssetId = assetRequestDto.AssetId,
+        //                        assetId = assetRequestDto.assetId,
         //                        userId = assetRequestDto.userId,
         //                        AssetReqId = assetRequestDto.AssetReqId,
         //                        AllocatedDate = DateTime.Now
         //                    };
         //                    await _assetAlloc.AddAllocation(assetAllocation);
 
-        //                    var asset = await _asset.GetAssetById(assetRequestDto.AssetId);
+        //                    var asset = await _asset.GetAssetById(assetRequestDto.assetId);
         //                    if (asset != null)
         //                    {
-        //                        asset.Asset_Status = AssetStatus.Allocated;
+        //                        asset.assetStatus = assetStatus.Allocated;
         //                        _asset.UpdateAsset(asset);
         //                    }
         //                    var user = await _context.Users.FindAsync(assetRequestDto.userId);
@@ -246,14 +246,14 @@ namespace Hexa_Hub.Repository
         //                        await _notificationService.SendAllocationApproved(
         //                            user.userMail,
         //                            user.userName,
-        //                            asset.AssetName,
-        //                            asset.AssetId);
+        //                            asset.assetName,
+        //                            asset.assetId);
         //                    }
         //                }
         //            }
         //            else if(parsedStatus == RequestStatus.Rejected)
         //            {
-        //                var asset = await _asset.GetAssetById(assetRequestDto.AssetId);
+        //                var asset = await _asset.GetAssetById(assetRequestDto.assetId);
         //                if (asset != null)
         //                {
         //                    var user = await _context.Users.FindAsync(assetRequestDto.userId);
@@ -266,8 +266,8 @@ namespace Hexa_Hub.Repository
         //                        await _notificationService.SendAllocationRejected(
         //                            user.userMail,
         //                            user.userName,
-        //                            asset.AssetName,
-        //                            asset.AssetId);
+        //                            asset.assetName,
+        //                            asset.assetId);
         //                    }
         //                }
         //            }
@@ -343,7 +343,7 @@ namespace Hexa_Hub.Repository
             {
                 var assetAllocation = new AssetAllocation
                 {
-                    AssetId = assetRequestDto.AssetId,
+                    assetId = assetRequestDto.assetId,
                     userId = assetRequestDto.userId,
                     AssetReqId = assetRequestDto.AssetReqId,
                     AllocatedDate = DateTime.Now
@@ -351,10 +351,10 @@ namespace Hexa_Hub.Repository
 
                 await _assetAlloc.AddAllocation(assetAllocation);
 
-                var asset = await _asset.GetAssetById(assetRequestDto.AssetId);
+                var asset = await _asset.GetAssetById(assetRequestDto.assetId);
                 if (asset != null)
                 {
-                    asset.Asset_Status = AssetStatus.Allocated;
+                    asset.assetStatus = assetStatus.Allocated;
                     _asset.UpdateAsset(asset);
                 }
 
@@ -368,8 +368,8 @@ namespace Hexa_Hub.Repository
                 await _notificationService.SendAllocationApproved(
                     user.userMail,
                     user.userName,
-                    asset.AssetName,
-                    asset.AssetId);
+                    asset.assetName,
+                    asset.assetId);
             }
         }
 
@@ -377,7 +377,7 @@ namespace Hexa_Hub.Repository
         {
             _log.LogInfo("Rejected Asset Requests Process Started");
 
-            var asset = await _asset.GetAssetById(assetRequestDto.AssetId);
+            var asset = await _asset.GetAssetById(assetRequestDto.assetId);
             if (asset != null)
             {
                 var user = await _context.Users.FindAsync(assetRequestDto.userId);
@@ -390,8 +390,8 @@ namespace Hexa_Hub.Repository
                 await _notificationService.SendAllocationRejected(
                     user.userMail,
                     user.userName,
-                    asset.AssetName,
-                    asset.AssetId);
+                    asset.assetName,
+                    asset.assetId);
             }
         }
 

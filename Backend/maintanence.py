@@ -31,7 +31,7 @@ def serialize_maintenance_simple(doc):
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
             "MaintenanceId": doc.get('MaintenanceId'),
-            "AssetId": doc.get('AssetId'),
+            "assetId": doc.get('assetId'),
             "userId": doc.get('userId'),
             "Maintenance_date": doc.get('Maintenance_date'),
             "Cost": doc.get('Cost'),
@@ -45,8 +45,8 @@ def serialize_maintenance_class(doc):
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
             "MaintenanceId": doc.get('MaintenanceId'),
-            "AssetId": doc.get('AssetId'),
-            "AssetName": doc.get('AssetName'),
+            "assetId": doc.get('assetId'),
+            "assetName": doc.get('assetName'),
             "userId": doc.get('userId'),
             "userName": doc.get('userName'),
             "Maintenance_date": doc.get('Maintenance_date'),
@@ -63,8 +63,8 @@ def get_all_maintenance_log():
         pipeline = [
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
@@ -79,8 +79,8 @@ def get_all_maintenance_log():
                 "$project": {
                     "_id": 0,
                     "MaintenanceId": "$MaintenanceId",
-                    "AssetId": "$AssetId",
-                    "AssetName": "$asset.AssetName",
+                    "assetId": "$assetId",
+                    "assetName": "$asset.assetName",
                     "userId": "$userId",
                     "userName": "$user.userName",
                     "Maintenance_date": 1,
@@ -129,8 +129,8 @@ def get_maintenance_log_by_id(log_id):
             {"$match": {"MaintenanceId": log_id}},
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
@@ -145,8 +145,8 @@ def get_maintenance_log_by_id(log_id):
                 "$project": {
                     "_id": 0,
                     "MaintenanceId": "$MaintenanceId",
-                    "AssetId": "$AssetId",
-                    "AssetName": "$asset.AssetName",
+                    "assetId": "$assetId",
+                    "assetName": "$asset.assetName",
                     "userId": "$userId",
                     "userName": "$user.userName",
                     "Maintenance_date": 1,

@@ -74,7 +74,7 @@ namespace Hexa_Hub.Controllers
             }
 
             // Update properties
-            existingRequest.AssetId = serviceRequestDto.AssetId;
+            existingRequest.assetId = serviceRequestDto.assetId;
             existingRequest.userId = serviceRequestDto.userId;
             existingRequest.ServiceRequestDate = serviceRequestDto.ServiceRequestDate;
             existingRequest.Issue_Type = serviceRequestDto.Issue_Type;
@@ -87,10 +87,10 @@ namespace Hexa_Hub.Controllers
 
                 if (parsedStatus == ServiceReqStatus.Approved)
                 {
-                    var asset = await _context.Assets.FindAsync(serviceRequestDto.AssetId);
+                    var asset = await _context.Assets.FindAsync(serviceRequestDto.assetId);
                     if (asset != null)
                     {
-                        asset.Asset_Status = AssetStatus.UnderMaintenance;
+                        asset.assetStatus = assetStatus.UnderMaintenance;
                         _context.Entry(asset).State = EntityState.Modified;
                     }
 
@@ -98,11 +98,11 @@ namespace Hexa_Hub.Controllers
                     var user = await _context.Users.FindAsync(serviceRequestDto.userId);
                     if (user != null)
                     {
-                        await _notificationService.ServiceRequestApproved(user.userMail, user.userName, serviceRequestDto.AssetId, id, serviceRequestDto.Issue_Type);
+                        await _notificationService.ServiceRequestApproved(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.Issue_Type);
                     }
                     var maintenanceLog = new MaintenanceLog
                     {
-                        AssetId = serviceRequestDto.AssetId,
+                        assetId = serviceRequestDto.assetId,
                         userId = serviceRequestDto.userId,
                         Maintenance_date = DateTime.Now,
                         Maintenance_Description = serviceRequestDto.ServiceDescription
@@ -112,17 +112,17 @@ namespace Hexa_Hub.Controllers
                 }
                 else if (parsedStatus == ServiceReqStatus.Completed)
                 {
-                    var asset = await _context.Assets.FindAsync(serviceRequestDto.AssetId);
+                    var asset = await _context.Assets.FindAsync(serviceRequestDto.assetId);
                     if (asset != null)
                     {
-                        asset.Asset_Status = AssetStatus.Allocated;
+                        asset.assetStatus = assetStatus.Allocated;
                         _context.Entry(asset).State = EntityState.Modified;
                     }
 
                     var user = await _context.Users.FindAsync(serviceRequestDto.userId);
                     if (user != null)
                     {
-                        await _notificationService.ServiceRequestCompleted(user.userMail, user.userName, serviceRequestDto.AssetId, id, serviceRequestDto.Issue_Type);
+                        await _notificationService.ServiceRequestCompleted(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.Issue_Type);
                     }
                 }
                 //else if(parsedStatus == ServiceReqStatus.Rejected)
@@ -175,7 +175,7 @@ namespace Hexa_Hub.Controllers
         //        return NotFound($"Service request with ID {id} not found.");
         //    }
 
-        //    existingRequest.AssetId = serviceRequestDto.AssetId;
+        //    existingRequest.assetId = serviceRequestDto.assetId;
         //    existingRequest.userId = serviceRequestDto.userId;
         //    existingRequest.ServiceRequestDate = serviceRequestDto.ServiceRequestDate;
         //    existingRequest.Issue_Type = serviceRequestDto.Issue_Type;
@@ -187,30 +187,30 @@ namespace Hexa_Hub.Controllers
 
         //        if (parsedStatus == ServiceReqStatus.Approved)
         //        {
-        //            var asset = await _context.Assets.FindAsync(serviceRequestDto.AssetId);
+        //            var asset = await _context.Assets.FindAsync(serviceRequestDto.assetId);
         //            if (asset != null)
         //            {
-        //                asset.Asset_Status = AssetStatus.UnderMaintenance;
+        //                asset.assetStatus = assetStatus.UnderMaintenance;
         //                _context.Entry(asset).State = EntityState.Modified;
         //            }
         //            var user = await _context.Users.FindAsync(serviceRequestDto.userId);
         //            if (user != null)
         //            {
-        //                await _notificationService.ServiceRequestApproved(user.userMail, user.userName, serviceRequestDto.AssetId, id, serviceRequestDto.Issue_Type);
+        //                await _notificationService.ServiceRequestApproved(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.Issue_Type);
         //            }
         //        }
         //        else if (parsedStatus == ServiceReqStatus.Completed)
         //        {
-        //            var asset = await _context.Assets.FindAsync(serviceRequestDto.AssetId);
+        //            var asset = await _context.Assets.FindAsync(serviceRequestDto.assetId);
         //            if (asset != null)
         //            {
-        //                asset.Asset_Status = AssetStatus.Allocated;
+        //                asset.assetStatus = assetStatus.Allocated;
         //                _context.Entry(asset).State = EntityState.Modified;
         //            }
         //            var user = await _context.Users.FindAsync(serviceRequestDto.userId);
         //            if (user != null)
         //            {
-        //                await _notificationService.ServiceRequestCompleted(user.userMail, user.userName, serviceRequestDto.AssetId, id, serviceRequestDto.Issue_Type);
+        //                await _notificationService.ServiceRequestCompleted(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.Issue_Type);
         //            }
         //        }
         //    }
@@ -251,7 +251,7 @@ namespace Hexa_Hub.Controllers
             serviceRequestDto.userId = loggedInuserId;
             var serviceRequest = new ServiceRequest
             {
-                AssetId = serviceRequestDto.AssetId,
+                assetId = serviceRequestDto.assetId,
                 userId = loggedInuserId,
                 ServiceRequestDate = serviceRequestDto.ServiceRequestDate,
                 Issue_Type = serviceRequestDto.Issue_Type,
@@ -262,7 +262,7 @@ namespace Hexa_Hub.Controllers
 
             //var maintenanceLog = new MaintenanceLog
             //{
-            //    AssetId = serviceRequest.AssetId,
+            //    assetId = serviceRequest.assetId,
             //    userId = loggedInuserId,
             //    Maintenance_date = DateTime.Now,
             //    Maintenance_Description = serviceRequest.ServiceDescription

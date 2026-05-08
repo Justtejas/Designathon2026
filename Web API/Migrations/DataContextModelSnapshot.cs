@@ -12,41 +12,41 @@ namespace Hexa_Hub.Migrations
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder ModelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
+            ModelBuilder
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(ModelBuilder);
 
-            modelBuilder.Entity("Asset", b =>
+            ModelBuilder.Entity("Asset", b =>
                 {
-                    b.Property<int>("AssetId")
+                    b.Property<int>("assetId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssetId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("assetId"));
 
-                    b.Property<string>("AssetDescription")
+                    b.Property<string>("assetDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("AssetImage")
+                    b.Property<byte[]>("assetImage")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("AssetName")
+                    b.Property<string>("assetName")
                         .IsRequired()
                         .HasMaxLength(55)
                         .HasColumnType("nvarchar(55)");
 
-                    b.Property<string>("Asset_Status")
+                    b.Property<string>("assetStatus")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("categoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("Expiry_Date")
+                    b.Property<DateTime?>("expiryDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Location")
@@ -54,14 +54,14 @@ namespace Hexa_Hub.Migrations
                         .HasMaxLength(55)
                         .HasColumnType("nvarchar(55)");
 
-                    b.Property<DateTime>("ManufacturingDate")
+                    b.Property<DateTime>("manufacturingDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SerialNumber")
+                    b.Property<string>("serialNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -71,7 +71,7 @@ namespace Hexa_Hub.Migrations
                     b.Property<decimal>("Value")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("AssetId");
+                    b.HasKey("assetId");
 
                     b.HasIndex("categoryId");
 
@@ -80,7 +80,7 @@ namespace Hexa_Hub.Migrations
                     b.ToTable("Assets");
                 });
 
-            modelBuilder.Entity("AssetAllocation", b =>
+            ModelBuilder.Entity("AssetAllocation", b =>
                 {
                     b.Property<int>("AllocationId")
                         .ValueGeneratedOnAdd()
@@ -91,7 +91,7 @@ namespace Hexa_Hub.Migrations
                     b.Property<DateTime>("AllocatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("AssetId")
+                    b.Property<int>("assetId")
                         .HasColumnType("int");
 
                     b.Property<int>("AssetReqId")
@@ -102,7 +102,7 @@ namespace Hexa_Hub.Migrations
 
                     b.HasKey("AllocationId");
 
-                    b.HasIndex("AssetId");
+                    b.HasIndex("assetId");
 
                     b.HasIndex("AssetReqId")
                         .IsUnique();
@@ -112,7 +112,7 @@ namespace Hexa_Hub.Migrations
                     b.ToTable("AssetAllocations");
                 });
 
-            modelBuilder.Entity("AssetRequest", b =>
+            ModelBuilder.Entity("AssetRequest", b =>
                 {
                     b.Property<int>("AssetReqId")
                         .ValueGeneratedOnAdd()
@@ -120,7 +120,7 @@ namespace Hexa_Hub.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssetReqId"));
 
-                    b.Property<int>("AssetId")
+                    b.Property<int>("assetId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("AssetReqDate")
@@ -141,14 +141,14 @@ namespace Hexa_Hub.Migrations
 
                     b.HasKey("AssetReqId");
 
-                    b.HasIndex("AssetId");
+                    b.HasIndex("assetId");
 
                     b.HasIndex("userId");
 
                     b.ToTable("AssetRequests");
                 });
 
-            modelBuilder.Entity("Audit", b =>
+            ModelBuilder.Entity("Audit", b =>
                 {
                     b.Property<int>("AuditId")
                         .ValueGeneratedOnAdd()
@@ -156,7 +156,7 @@ namespace Hexa_Hub.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuditId"));
 
-                    b.Property<int>("AssetId")
+                    b.Property<int>("assetId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("AuditDate")
@@ -173,14 +173,14 @@ namespace Hexa_Hub.Migrations
 
                     b.HasKey("AuditId");
 
-                    b.HasIndex("AssetId");
+                    b.HasIndex("assetId");
 
                     b.HasIndex("userId");
 
                     b.ToTable("Audits");
                 });
 
-            modelBuilder.Entity("Category", b =>
+            ModelBuilder.Entity("Category", b =>
                 {
                     b.Property<int>("categoryId")
                         .ValueGeneratedOnAdd()
@@ -198,7 +198,7 @@ namespace Hexa_Hub.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("MaintenanceLog", b =>
+            ModelBuilder.Entity("MaintenanceLog", b =>
                 {
                     b.Property<int>("MaintenanceId")
                         .ValueGeneratedOnAdd()
@@ -206,7 +206,7 @@ namespace Hexa_Hub.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaintenanceId"));
 
-                    b.Property<int>("AssetId")
+                    b.Property<int>("assetId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Cost")
@@ -223,14 +223,14 @@ namespace Hexa_Hub.Migrations
 
                     b.HasKey("MaintenanceId");
 
-                    b.HasIndex("AssetId");
+                    b.HasIndex("assetId");
 
                     b.HasIndex("userId");
 
                     b.ToTable("MaintenanceLogs");
                 });
 
-            modelBuilder.Entity("ReturnRequest", b =>
+            ModelBuilder.Entity("ReturnRequest", b =>
                 {
                     b.Property<int>("ReturnId")
                         .ValueGeneratedOnAdd()
@@ -238,7 +238,7 @@ namespace Hexa_Hub.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReturnId"));
 
-                    b.Property<int>("AssetId")
+                    b.Property<int>("assetId")
                         .HasColumnType("int");
 
                     b.Property<int>("categoryId")
@@ -263,14 +263,14 @@ namespace Hexa_Hub.Migrations
 
                     b.HasKey("ReturnId");
 
-                    b.HasIndex("AssetId");
+                    b.HasIndex("assetId");
 
                     b.HasIndex("userId");
 
                     b.ToTable("ReturnRequests");
                 });
 
-            modelBuilder.Entity("ServiceRequest", b =>
+            ModelBuilder.Entity("ServiceRequest", b =>
                 {
                     b.Property<int>("ServiceId")
                         .ValueGeneratedOnAdd()
@@ -278,7 +278,7 @@ namespace Hexa_Hub.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceId"));
 
-                    b.Property<int>("AssetId")
+                    b.Property<int>("assetId")
                         .HasColumnType("int");
 
                     b.Property<string>("Issue_Type")
@@ -300,14 +300,14 @@ namespace Hexa_Hub.Migrations
 
                     b.HasKey("ServiceId");
 
-                    b.HasIndex("AssetId");
+                    b.HasIndex("assetId");
 
                     b.HasIndex("userId");
 
                     b.ToTable("ServiceRequests");
                 });
 
-            modelBuilder.Entity("SubCategory", b =>
+            ModelBuilder.Entity("SubCategory", b =>
                 {
                     b.Property<int>("subCategoryId")
                         .ValueGeneratedOnAdd()
@@ -333,7 +333,7 @@ namespace Hexa_Hub.Migrations
                     b.ToTable("SubCategories");
                 });
 
-            modelBuilder.Entity("User", b =>
+            ModelBuilder.Entity("User", b =>
                 {
                     b.Property<int>("userId")
                         .ValueGeneratedOnAdd()
@@ -385,7 +385,7 @@ namespace Hexa_Hub.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Asset", b =>
+            ModelBuilder.Entity("Asset", b =>
                 {
                     b.HasOne("Category", "Category")
                         .WithMany("Assets")
@@ -404,11 +404,11 @@ namespace Hexa_Hub.Migrations
                     b.Navigation("SubCategories");
                 });
 
-            modelBuilder.Entity("AssetAllocation", b =>
+            ModelBuilder.Entity("AssetAllocation", b =>
                 {
                     b.HasOne("Asset", "Asset")
                         .WithMany("AssetAllocations")
-                        .HasForeignKey("AssetId")
+                        .HasForeignKey("assetId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -431,11 +431,11 @@ namespace Hexa_Hub.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AssetRequest", b =>
+            ModelBuilder.Entity("AssetRequest", b =>
                 {
                     b.HasOne("Asset", "Asset")
                         .WithMany("AssetRequests")
-                        .HasForeignKey("AssetId")
+                        .HasForeignKey("assetId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -450,11 +450,11 @@ namespace Hexa_Hub.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Audit", b =>
+            ModelBuilder.Entity("Audit", b =>
                 {
                     b.HasOne("Asset", "Asset")
                         .WithMany("Audits")
-                        .HasForeignKey("AssetId")
+                        .HasForeignKey("assetId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -469,11 +469,11 @@ namespace Hexa_Hub.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MaintenanceLog", b =>
+            ModelBuilder.Entity("MaintenanceLog", b =>
                 {
                     b.HasOne("Asset", "Asset")
                         .WithMany("MaintenanceLogs")
-                        .HasForeignKey("AssetId")
+                        .HasForeignKey("assetId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -488,11 +488,11 @@ namespace Hexa_Hub.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ReturnRequest", b =>
+            ModelBuilder.Entity("ReturnRequest", b =>
                 {
                     b.HasOne("Asset", "Asset")
                         .WithMany("ReturnRequests")
-                        .HasForeignKey("AssetId")
+                        .HasForeignKey("assetId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -507,11 +507,11 @@ namespace Hexa_Hub.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ServiceRequest", b =>
+            ModelBuilder.Entity("ServiceRequest", b =>
                 {
                     b.HasOne("Asset", "Asset")
                         .WithMany("ServiceRequests")
-                        .HasForeignKey("AssetId")
+                        .HasForeignKey("assetId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -526,7 +526,7 @@ namespace Hexa_Hub.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SubCategory", b =>
+            ModelBuilder.Entity("SubCategory", b =>
                 {
                     b.HasOne("Category", "Category")
                         .WithMany("SubCategories")
@@ -537,7 +537,7 @@ namespace Hexa_Hub.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Asset", b =>
+            ModelBuilder.Entity("Asset", b =>
                 {
                     b.Navigation("AssetAllocations");
 
@@ -552,24 +552,24 @@ namespace Hexa_Hub.Migrations
                     b.Navigation("ServiceRequests");
                 });
 
-            modelBuilder.Entity("AssetRequest", b =>
+            ModelBuilder.Entity("AssetRequest", b =>
                 {
                     b.Navigation("AssetAlocation");
                 });
 
-            modelBuilder.Entity("Category", b =>
+            ModelBuilder.Entity("Category", b =>
                 {
                     b.Navigation("Assets");
 
                     b.Navigation("SubCategories");
                 });
 
-            modelBuilder.Entity("SubCategory", b =>
+            ModelBuilder.Entity("SubCategory", b =>
                 {
                     b.Navigation("Assets");
                 });
 
-            modelBuilder.Entity("User", b =>
+            ModelBuilder.Entity("User", b =>
                 {
                     b.Navigation("AssetAllocations");
 

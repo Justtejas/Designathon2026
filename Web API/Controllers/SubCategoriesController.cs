@@ -83,7 +83,7 @@ namespace Hexa_Hub.Controllers
                 return NotFound("Id Not Found");
             }
 
-            // Map DTO to model
+            // Map DTO to Model
             existingSubCategory.subCategoryName = subCategoriesDto.subCategoryName;
             existingSubCategory.categoryId = subCategoriesDto.categoryId;
             existingSubCategory.Quantity = subCategoriesDto.Quantity;
@@ -115,7 +115,7 @@ namespace Hexa_Hub.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<SubCategory>> PostSubCategory(SubCategoriesDto subCategoriesDto)
         {
-            // Map DTO to model
+            // Map DTO to Model
             var subCategory = new SubCategory
             {
                 subCategoryName = subCategoriesDto.subCategoryName,

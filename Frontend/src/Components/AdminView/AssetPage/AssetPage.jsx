@@ -65,8 +65,8 @@ export default function AssetPage() {
                     axios.get('http://localhost:7287/api/Assets/assetall'),
                     axios.get('http://localhost:7287/api/Categories/all-categories'),
                 ]);
-                setAssets(assetsResponse.data.$values || []);
-                setCategories(categoriesResponse.data.$values || []);
+                setAssets(assetsResponse.data || []);
+                setCategories(categoriesResponse.data || []);
             } catch (error) {
                 console.error('Error fetching assets or categories:', error);
             }
@@ -84,7 +84,7 @@ export default function AssetPage() {
         const url = `http://localhost:7287/api/SubCategories/by-category-name?categoryName=${categoryId}`;
         try {
             const response = await axios.get(url);
-            const fetchedSubCategories = response.data.$values || [];
+            const fetchedSubCategories = response.data || [];
             setSubCategories(fetchedSubCategories);
         } catch (error) {
             console.error('Error fetching subcategories:', error);

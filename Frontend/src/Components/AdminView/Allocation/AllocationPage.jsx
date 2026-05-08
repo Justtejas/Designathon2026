@@ -55,7 +55,7 @@ export default function AllocationPage() {
             try {
                 const response = await axios.get('http://localhost:7287/api/AssetAllocations');
                 console.log('Fetched Assets Response:', JSON.stringify(response.data));
-                setAllocation(response.data.$values || []);
+                setAllocation(response.data || []);
             } catch (error) {
                 console.error('Error fetching assets:', error);
             }

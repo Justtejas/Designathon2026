@@ -80,12 +80,12 @@ def serialize_audit_doc(doc):
         display_status = status_map.get(audit_status, audit_status)
         return {
             "AuditId": doc.get('AuditId'),
-            "AssetId": doc.get('AssetId'),
+            "assetId": doc.get('assetId'),
             "userId": doc.get('userId'),
             "AuditDate": doc.get('AuditDate'),
             "AuditMessage": doc.get('AuditMessage'),
             "Audit_Status": display_status,
-            "AssetName": doc.get('AssetName'),
+            "assetName": doc.get('assetName'),
             "userName": doc.get('userName')
         }
     return None
@@ -97,8 +97,8 @@ def get_allocated_assets():
         pipeline = [
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
@@ -112,8 +112,8 @@ def get_allocated_assets():
             {
                 "$project": {
                     "_id": 0,
-                    "AssetId": "$AssetId",
-                    "AssetName": "$asset.AssetName",
+                    "assetId": "$assetId",
+                    "assetName": "$asset.assetName",
                     "userId": "$userId",
                     "userName": "$user.userName"
                 }
@@ -160,20 +160,20 @@ def get_all_audits():
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
             {
                 "$project": {
                     "AuditId": 1,
-                    "AssetId": 1,
+                    "assetId": 1,
                     "userId": 1,
                     "AuditDate": 1,
                     "AuditMessage": 1,
                     "Audit_Status": 1,
-                    "AssetName": "$asset.AssetName",
+                    "assetName": "$asset.assetName",
                     "userName": "$user.userName"
                 }
             },
@@ -203,20 +203,20 @@ def get_audit_by_id(audit_id):
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
             {
                 "$project": {
                     "AuditId": 1,
-                    "AssetId": 1,
+                    "assetId": 1,
                     "userId": 1,
                     "AuditDate": 1,
                     "AuditMessage": 1,
                     "Audit_Status": 1,
-                    "AssetName": "$asset.AssetName",
+                    "assetName": "$asset.assetName",
                     "userName": "$user.userName"
                 }
             }
@@ -252,8 +252,8 @@ def get_audit(audit_id):
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}}
@@ -325,7 +325,7 @@ def post_audit():
         logger.info("Creating new audit")
         audit_doc = {
             "AuditId": data.get("AuditId"),
-            "AssetId": data.get("AssetId"),
+            "assetId": data.get("assetId"),
             "userId": data.get("userId"),
             "AuditDate": data.get("AuditDate", datetime.now().isoformat()),
             "AuditMessage": data.get("AuditMessage"),

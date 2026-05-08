@@ -19,7 +19,7 @@ import ToastNotification, { showToast } from '../../Utils/ToastNotification';
 const AddAudit = () => {
     const { darkMode } = useTheme();
     const [formData, setFormData] = useState({
-        AssetId: '',
+        assetId: '',
         userId: '',
         AuditDate: new Date().toISOString().split('T')[0], 
         AuditMessage: '',
@@ -37,11 +37,11 @@ const AddAudit = () => {
             try {
                 const userResponse = await axios.get('http://localhost:7287/api/users');
                 console.log('User Response:', userResponse.data);
-                setUsers(userResponse.data.$values || []);
+                setUsers(userResponse.data || []);
 
                 const assetResponse = await axios.get('http://localhost:7287/api/Audits/allocated-assets');
                 console.log('Allocated Assets Response:', assetResponse.data);
-                setAllocatedAssets(assetResponse.data.$values || []);
+                setAllocatedAssets(assetResponse.data || []);
             } catch (error) {
                 console.error('Error fetching users and allocated assets:', error);
                 setUsers([]);
@@ -52,14 +52,14 @@ const AddAudit = () => {
     }, []);
 
     useEffect(() => {
-        const selectedAsset = allocatedAssets.find(asset => asset.assetId === formData.AssetId);
+        const selectedAsset = allocatedAssets.find(asset => asset.assetId === formData.assetId);
         if (selectedAsset) {
             const associatedUser = users.find(user => user.userId === selectedAsset.userId);
             setFilteredUsers(associatedUser ? [associatedUser] : []);
         } else {
             setFilteredUsers([]);
         }
-    }, [formData.AssetId, allocatedAssets, users]);
+    }, [formData.assetId, allocatedAssets, users]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -79,7 +79,7 @@ const AddAudit = () => {
             }, 2000)
             navigate('/admin/audit');
             setFormData({
-                AssetId: '',
+                assetId: '',
                 userId: '',
                 AuditDate: new Date().toISOString().split('T')[0], 
                 AuditMessage: '', 
@@ -128,9 +128,9 @@ const AddAudit = () => {
                                         <TextField
                                             fullWidth
                                             select
-                                            name="AssetId"
+                                            name="assetId"
                                             label="Select Asset"
-                                            value={formData.AssetId}
+                                            value={formData.assetId}
                                             onChange={handleChange}
                                             required
                                             variant="outlined"

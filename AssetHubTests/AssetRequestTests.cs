@@ -47,7 +47,7 @@ namespace AssetHubTests
         public async Task AddAssetRequest_ShouldAddAssetRequest()
         {
             // Arrange
-            var newAssetRequest = new AssetRequestDto { AssetReqId = 3, AssetId = 2 };
+            var newAssetRequest = new AssetRequestDto { AssetReqId = 3, assetId = 2 };
 
 
             // Mock

@@ -33,19 +33,19 @@ namespace Hexa_Hub.Repository
 
         //    //return assets.Select(a => new Asset
         //    //{
-        //    //    AssetId = a.AssetId,
-        //    //    AssetName = a.AssetName,
-        //    //    AssetDescription = a.AssetDescription,
+        //    //    assetId = a.assetId,
+        //    //    assetName = a.assetName,
+        //    //    assetDescription = a.assetDescription,
         //    //    categoryId = a.categoryId,
         //    //    subCategoryId = a.subCategoryId,
-        //    //    AssetImage = a.AssetImage,
-        //    //    SerialNumber = a.SerialNumber,
+        //    //    assetImage = a.assetImage,
+        //    //    serialNumber = a.serialNumber,
         //    //    Model = a.Model,
-        //    //    ManufacturingDate = a.ManufacturingDate,
+        //    //    manufacturingDate = a.manufacturingDate,
         //    //    Location = a.Location,
         //    //    Value = a.Value,
-        //    //    Expiry_Date = a.Expiry_Date,
-        //    //    Asset_Status = a.Asset_Status,
+        //    //    expiryDate = a.expiryDate,
+        //    //    assetStatus = a.assetStatus,
         //    //    Category = a.Category,
         //    //    SubCategories = a.SubCategories
         //    //}).ToList();
@@ -61,17 +61,17 @@ namespace Hexa_Hub.Repository
          .Include(a => a.SubCategories)  
          .Select(a => new AssetDtoClass
          {
-             AssetId = a.AssetId,
-             AssetName = a.AssetName,
+             assetId = a.assetId,
+             assetName = a.assetName,
              Location = a.Location,
              Value = a.Value,
              Model = a.Model,
-             SerialNumber = a.SerialNumber,
+             serialNumber = a.serialNumber,
              categoryName = a.Category.categoryName,
              categoryId =  a.Category.categoryId,
              subCategoryId = a.SubCategories.subCategoryId,
              subCategoryName = a.SubCategories.subCategoryName, 
-             AssetStatus = a.Asset_Status ?? AssetStatus.OpenToRequest,        
+             assetStatus = a.assetStatus ?? assetStatus.OpenToRequest,        
          })
          .ToListAsync();
         }
@@ -85,19 +85,19 @@ namespace Hexa_Hub.Repository
 
         //return assets.Select(a => new AssetDto
         //{
-        //    AssetId = a.AssetId,
-        //    AssetName = a.AssetName,
-        //    AssetDescription = a.AssetDescription,
+        //    assetId = a.assetId,
+        //    assetName = a.assetName,
+        //    assetDescription = a.assetDescription,
         //    categoryId = a.categoryId,
         //    subCategoryId = a.subCategoryId,
-        //    AssetImage = a.AssetImage,
-        //    SerialNumber = a.SerialNumber,
+        //    assetImage = a.assetImage,
+        //    serialNumber = a.serialNumber,
         //    Model = a.Model,
-        //    ManufacturingDate = a.ManufacturingDate,
+        //    manufacturingDate = a.manufacturingDate,
         //    Location = a.Location,
         //    Value = a.Value,
-        //    Expiry_Date = a.Expiry_Date,
-        //    Asset_Status = a.Asset_Status?.ToString()
+        //    expiryDate = a.expiryDate,
+        //    assetStatus = a.assetStatus?.ToString()
         //}).ToList();
     //}
 
@@ -122,10 +122,10 @@ namespace Hexa_Hub.Repository
             _log.LogInfo("Fetching assets by id");
 
             return await _context.Assets
-                                 .FirstOrDefaultAsync(a => a.AssetId == id);
+                                 .FirstOrDefaultAsync(a => a.assetId == id);
         }
 
-        public async Task<AssetDtoClass?> GetAssetByAssetId(int id)
+        public async Task<AssetDtoClass?> GetAssetByassetId(int id)
         {
             _log.LogInfo("Fetching assets by id");
 
@@ -134,21 +134,21 @@ namespace Hexa_Hub.Repository
                                  .Include(a => a.SubCategories)
                                   .Select(a => new AssetDtoClass
                                   {
-                                      AssetId = a.AssetId,
-                                      AssetName = a.AssetName,
-                                      AssetDescription = a.AssetDescription,
+                                      assetId = a.assetId,
+                                      assetName = a.assetName,
+                                      assetDescription = a.assetDescription,
                                       Location = a.Location,
                                       Value = a.Value,
                                       categoryName = a.Category.categoryName,
                                       subCategoryName = a.SubCategories.subCategoryName,
-                                      AssetStatus = a.Asset_Status ?? AssetStatus.OpenToRequest,
-                                      SerialNumber = a.SerialNumber,
+                                      assetStatus = a.assetStatus ?? assetStatus.OpenToRequest,
+                                      serialNumber = a.serialNumber,
                                       Model = a.Model,
-                                      ManufacturingDate = a.ManufacturingDate,
-                                      Expiry_Date = a.Expiry_Date,
+                                      manufacturingDate = a.manufacturingDate,
+                                      expiryDate = a.expiryDate,
 
                                   })
-                                 .FirstOrDefaultAsync(a => a.AssetId == id);
+                                 .FirstOrDefaultAsync(a => a.assetId == id);
         }
 
 
@@ -156,11 +156,11 @@ namespace Hexa_Hub.Repository
         //{
         //    byte[]? assetImageBytes = null;
 
-        //    if (assetDto.AssetImage != null)
+        //    if (assetDto.assetImage != null)
         //    {
         //        using (var memoryStream = new MemoryStream())
         //        {
-        //            await assetDto.AssetImage.CopyToAsync(memoryStream);
+        //            await assetDto.assetImage.CopyToAsync(memoryStream);
         //            assetImageBytes = memoryStream.ToArray();
         //        }
         //    }
@@ -171,18 +171,18 @@ namespace Hexa_Hub.Repository
         //        throw new AssetNotFoundException($"Asset with ID {id} not found");
         //    }
 
-        //    existingAsset.AssetName = assetDto.AssetName;
-        //    existingAsset.AssetDescription = assetDto.AssetDescription;
+        //    existingAsset.assetName = assetDto.assetName;
+        //    existingAsset.assetDescription = assetDto.assetDescription;
         //    existingAsset.categoryId = assetDto.categoryId;
         //    existingAsset.subCategoryId = assetDto.subCategoryId;
-        //    //existingAsset.AssetImage = assetImageBytes ?? existingAsset.AssetImage;
-        //    //existingAsset.AssetImage = assetImageBytes;
-        //    existingAsset.SerialNumber = assetDto.SerialNumber;
+        //    //existingAsset.assetImage = assetImageBytes ?? existingAsset.assetImage;
+        //    //existingAsset.assetImage = assetImageBytes;
+        //    existingAsset.serialNumber = assetDto.serialNumber;
         //    existingAsset.Model = assetDto.Model;
-        //    existingAsset.ManufacturingDate = assetDto.ManufacturingDate;
+        //    existingAsset.manufacturingDate = assetDto.manufacturingDate;
         //    existingAsset.Location = assetDto.Location;
         //    existingAsset.Value = assetDto.Value;
-        //    existingAsset.Expiry_Date = assetDto.Expiry_Date;
+        //    existingAsset.expiryDate = assetDto.expiryDate;
 
 
         //    _context.Assets.Update(existingAsset);
@@ -196,16 +196,16 @@ namespace Hexa_Hub.Repository
 
             byte[]? assetImageBytes = null;
             var existingAsset = await _context.Assets.FindAsync(id);
-            if (assetDto.AssetImage != null)
+            if (assetDto.assetImage != null)
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    await assetDto.AssetImage.CopyToAsync(memoryStream);
+                    await assetDto.assetImage.CopyToAsync(memoryStream);
                     assetImageBytes = memoryStream.ToArray();
                 }
 
                 // Save the image bytes to the asset object (or handle saving it to disk)
-                existingAsset.AssetImage = assetImageBytes;
+                existingAsset.assetImage = assetImageBytes;
             }
 
             
@@ -215,16 +215,16 @@ namespace Hexa_Hub.Repository
                 throw new AssetNotFoundException($"Asset with ID {id} not found");
             }
 
-            existingAsset.AssetName = assetDto.AssetName;
-            existingAsset.AssetDescription = assetDto.AssetDescription;
+            existingAsset.assetName = assetDto.assetName;
+            existingAsset.assetDescription = assetDto.assetDescription;
             existingAsset.categoryId = assetDto.categoryId;
             existingAsset.subCategoryId = assetDto.subCategoryId;
-            existingAsset.SerialNumber = assetDto.SerialNumber;
+            existingAsset.serialNumber = assetDto.serialNumber;
             existingAsset.Model = assetDto.Model;
-            existingAsset.ManufacturingDate = assetDto.ManufacturingDate;
+            existingAsset.manufacturingDate = assetDto.manufacturingDate;
             existingAsset.Location = assetDto.Location;
             existingAsset.Value = assetDto.Value;
-            existingAsset.Expiry_Date = assetDto.Expiry_Date;
+            existingAsset.expiryDate = assetDto.expiryDate;
 
             _context.Assets.Update(existingAsset);
 
@@ -245,20 +245,20 @@ namespace Hexa_Hub.Repository
             _log.LogInfo("Fetching assets by name");
 
             var assetDetails = await (from asset in _context.Assets
-                                      where EF.Functions.Like(asset.AssetName, $"%{name}%")
+                                      where EF.Functions.Like(asset.assetName, $"%{name}%")
                                       select new AssetDto
                                       {
-                                          //AssetId = asset.AssetId,
-                                          AssetName = asset.AssetName,
-                                          AssetDescription = asset.AssetDescription,
-                                          ManufacturingDate = asset.ManufacturingDate,
+                                          //assetId = asset.assetId,
+                                          assetName = asset.assetName,
+                                          assetDescription = asset.assetDescription,
+                                          manufacturingDate = asset.manufacturingDate,
                                           Location = asset.Location,
                                           Value = asset.Value,
-                                          Expiry_Date = asset.Expiry_Date,
-                                          Asset_Status = asset.Asset_Status.ToString(),
+                                          expiryDate = asset.expiryDate,
+                                          assetStatus = asset.assetStatus.ToString(),
                                           categoryId = asset.categoryId,
                                           subCategoryId = asset.subCategoryId,
-                                          SerialNumber = asset.SerialNumber,
+                                          serialNumber = asset.serialNumber,
                                           Model = asset.Model
                                       }).ToListAsync();
 
@@ -271,18 +271,18 @@ namespace Hexa_Hub.Repository
                                        where asset.Value >= minPrice && asset.Value <= maxPrice
                                        select new AssetDto
                                        {
-                                           //AssetId = asset.AssetId,
-                                           AssetName = asset.AssetName,
-                                           AssetDescription = asset.AssetDescription,
-                                           //AssetImage = asset.AssetImage,
-                                           ManufacturingDate = asset.ManufacturingDate,
+                                           //assetId = asset.assetId,
+                                           assetName = asset.assetName,
+                                           assetDescription = asset.assetDescription,
+                                           //assetImage = asset.assetImage,
+                                           manufacturingDate = asset.manufacturingDate,
                                            Location = asset.Location,
                                            Value = asset.Value,
-                                           Expiry_Date = asset.Expiry_Date,
-                                           Asset_Status = asset.Asset_Status.ToString(),
+                                           expiryDate = asset.expiryDate,
+                                           assetStatus = asset.assetStatus.ToString(),
                                            categoryId = asset.categoryId,
                                            subCategoryId = asset.subCategoryId,
-                                           SerialNumber = asset.SerialNumber,
+                                           serialNumber = asset.serialNumber,
                                            Model = asset.Model
                                        }).ToListAsync();
 
@@ -295,42 +295,42 @@ namespace Hexa_Hub.Repository
                                       where EF.Functions.Like(asset.Location, $"%{location}%")
                                       select new AssetDto
                                       {
-                                          //AssetId = asset.AssetId,
-                                          AssetName = asset.AssetName,
-                                          AssetDescription = asset.AssetDescription,
-                                          //AssetImage = asset.AssetImage,
-                                          ManufacturingDate = asset.ManufacturingDate,
+                                          //assetId = asset.assetId,
+                                          assetName = asset.assetName,
+                                          assetDescription = asset.assetDescription,
+                                          //assetImage = asset.assetImage,
+                                          manufacturingDate = asset.manufacturingDate,
                                           Location = asset.Location,
                                           Value = asset.Value,
-                                          Expiry_Date = asset.Expiry_Date,
-                                          Asset_Status = asset.Asset_Status.ToString(),
+                                          expiryDate = asset.expiryDate,
+                                          assetStatus = asset.assetStatus.ToString(),
                                           categoryId = asset.categoryId,
                                           subCategoryId = asset.subCategoryId,
-                                          SerialNumber = asset.SerialNumber,
+                                          serialNumber = asset.serialNumber,
                                           Model = asset.Model
                                       }).ToListAsync();
 
             return assetDetails;
         }
 
-        public async Task<IEnumerable<AssetDto>> GetAssetsByStatus(AssetStatus status)
+        public async Task<IEnumerable<AssetDto>> GetAssetsByStatus(assetStatus status)
         {
             var assetsByStatus = await (from asset in _context.Assets
-                                        where asset.Asset_Status == status
+                                        where asset.assetStatus == status
                                         select new AssetDto
                                         {
-                                            //AssetId = asset.AssetId,
-                                            AssetName = asset.AssetName,
-                                            AssetDescription = asset.AssetDescription,
-                                            //AssetImage = asset.AssetImage,
-                                            ManufacturingDate = asset.ManufacturingDate,
+                                            //assetId = asset.assetId,
+                                            assetName = asset.assetName,
+                                            assetDescription = asset.assetDescription,
+                                            //assetImage = asset.assetImage,
+                                            manufacturingDate = asset.manufacturingDate,
                                             Location = asset.Location,
                                             Value = asset.Value,
-                                            Expiry_Date = asset.Expiry_Date,
-                                            Asset_Status = asset.Asset_Status.ToString(),
+                                            expiryDate = asset.expiryDate,
+                                            assetStatus = asset.assetStatus.ToString(),
                                             categoryId = asset.categoryId,
                                             subCategoryId = asset.subCategoryId,
-                                            SerialNumber = asset.SerialNumber,
+                                            serialNumber = asset.serialNumber,
                                             Model = asset.Model
                                         }).ToListAsync();
 
@@ -359,21 +359,21 @@ namespace Hexa_Hub.Repository
             await _context.SaveChangesAsync();
         }
 
-        //public async Task<string?> UploadAssetImageAsync(int assetId, IFormFile file)
+        //public async Task<string?> UploadassetImageAsync(int assetId, IFormFile file)
         //{
         //    var asset = await _context.Assets.FindAsync(assetId);
         //    if(asset == null)
         //    {
         //        return null;
         //    }
-        //    const string assetImageFolder = "AssetImages";
+        //    const string assetImageFolder = "assetImages";
         //    string ImagePath = Path.Combine(Directory.GetCurrentDirectory(), assetImageFolder);
         //    if (!Directory.Exists(ImagePath))
         //    {
         //        Directory.CreateDirectory(ImagePath);
         //    }
         //    string fileName;
-        //    if (asset.AssetImage == null && file == null)
+        //    if (asset.assetImage == null && file == null)
         //    {
         //        fileName = "AssetDefault.jpg";
         //    }
@@ -389,14 +389,14 @@ namespace Hexa_Hub.Repository
         //    }
         //    else
         //    {
-        //        return Encoding.UTF8.GetString(asset.AssetImage);
+        //        return Encoding.UTF8.GetString(asset.assetImage);
         //    }
-        //    asset.AssetImage = Encoding.UTF8.GetBytes(fileName);
+        //    asset.assetImage = Encoding.UTF8.GetBytes(fileName);
         //    await _context.SaveChangesAsync();
         //    return fileName;
         //}
 
-        public async Task<string?> UploadAssetImageAsync(int assetId, IFormFile file)
+        public async Task<string?> UploadassetImageAsync(int assetId, IFormFile file)
         {
             _log.LogInfo("uploading assets image");
 
@@ -411,7 +411,7 @@ namespace Hexa_Hub.Repository
                 using (var memoryStream = new MemoryStream())
                 {
                     await file.CopyToAsync(memoryStream);
-                    asset.AssetImage = memoryStream.ToArray();
+                    asset.assetImage = memoryStream.ToArray();
                 }
             }
 
@@ -421,14 +421,14 @@ namespace Hexa_Hub.Repository
             return "Image uploaded successfully";
         }
 
-        //public async Task<string?> UploadAssetImageAsync(int assetId, IFormFile file)
+        //public async Task<string?> UploadassetImageAsync(int assetId, IFormFile file)
         //{
         //    var asset = await _context.Assets.FindAsync(assetId);
         //    if (asset == null)
         //    {
         //        return null;
         //    }
-        //    const string assetImageFolder = "AssetImages";
+        //    const string assetImageFolder = "assetImages";
         //    string imagePath = Path.Combine(Directory.GetCurrentDirectory(), assetImageFolder);
 
         //    if (!Directory.Exists(imagePath))
@@ -448,11 +448,11 @@ namespace Hexa_Hub.Repository
         //            await file.CopyToAsync(stream);
         //        }
 
-        //        asset.AssetImage = Encoding.UTF8.GetBytes(fileName);
+        //        asset.assetImage = Encoding.UTF8.GetBytes(fileName);
         //    }
         //    else
         //    {
-        //        fileName = Encoding.UTF8.GetString(asset.AssetImage) ?? "AssetDefault.jpg";
+        //        fileName = Encoding.UTF8.GetString(asset.assetImage) ?? "AssetDefault.jpg";
         //    }
 
         //    await _context.SaveChangesAsync();
@@ -466,28 +466,28 @@ namespace Hexa_Hub.Repository
             // Convert IFormFile to byte[]
             byte[]? assetImageBytes = null;
 
-            if (assetDto.AssetImage != null)
+            if (assetDto.assetImage != null)
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    await assetDto.AssetImage.CopyToAsync(memoryStream);
+                    await assetDto.assetImage.CopyToAsync(memoryStream);
                     assetImageBytes = memoryStream.ToArray();
                 }
             }
 
             var asset = new Asset
             {
-                AssetName = assetDto.AssetName,
-                AssetDescription = assetDto.AssetDescription,
+                assetName = assetDto.assetName,
+                assetDescription = assetDto.assetDescription,
                 categoryId = assetDto.categoryId,
                 subCategoryId = assetDto.subCategoryId,
-                SerialNumber = assetDto.SerialNumber,
+                serialNumber = assetDto.serialNumber,
                 Model = assetDto.Model,
-                ManufacturingDate = assetDto.ManufacturingDate,
+                manufacturingDate = assetDto.manufacturingDate,
                 Location = assetDto.Location,
                 Value = assetDto.Value,
-                Expiry_Date = assetDto.Expiry_Date,
-                AssetImage = assetImageBytes 
+                expiryDate = assetDto.expiryDate,
+                assetImage = assetImageBytes 
             };
 
             await _context.AddAsync(asset);
@@ -501,30 +501,30 @@ namespace Hexa_Hub.Repository
         //{
         //    var asset = new Asset
         //    {
-        //        AssetName = assetDto.AssetName,
-        //        AssetDescription = assetDto.AssetDescription,
+        //        assetName = assetDto.assetName,
+        //        assetDescription = assetDto.assetDescription,
         //        categoryId = assetDto.categoryId,
         //        subCategoryId = assetDto.subCategoryId,
-        //        SerialNumber = assetDto.SerialNumber,
+        //        serialNumber = assetDto.serialNumber,
         //        Model = assetDto.Model,
-        //        ManufacturingDate = assetDto.ManufacturingDate,
+        //        manufacturingDate = assetDto.manufacturingDate,
         //        Location = assetDto.Location,
         //        Value = assetDto.Value,
-        //        Expiry_Date = assetDto.Expiry_Date
+        //        expiryDate = assetDto.expiryDate
         //    };
 
         //    await _context.AddAsync(asset);
         //    await _context.SaveChangesAsync();
 
         //    // Set default image if no image is provided
-        //    if (assetDto.AssetImage == null)
+        //    if (assetDto.assetImage == null)
         //    {
         //        const string defaultImageFileName = "AssetDefault.jpg";
-        //        asset.AssetImage = Encoding.UTF8.GetBytes(defaultImageFileName);
+        //        asset.assetImage = Encoding.UTF8.GetBytes(defaultImageFileName);
         //    }
         //    else
         //    {
-        //        asset.AssetImage = assetDto.AssetImage; // Set the uploaded image
+        //        asset.assetImage = assetDto.assetImage; // Set the uploaded image
         //    }
 
         //    _context.Assets.Update(asset);
@@ -532,14 +532,14 @@ namespace Hexa_Hub.Repository
 
         //    return asset;
         //}
-        private string GetDefaultAssetImagePath()
+        private string GetDefaultassetImagePath()
         {
-            return Path.Combine(Directory.GetCurrentDirectory(), "AssetImages", "AssetDefault.jpg");
+            return Path.Combine(Directory.GetCurrentDirectory(), "assetImages", "AssetDefault.jpg");
         }
 
         public string GetImagePath(string fileName)
         {
-            return Path.Combine("AssetImages", fileName);
+            return Path.Combine("assetImages", fileName);
         }
 
 

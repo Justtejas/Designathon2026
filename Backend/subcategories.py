@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from pymongo import MongoClient
-from auth import get_user_id, get_user_role
+from auth import get_next_sequence, get_user_role
 from datetime import datetime
 import os
 import logging
@@ -127,8 +127,9 @@ def post_subcategory():
             return jsonify({"error": "Admin access required"}), 403
         data = request.get_json()
         logger.info("Creating new subcategory")
+        subCategoryId = get_next_sequence("subcategories")
         subcategory_doc = {
-            "subCategoryId": data.get("subCategoryId"),
+            "subCategoryId": subCategoryId,
             "subCategoryName": data.get("subCategoryName"),
             "categoryId": data.get("categoryId"),
             "Quantity": data.get("Quantity", 0)
@@ -138,7 +139,7 @@ def post_subcategory():
         if existing:
             return jsonify({"error": "SubCategory ID already exists"}), 409
         result = subcategories.insert_one(subcategory_doc)
-        logger.info(f"Created subcategory with ID: {result.inserted_id}")
+        logger.info(f"Created subcategory with ID {subCategoryId}: {result.inserted_id}")
         subcategory_doc["_id"] = str(result.inserted_id)
         return jsonify(subcategory_doc), 201
     except Exception as e:

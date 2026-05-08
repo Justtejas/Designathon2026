@@ -6,9 +6,9 @@ public class AssetRequestClassDto
 {
     public int AssetReqId { get; set; }
     public string userName { get; set; }
-    public string AssetName { get; set; }
+    public string assetName { get; set; }
     public int userId { get; set; }
-    public int AssetId { get; set; }
+    public int assetId { get; set; }
     public string categoryName { get; set; }
 
     [DataType(DataType.Date)]

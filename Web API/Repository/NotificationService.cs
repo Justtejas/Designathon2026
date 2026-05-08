@@ -42,15 +42,15 @@ namespace Hexa_Hub.Repository
         public async Task SendAllocationApproved(string userMail, string userName, string assetName, int assetId)
         {
             var subject = "Asset Request Approved";
-            var emailBody = $"Dear {userName},<br><br>Your Asset Request for AssetId {assetId} - {assetName} has been approved. Please collect it within a week of allocation.<br><br>Best regards,<br>Maventory";
+            var emailBody = $"Dear {userName},<br><br>Your Asset Request for assetId {assetId} - {assetName} has been approved. Please collect it within a week of allocation.<br><br>Best regards,<br>Maventory";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
 
-        public async Task SendAllocationRejected(string userMail, string userName, string AssetName, int assetId)
+        public async Task SendAllocationRejected(string userMail, string userName, string assetName, int assetId)
         {
             var subject = "Asset Request Declined";
-            var emailBody = $"Dear {userName},<br><br>Your Asset Request for AssetId {assetId} - {AssetName} has been Rejected. Please Contact your manager for futher questions.<br><br>Best regards,<br>Maventory";
+            var emailBody = $"Dear {userName},<br><br>Your Asset Request for assetId {assetId} - {assetName} has been Rejected. Please Contact your manager for futher questions.<br><br>Best regards,<br>Maventory";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
@@ -58,66 +58,66 @@ namespace Hexa_Hub.Repository
         public async Task AssetRequestSent(string userMail, int assetId)
         {
             var subject = "Asset Request";
-            var emailBody = $"Greetings Maventory,<br><br>An Asset Request for AssetId {assetId} has been Recieved.";
+            var emailBody = $"Greetings Maventory,<br><br>An Asset Request for assetId {assetId} has been Recieved.";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
 
         //SERVICE REQUEST NOTIFICATIONS
         
-        public async Task ServiceRequestSent(string userMail, int AssetId, int ServiceId, IssueType issueType)
+        public async Task ServiceRequestSent(string userMail, int assetId, int ServiceId, IssueType issueType)
         {
             var subject = "Service Request";
-            var emailBody = $"Greetings Maventory,<br><br>An Service Request has been Raised for Asset Id {AssetId} with Service Id {ServiceId} as {issueType.ToString()} .";
+            var emailBody = $"Greetings Maventory,<br><br>An Service Request has been Raised for Asset Id {assetId} with Service Id {ServiceId} as {issueType.ToString()} .";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
 
-        public async Task ServiceRequestApproved(string userMail, string userName, int AssetId, int ServiceId, IssueType issueType)
+        public async Task ServiceRequestApproved(string userMail, string userName, int assetId, int ServiceId, IssueType issueType)
         {
             var subject = "Service Request Approved";
-            var emailBody = $"Dear {userName},<br><br>Service Request {ServiceId} which have been Raised for {AssetId} with {issueType.ToString()} has been Approved .<br><br>Best regards,<br>Maventory";
+            var emailBody = $"Dear {userName},<br><br>Service Request {ServiceId} which have been Raised for {assetId} with {issueType.ToString()} has been Approved .<br><br>Best regards,<br>Maventory";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
 
-        public async Task ServiceRequestCompleted(string userMail, string userName, int AssetId, int ServiceId, IssueType issueType)
+        public async Task ServiceRequestCompleted(string userMail, string userName, int assetId, int ServiceId, IssueType issueType)
         {
             var subject = "Service Request Completion";
-            var emailBody = $"Dear {userName},<br><br>Service Request {ServiceId} which have been Raised for {AssetId} with {issueType.ToString()} has been Completed and the cost will be detained from salary .<br><br>Best regards,<br>Maventory";
+            var emailBody = $"Dear {userName},<br><br>Service Request {ServiceId} which have been Raised for {assetId} with {issueType.ToString()} has been Completed and the cost will be detained from salary .<br><br>Best regards,<br>Maventory";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
 
         //RETURN REQUEST NOTIFICATIONS
 
-        public async Task ReturnRequestSent(string userMail, int AssetId, int ReturnId)
+        public async Task ReturnRequestSent(string userMail, int assetId, int ReturnId)
         {
             var subject = "Return Request";
-            var emailBody = $"Greetings Maventory,<br><br>An Return Request has been Raised for {AssetId} with {ReturnId} .";
+            var emailBody = $"Greetings Maventory,<br><br>An Return Request has been Raised for {assetId} with {ReturnId} .";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
 
-        public async Task ReturnRequestApproved(string userMail, string userName, int AssetId, int ReturnId)
+        public async Task ReturnRequestApproved(string userMail, string userName, int assetId, int ReturnId)
         {
             var subject = "Return Request Approved";
-            var emailBody = $"Dear {userName},<br><br>Return Request {ReturnId} which have been Raised for {AssetId} has been Approved .<br><br>Best regards,<br>Maventory";
+            var emailBody = $"Dear {userName},<br><br>Return Request {ReturnId} which have been Raised for {assetId} has been Approved .<br><br>Best regards,<br>Maventory";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
 
-        public async Task ReturnRequestCompleted(string userMail, string userName, int AssetId)
+        public async Task ReturnRequestCompleted(string userMail, string userName, int assetId)
         {
             var subject = "Asset Returned";
-            var emailBody = $"Dear {userName},<br><br>Thank you for returning the asset {AssetId} .<br><br>Best regards,<br>Maventory";
+            var emailBody = $"Dear {userName},<br><br>Thank you for returning the asset {assetId} .<br><br>Best regards,<br>Maventory";
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
 
-        public async Task ReturnRequestRejected(string userMail, string userName, int AssetId, int ReturnId)
+        public async Task ReturnRequestRejected(string userMail, string userName, int assetId, int ReturnId)
         {
             var subject = "Return Request Declined";
-            var emailBody = $"Dear {userName},<br><br>Return Request {ReturnId} which have been Raised for {AssetId} has been Rejected .<br><br>Best regards,<br>Maventory";
+            var emailBody = $"Dear {userName},<br><br>Return Request {ReturnId} which have been Raised for {assetId} has been Rejected .<br><br>Best regards,<br>Maventory";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from pymongo import MongoClient
-from auth import get_user_id, get_user_role
+from auth import get_next_sequence, get_user_role
 from datetime import datetime
 import os
 import logging
@@ -16,6 +16,7 @@ db = client['MaventoryDB']
 categories = db['Categories']
 assets = db['Assets']
 subcategories = db['SubCategories']
+
  
 categories_blueprint = Blueprint('categories', __name__)
 
@@ -132,8 +133,9 @@ def post_category():
         logger.info("Creating new category")
         if not data.get("categoryName"):
             return jsonify({"error": "categoryName is required"}), 400
+        categoryId = get_next_sequence("categories")
         category_doc = {
-            "categoryId": data.get("categoryId"),
+            "categoryId": categoryId,
             "categoryName": data.get("categoryName")
         }
         # Check if category already exists
@@ -141,7 +143,7 @@ def post_category():
         if existing_category:
             return jsonify({"error": "Category ID already exists"}), 409
         result = categories.insert_one(category_doc)
-        logger.info(f"Created category with ID: {result.inserted_id}")
+        logger.info(f"Created category with ID {categoryId}: {result.inserted_id}")
         category_doc["_id"] = str(result.inserted_id)
         return jsonify(category_doc), 201
     except Exception as e:

@@ -73,40 +73,40 @@ export default function Dashboard() {
 
             try {
                 const auditResponse = await axios.get('http://localhost:7287/api/Audits/All');
-                if (auditResponse.data && auditResponse.data.$values) {
-                    setAuditTableData(auditResponse.data.$values);
+                if (auditResponse.data && auditResponse.data) {
+                    setAuditTableData(auditResponse.data);
                 } else {
                     console.error('Expected an array for Audits, but got:', auditResponse.data)
                 }
 
                 //Fetching Asset data
                 const assetResponse = await axios.get('http://localhost:7287/api/Assets');
-                if (assetResponse.data && assetResponse.data.$values) {
-                    setTotalAssets(assetResponse.data.$values.length);
+                if (assetResponse.data && assetResponse.data) {
+                    setTotalAssets(assetResponse.data.length);
                 } else {
                     console.error('Expected an array for assets, but got:', assetResponse.data);
                 }
                 //Fetching Allcoated Assets data
                 const allocatedResponse = await axios.get('http://localhost:7287/api/Assets/Status?status=Allocated');
-                if (allocatedResponse.data && allocatedResponse.data.$values) {
-                    setAllocatedAssets(allocatedResponse.data.$values.length);
+                if (allocatedResponse.data && allocatedResponse.data) {
+                    setAllocatedAssets(allocatedResponse.data.length);
                 } else {
                     console.error('Expected an array for allocated assets, but got:', allocatedResponse.data);
                 }
 
                 //Fetching Users data
                 const usersResponse = await axios.get('http://localhost:7287/api/users');
-                if (usersResponse.data && usersResponse.data.$values) {
-                    setUsers(usersResponse.data.$values);
-                    setTotalEmployees(usersResponse.data.$values.length);
+                if (usersResponse.data && usersResponse.data) {
+                    setUsers(usersResponse.data);
+                    setTotalEmployees(usersResponse.data.length);
                 } else {
                     console.error('Expected an array for users, but got:', usersResponse.data);
                 }
 
                 //Fetching MaintenaceLog data
                 const logResponse = await axios.get('http://localhost:7287/api/ServiceRequests/Status/UnderReview');
-                if (logResponse.data && logResponse.data.$values) {
-                    setMaintenanceLog(logResponse.data.$values.length);
+                if (logResponse.data && logResponse.data) {
+                    setMaintenanceLog(logResponse.data.length);
                 } else {
                     console.error('Expected an array for allocated asset, but got: ', logResponse.data);
                 }
@@ -119,7 +119,7 @@ export default function Dashboard() {
 
                 const newServiceData = serviceCounts.map((response, index) => ({
                     name: statuses[index],
-                    value: response.data.$values ? response.data.$values.length : 0
+                    value: response.data ? response.data.length : 0
                 }));
                 setServiceData(newServiceData);
 
@@ -132,8 +132,8 @@ export default function Dashboard() {
                             const responseAlloc = await axios.get(`http://localhost:7287/api/AssetAllocations/filter-by-month?month=${month}`);
                             return {
                                 name: month,
-                                AssetRequest: response.data.$values ? response.data.$values.length : 0,
-                                Allocated: responseAlloc.data.$values ? responseAlloc.data.$values.length : 0,
+                                AssetRequest: response.data ? response.data.length : 0,
+                                Allocated: responseAlloc.data ? responseAlloc.data.length : 0,
                             };
                         } catch (error) {
                             console.error(`Error fetching data for month ${month}:`, error);

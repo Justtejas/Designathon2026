@@ -14,7 +14,7 @@ namespace Hexa_Hub.DTO
         public int userId { get; set; }
 
         [Required]
-        public int AssetId { get; set; }
+        public int assetId { get; set; }
 
         [Required]
         public int categoryId { get; set; }

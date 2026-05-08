@@ -58,7 +58,7 @@ export default function MaintenancePage() {
             try {
                 const response = await axios.get('http://localhost:7287/api/MaintenanceLogs/AllLog');
                 console.log('Fetched Maintenance Logs Response:', JSON.stringify(response.data));
-                setMaintenanceLogs(response.data.$values || []); 
+                setMaintenanceLogs(response.data || []); 
             } catch (error) {
                 console.error('Error fetching maintenance logs:', error);
             }

@@ -57,7 +57,7 @@ const ServiceRequest = () => {
               },
             });
             console.log('Service Requests fetched:', serviceResponse.data);
-            setServiceRequests(serviceResponse.data.$values || []);
+            setServiceRequests(serviceResponse.data || []);
 
             
           } catch (error) {
@@ -71,7 +71,7 @@ const ServiceRequest = () => {
               },
             });
             console.log('Asset Allocations fetched:', assetResponse.data);
-            setAssetAllocations(assetResponse.data.$values || []);
+            setAssetAllocations(assetResponse.data || []);
           } catch (assetError) {
             console.error('Error fetching asset allocations:', assetError.response ? assetError.response.data : assetError.message);
             setAssetAllocations([]);
@@ -89,11 +89,11 @@ const ServiceRequest = () => {
     fetchData();
   }, []);
 
-  const handleAssetNameChange = (e) => {
-    const selectedAssetName = e.target.value.trim();
-    const selectedAsset = assetAllocations.find(asset => asset.assetName.toLowerCase() === selectedAssetName.toLowerCase());
+  const handleassetNameChange = (e) => {
+    const selectedassetName = e.target.value.trim();
+    const selectedAsset = assetAllocations.find(asset => asset.assetName.toLowerCase() === selectedassetName.toLowerCase());
 
-    console.log("Selected Asset Name:", selectedAssetName);
+    console.log("Selected Asset Name:", selectedassetName);
     console.log("Available Assets:", assetAllocations);
     console.log("Selected Asset:", selectedAsset);
 
@@ -101,14 +101,14 @@ const ServiceRequest = () => {
       console.log("Asset ID Found:", selectedAsset.assetId);
       setFormData({
         ...formData,
-        assetName: selectedAssetName,
+        assetName: selectedassetName,
         assetId: selectedAsset.assetId
       });
     } else {
-      console.warn("No matching asset found for:", selectedAssetName);
+      console.warn("No matching asset found for:", selectedassetName);
       setFormData({
         ...formData,
-        assetName: selectedAssetName,
+        assetName: selectedassetName,
         assetId: ''
       });
     }
@@ -299,7 +299,7 @@ const ServiceRequest = () => {
                             <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Asset Name</label>
                             <select
                               value={formData.assetName}
-                              onChange={handleAssetNameChange}
+                              onChange={handleassetNameChange}
                               className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
                               required
                             >

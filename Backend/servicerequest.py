@@ -31,7 +31,7 @@ def serialize_service_simple(doc):
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
             "ServiceId": doc.get('ServiceId'),
-            "AssetId": doc.get('AssetId'),
+            "assetId": doc.get('assetId'),
             "userId": doc.get('userId'),
             "ServiceRequestDate": doc.get('ServiceRequestDate'),
             "Issue_Type": doc.get('Issue_Type', 'Repair'),
@@ -48,8 +48,8 @@ def serialize_service_class(doc):
             "ServiceId": doc.get('ServiceId'),
             "userName": doc.get('userName'),
             "userId": doc.get('userId'),
-            "AssetId": doc.get('AssetId'),
-            "AssetName": doc.get('AssetName'),
+            "assetId": doc.get('assetId'),
+            "assetName": doc.get('assetName'),
             "ServiceDescription": doc.get('ServiceDescription'),
             "ServiceRequestDate": doc.get('ServiceRequestDate'),
             "Issue_Type": doc.get('Issue_Type', 'Repair'),
@@ -59,7 +59,7 @@ def serialize_service_class(doc):
  
 def asset_exists(asset_id):
     """Check if asset exists"""
-    return assets.find_one({"AssetId": asset_id}) is not None
+    return assets.find_one({"assetId": asset_id}) is not None
  
 @service_requests_blueprint.route("/api/ServiceRequests", methods=["GET"])
 def get_service_requests():
@@ -78,8 +78,8 @@ def get_service_requests():
                 {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
                 {"$lookup": {
                     "from": "Assets",
-                    "localField": "AssetId",
-                    "foreignField": "AssetId",
+                    "localField": "assetId",
+                    "foreignField": "assetId",
                     "as": "asset"
                 }},
                 {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
@@ -89,8 +89,8 @@ def get_service_requests():
                         "ServiceId": "$ServiceId",
                         "userName": "$user.userName",
                         "userId": "$userId",
-                        "AssetId": "$AssetId",
-                        "AssetName": "$asset.AssetName",
+                        "assetId": "$assetId",
+                        "assetName": "$asset.assetName",
                         "ServiceDescription": 1,
                         "ServiceRequestDate": 1,
                         "Issue_Type": {"$ifNull": ["$Issue_Type", "Repair"]},
@@ -112,8 +112,8 @@ def get_service_requests():
                 {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
                 {"$lookup": {
                     "from": "Assets",
-                    "localField": "AssetId",
-                    "foreignField": "AssetId",
+                    "localField": "assetId",
+                    "foreignField": "assetId",
                     "as": "asset"
                 }},
                 {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
@@ -123,8 +123,8 @@ def get_service_requests():
                         "ServiceId": "$ServiceId",
                         "userName": "$user.userName",
                         "userId": "$userId",
-                        "AssetId": "$AssetId",
-                        "AssetName": "$asset.AssetName",
+                        "assetId": "$assetId",
+                        "assetName": "$asset.assetName",
                         "ServiceDescription": 1,
                         "ServiceRequestDate": 1,
                         "Issue_Type": {"$ifNull": ["$Issue_Type", "Repair"]},
@@ -167,7 +167,7 @@ def put_service_request(service_id):
         # Prepare update data
         update_data = {
             "$set": {
-                "AssetId": data.get("AssetId", existing_request.get("AssetId")),
+                "assetId": data.get("assetId", existing_request.get("assetId")),
                 "userId": data.get("userId", existing_request.get("userId")),
                 "ServiceRequestDate": data.get("ServiceRequestDate", existing_request.get("ServiceRequestDate")),
                 "Issue_Type": data.get("Issue_Type", existing_request.get("Issue_Type", "Repair")),
@@ -179,12 +179,12 @@ def put_service_request(service_id):
         if new_status == "Approved":
             # Set asset to UnderMaintenance
             assets.update_one(
-                {"AssetId": data.get("AssetId")},
-                {"$set": {"Asset_Status": "UnderMaintenance"}}
+                {"assetId": data.get("assetId")},
+                {"$set": {"assetStatus": "UnderMaintenance"}}
             )
             # Create maintenance log
             maintenance_log = {
-                "AssetId": data.get("AssetId"),
+                "assetId": data.get("assetId"),
                 "userId": data.get("userId"),
                 "Maintenance_date": datetime.now().isoformat(),
                 "Maintenance_Description": data.get("ServiceDescription")
@@ -193,8 +193,8 @@ def put_service_request(service_id):
         elif new_status == "Completed":
             # Set asset back to Allocated
             assets.update_one(
-                {"AssetId": data.get("AssetId")},
-                {"$set": {"Asset_Status": "Allocated"}}
+                {"assetId": data.get("assetId")},
+                {"$set": {"assetStatus": "Allocated"}}
             )
         # Update service request
         result = service_requests.update_one({"ServiceId": service_id}, update_data)
@@ -215,11 +215,11 @@ def post_service_request():
         data = request.get_json()
         logger.info(f"Creating service request for user: {user_id}")
         # Validate asset exists
-        if not asset_exists(data.get("AssetId")):
+        if not asset_exists(data.get("assetId")):
             return jsonify({"error": "Invalid Asset. Asset Not Found"}), 400
         service_request_doc = {
             "ServiceId": data.get("ServiceId"),
-            "AssetId": data.get("AssetId"),
+            "assetId": data.get("assetId"),
             "userId": user_id,
             "ServiceRequestDate": data.get("ServiceRequestDate", datetime.now().isoformat()),
             "Issue_Type": data.get("Issue_Type", "Repair"),
@@ -289,8 +289,8 @@ def get_service_request_by_id(service_id):
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
@@ -300,8 +300,8 @@ def get_service_request_by_id(service_id):
                     "ServiceId": "$ServiceId",
                     "userName": "$user.userName",
                     "userId": "$userId",
-                    "AssetId": "$AssetId",
-                    "AssetName": "$asset.AssetName",
+                    "assetId": "$assetId",
+                    "assetName": "$asset.assetName",
                     "ServiceDescription": 1,
                     "ServiceRequestDate": 1,
                     "Issue_Type": {"$ifNull": ["$Issue_Type", "Repair"]},

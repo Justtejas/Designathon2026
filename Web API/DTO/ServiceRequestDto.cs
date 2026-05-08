@@ -10,7 +10,7 @@ namespace Hexa_Hub.DTO
         public int ServiceId { get; set; }
 
         [Required]
-        public int AssetId { get; set; }
+        public int assetId { get; set; }
 
         [Required]
         public int userId { get; set; }

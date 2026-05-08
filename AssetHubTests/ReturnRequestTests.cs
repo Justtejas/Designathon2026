@@ -49,7 +49,7 @@ namespace AssetHubTests
             {
                 ReturnId = 3,
                 userId = 1,
-                AssetId = 2,
+                assetId = 2,
                 categoryId = 3,
                 ReturnDate = DateTime.Now,
                 Reason = "Reason Test",
@@ -60,7 +60,7 @@ namespace AssetHubTests
             {
                 ReturnId = newReturnRequestDto.ReturnId,
                 userId = newReturnRequestDto.userId,
-                AssetId = newReturnRequestDto.AssetId,
+                assetId = newReturnRequestDto.assetId,
                 categoryId = newReturnRequestDto.categoryId,
                 ReturnDate = newReturnRequestDto.ReturnDate,
                 Reason = newReturnRequestDto.Reason,

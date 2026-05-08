@@ -8,13 +8,13 @@ public class Asset
 {
     [Required]
     [Key]
-    public int AssetId { get; set; }
+    public int assetId { get; set; }
 
     [Required]
     [MaxLength(55)]
-    public string AssetName { get; set; }
+    public string assetName { get; set; }
 
-    public string? AssetDescription { get; set; }
+    public string? assetDescription { get; set; }
 
     [Required]
     public int categoryId { get; set; }
@@ -22,10 +22,10 @@ public class Asset
     [Required]
     public int subCategoryId { get; set; }
 
-    public byte[]? AssetImage { get; set; }
+    public byte[]? assetImage { get; set; }
 
     [Required]
-    public string SerialNumber { get; set; }
+    public string serialNumber { get; set; }
 
     [Required]
     public string Model { get; set; }
@@ -33,7 +33,7 @@ public class Asset
     [Required]
     [DataType(DataType.Date)]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-    public DateTime ManufacturingDate {  get; set; }    
+    public DateTime manufacturingDate {  get; set; }    
    
     [Required]
     [MaxLength(55)]
@@ -44,10 +44,10 @@ public class Asset
 
     [DataType(DataType.Date)]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-    public DateTime? Expiry_Date { get; set; }
+    public DateTime? expiryDate { get; set; }
 
-    [DefaultValue(AssetStatus.OpenToRequest)]
-    public AssetStatus? Asset_Status { get; set; } = AssetStatus.OpenToRequest;
+    [DefaultValue(assetStatus.OpenToRequest)]
+    public assetStatus? assetStatus { get; set; } = assetStatus.OpenToRequest;
 
     //Navigation Properties
     // 1 - 1 Relations

@@ -5,9 +5,9 @@ namespace Hexa_Hub.DTO
 {
     public class AssetDtoClass
     {
-        public int AssetId { get; set; }
-        public string AssetName { get; set; }
-        public string AssetDescription { get; set; }
+        public int assetId { get; set; }
+        public string assetName { get; set; }
+        public string assetDescription { get; set; }
         public string Location { get; set; }
         public decimal Value { get; set; }
         public string categoryName { get; set; }
@@ -16,20 +16,20 @@ namespace Hexa_Hub.DTO
 
         public int subCategoryId { get; set; }
         public string subCategoryName { get; set; }
-        public string SerialNumber { get; set; }
+        public string serialNumber { get; set; }
         public string Model { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime ManufacturingDate { get; set; }
+        public DateTime manufacturingDate { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime? Expiry_Date { get; set; }
+        public DateTime? expiryDate { get; set; }
 
-        // Add this computed property to return the AssetStatus as a string
-        public string AssetStatusName => AssetStatus.ToString();  // This converts the enum to a string
+        // Add this computed property to return the assetStatus as a string
+        public string assetStatusName => assetStatus.ToString();  // This converts the enum to a string
 
         // The existing property (you can keep it if needed)
-        public AssetStatus? AssetStatus { get; set; }
+        public assetStatus? assetStatus { get; set; }
     }
 }

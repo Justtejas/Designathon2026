@@ -16,155 +16,155 @@ public class DataContext : DbContext
         public DbSet<MaintenanceLog> MaintenanceLogs { get; set; }
         public DbSet<ReturnRequest> ReturnRequests { get; set; }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder ModelBuilder)
         {
-            modelBuilder.Entity<User>()
+            ModelBuilder.Entity<User>()
                 .Property(r => r.User_Type)
                 .HasConversion(
                     v => v.ToString(),
                     v => Enum.Parse<UserType>(v));
 
-            modelBuilder.Entity<Asset>()
-                .Property(r => r.Asset_Status)
+            ModelBuilder.Entity<Asset>()
+                .Property(r => r.assetStatus)
                 .HasConversion(
                     v => v.ToString(),
-                    v => Enum.Parse<AssetStatus>(v));
+                    v => Enum.Parse<assetStatus>(v));
 
-            modelBuilder.Entity<AssetRequest>()
+            ModelBuilder.Entity<AssetRequest>()
                 .Property(r => r.Request_Status)
                 .HasConversion(
                     v => v.ToString(),
                     v => Enum.Parse<RequestStatus>(v));
 
-            modelBuilder.Entity<ReturnRequest>()
+            ModelBuilder.Entity<ReturnRequest>()
                 .Property(r => r.ReturnStatus)
                 .HasConversion(
                     v => v.ToString(),
                     v => Enum.Parse<ReturnReqStatus>(v));
 
-            modelBuilder.Entity<ServiceRequest>()
+            ModelBuilder.Entity<ServiceRequest>()
                 .Property(r => r.ServiceReqStatus)
                 .HasConversion(
                     v => v.ToString(),
                     v => Enum.Parse<ServiceReqStatus>(v));
 
-            modelBuilder.Entity<Audit>()
+            ModelBuilder.Entity<Audit>()
                 .Property(r => r.Audit_Status)
                 .HasConversion(
                     v => v.ToString(),
                     v => Enum.Parse<AuditStatus>(v));
 
-            modelBuilder.Entity<ServiceRequest>()
+            ModelBuilder.Entity<ServiceRequest>()
                 .Property(r => r.Issue_Type)
                 .HasConversion(
                     v => v.ToString(),
                     v => Enum.Parse<IssueType>(v));
 
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(ModelBuilder);
 
             //Asset Configuration
-            modelBuilder.Entity<Asset>()
+            ModelBuilder.Entity<Asset>()
                 .HasOne(a => a.Category)
                 .WithMany(c => c.Assets)
                 .HasForeignKey(a => a.categoryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Asset>()
+            ModelBuilder.Entity<Asset>()
                 .HasOne(a => a.SubCategories)
                 .WithMany(c => c.Assets)
                 .HasForeignKey(a => a.subCategoryId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Asset>()
-                .Property(e => e.ManufacturingDate)
+            ModelBuilder.Entity<Asset>()
+                .Property(e => e.manufacturingDate)
                 .HasColumnType("date");
 
         //AssetAlocation Configuration
-        modelBuilder.Entity<AssetAllocation>()
+        ModelBuilder.Entity<AssetAllocation>()
                 .HasOne(aa => aa.Asset)
                 .WithMany(a => a.AssetAllocations)
-                .HasForeignKey(aa => aa.AssetId)
+                .HasForeignKey(aa => aa.assetId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<AssetAllocation>()
+            ModelBuilder.Entity<AssetAllocation>()
                 .HasOne(aa => aa.User)
                 .WithMany(u => u.AssetAllocations)
                 .HasForeignKey(aa => aa.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<AssetAllocation>()
+            ModelBuilder.Entity<AssetAllocation>()
                 .HasOne(aa => aa.AssetRequests)
                 .WithOne(ar => ar.AssetAlocation)
                 .HasForeignKey<AssetAllocation>(aa => aa.AssetReqId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //Audit Configuration
-            modelBuilder.Entity<Audit>()
+            ModelBuilder.Entity<Audit>()
                 .HasOne(au => au.Asset)
                 .WithMany(a => a.Audits)
-                .HasForeignKey(au => au.AssetId)
+                .HasForeignKey(au => au.assetId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Audit>()
+            ModelBuilder.Entity<Audit>()
                 .HasOne(au => au.User)
                 .WithMany(u => u.Audits)
                 .HasForeignKey(au => au.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //AssetRequest Configuration
-            modelBuilder.Entity<AssetRequest>()
+            ModelBuilder.Entity<AssetRequest>()
                 .HasOne(ar => ar.Asset)
                 .WithMany(a => a.AssetRequests)
-                .HasForeignKey(ar => ar.AssetId)
+                .HasForeignKey(ar => ar.assetId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<AssetRequest>()
+            ModelBuilder.Entity<AssetRequest>()
                 .HasOne(ar => ar.User)
                 .WithMany(u => u.AssetRequests)
                 .HasForeignKey(ar => ar.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //MaintenanceLog Configuration
-            modelBuilder.Entity<MaintenanceLog>()
+            ModelBuilder.Entity<MaintenanceLog>()
                 .HasOne(m => m.Asset)
                 .WithMany(a => a.MaintenanceLogs)
-                .HasForeignKey(m => m.AssetId)
+                .HasForeignKey(m => m.assetId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<MaintenanceLog>()
+            ModelBuilder.Entity<MaintenanceLog>()
             .HasOne(m => m.User)
             .WithMany(u => u.MaintenanceLogs)
             .HasForeignKey(m => m.userId)
             .OnDelete(DeleteBehavior.NoAction);
 
             //ReturnReq Configuration
-            modelBuilder.Entity<ReturnRequest>()
+            ModelBuilder.Entity<ReturnRequest>()
                 .HasOne(rr => rr.Asset)
                 .WithMany(a => a.ReturnRequests)
-                .HasForeignKey(rr => rr.AssetId)
+                .HasForeignKey(rr => rr.assetId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<ReturnRequest>()
+            ModelBuilder.Entity<ReturnRequest>()
                 .HasOne(rr => rr.User)
                 .WithMany(u => u.ReturnRequests)
                 .HasForeignKey(rr => rr.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //ServiceReq Configuration
-            modelBuilder.Entity<ServiceRequest>()
+            ModelBuilder.Entity<ServiceRequest>()
                 .HasOne(rr => rr.Asset)
                 .WithMany(a => a.ServiceRequests)
-                .HasForeignKey(rr => rr.AssetId)
+                .HasForeignKey(rr => rr.assetId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<ServiceRequest>()
+            ModelBuilder.Entity<ServiceRequest>()
                 .HasOne(rr => rr.User)
                 .WithMany(u => u.ServiceRequests)
                 .HasForeignKey(rr => rr.userId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //SubCategory Configuration
-            modelBuilder.Entity<SubCategory>()
+            ModelBuilder.Entity<SubCategory>()
                 .HasOne(sc => sc.Category)
                 .WithMany(c => c.SubCategories)
                 .HasForeignKey(sc => sc.categoryId)

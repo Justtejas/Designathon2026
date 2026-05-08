@@ -34,7 +34,7 @@ def serialize_return_simple(doc):
         return {
             "ReturnId": doc.get('ReturnId'),
             "userId": doc.get('userId'),
-            "AssetId": doc.get('AssetId'),
+            "assetId": doc.get('assetId'),
             "categoryId": doc.get('categoryId'),
             "ReturnDate": doc.get('ReturnDate'),
             "Reason": doc.get('Reason'),
@@ -52,8 +52,8 @@ def serialize_return_class(doc):
             "ReturnId": doc.get('ReturnId'),
             "userId": doc.get('userId'),
             "userName": doc.get('userName'),
-            "AssetName": doc.get('AssetName'),
-            "AssetId": doc.get('AssetId'),
+            "assetName": doc.get('assetName'),
+            "assetId": doc.get('assetId'),
             "categoryId": doc.get('categoryId'),
             "categoryName": doc.get('categoryName'),
             "ReturnDate": doc.get('ReturnDate'),
@@ -74,17 +74,17 @@ def handle_return_status_update(return_doc, return_status):
         # Update asset status if returned
         if return_status == "Returned":
             assets.update_one(
-                {"AssetId": return_doc["AssetId"]},
-                {"$set": {"Asset_Status": "OpenToRequest"}}
+                {"assetId": return_doc["assetId"]},
+                {"$set": {"assetStatus": "OpenToRequest"}}
             )
             # Delete allocation
             asset_allocations.delete_one({
-                "AssetId": return_doc["AssetId"],
+                "assetId": return_doc["assetId"],
                 "userId": return_doc["userId"]
             })
             # Delete related asset request
             asset_requests.delete_one({
-                "AssetId": return_doc["AssetId"],
+                "assetId": return_doc["assetId"],
                 "userId": return_doc["userId"],
                 "Request_Status": "Allocated"
             })
@@ -103,8 +103,8 @@ def get_all_return_requests():
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
@@ -121,8 +121,8 @@ def get_all_return_requests():
                     "ReturnId": "$ReturnId",
                     "userId": "$userId",
                     "userName": "$user.userName",
-                    "AssetName": "$asset.AssetName",
-                    "AssetId": "$AssetId",
+                    "assetName": "$asset.assetName",
+                    "assetId": "$assetId",
                     "categoryId": "$categoryId",
                     "categoryName": "$category.categoryName",
                     "ReturnDate": 1,
@@ -170,8 +170,8 @@ def get_return_request_by_id(return_id):
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
@@ -188,8 +188,8 @@ def get_return_request_by_id(return_id):
                     "ReturnId": "$ReturnId",
                     "userId": "$userId",
                     "userName": "$user.userName",
-                    "AssetName": "$asset.AssetName",
-                    "AssetId": "$AssetId",
+                    "assetName": "$asset.assetName",
+                    "assetId": "$assetId",
                     "categoryId": "$categoryId",
                     "categoryName": "$category.categoryName",
                     "ReturnDate": 1,
@@ -226,8 +226,8 @@ def get_return_request_admin(return_id):
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
             {"$lookup": {
                 "from": "Assets",
-                "localField": "AssetId",
-                "foreignField": "AssetId",
+                "localField": "assetId",
+                "foreignField": "assetId",
                 "as": "asset"
             }},
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
@@ -265,7 +265,7 @@ def put_return_request(return_id):
         update_data = {
             "$set": {
                 "userId": data.get("userId", existing_request.get("userId")),
-                "AssetId": data.get("AssetId", existing_request.get("AssetId")),
+                "assetId": data.get("assetId", existing_request.get("assetId")),
                 "categoryId": data.get("categoryId", existing_request.get("categoryId")),
                 "ReturnDate": data.get("ReturnDate", existing_request.get("ReturnDate")),
                 "Reason": data.get("Reason", existing_request.get("Reason")),
@@ -299,7 +299,7 @@ def post_return_request():
         return_request_doc = {
             "ReturnId": data.get("ReturnId"),
             "userId": user_id,
-            "AssetId": data.get("AssetId"),
+            "assetId": data.get("assetId"),
             "categoryId": data.get("categoryId"),
             "ReturnDate": data.get("ReturnDate"),
             "Reason": data.get("Reason"),

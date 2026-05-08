@@ -25,8 +25,8 @@ namespace AssetHubTests
             // Arrange
             var expectedAssetAllocation = new List<AllocationClassDto>
                 {
-                new AllocationClassDto { AllocationId = 1, AssetId = 1},
-                new AllocationClassDto { AllocationId = 2, AssetId = 2}
+                new AllocationClassDto { AllocationId = 1, assetId = 1},
+                new AllocationClassDto { AllocationId = 2, assetId = 2}
                 };
 
             // Mock the repository methods
@@ -47,7 +47,7 @@ namespace AssetHubTests
         public async Task AddAssetAllocation_ShouldAddAssetAllocation()
         {
             // Arrange
-            var newAssetAllocation = new AssetAllocation { AllocationId = 3, AssetId = 4 };
+            var newAssetAllocation = new AssetAllocation { AllocationId = 3, assetId = 4 };
 
 
             // Mock
@@ -57,7 +57,7 @@ namespace AssetHubTests
             await assetAllocation.AddAllocation(newAssetAllocation);
 
             //Assert
-            assetAllocationMock.Verify(repo => repo.AddAllocation(It.Is<AssetAllocation>(a => a.AllocationId == newAssetAllocation.AllocationId && a.AssetId == newAssetAllocation.AssetId)), Times.Once);
+            assetAllocationMock.Verify(repo => repo.AddAllocation(It.Is<AssetAllocation>(a => a.AllocationId == newAssetAllocation.AllocationId && a.assetId == newAssetAllocation.assetId)), Times.Once);
         }
 
         [TestCase]

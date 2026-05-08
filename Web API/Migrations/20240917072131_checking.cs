@@ -12,7 +12,7 @@ namespace Hexa_Hub.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<DateTime>(
-                name: "ManufacturingDate",
+                name: "manufacturingDate",
                 table: "Assets",
                 type: "date",
                 nullable: false,
@@ -32,7 +32,7 @@ namespace Hexa_Hub.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<DateTime>(
-                name: "ManufacturingDate",
+                name: "manufacturingDate",
                 table: "Assets",
                 type: "datetime2",
                 nullable: false,

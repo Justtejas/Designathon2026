@@ -25,8 +25,8 @@ namespace Hexa_Hub.Repository
                 .Select(ml => new MaintenanceClassDto
                 {
                     MaintenanceId = ml.MaintenanceId,
-                    AssetId = ml.Asset.AssetId,
-                    AssetName = ml.Asset.AssetName,
+                    assetId = ml.Asset.assetId,
+                    assetName = ml.Asset.assetName,
                     userId = ml.User.userId,
                     userName = ml.User.userName,
                     Maintenance_date = ml.Maintenance_date,
@@ -54,8 +54,8 @@ namespace Hexa_Hub.Repository
                 .Select(ml=> new MaintenanceClassDto
                 {
                     MaintenanceId = ml.MaintenanceId,
-                    AssetId = ml.Asset.AssetId,
-                    AssetName = ml.Asset.AssetName,
+                    assetId = ml.Asset.assetId,
+                    assetName = ml.Asset.assetName,
                     userId = ml.User.userId,
                     userName = ml.User.userName,
                     Maintenance_date = ml.Maintenance_date,

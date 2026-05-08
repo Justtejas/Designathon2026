@@ -125,9 +125,9 @@ namespace Hexa_Hub.Controllers
             {
                 return Forbid("You can only create a request for yourself.");
             }
-            var asset = await _asset.GetAssetById(assetRequestDto.AssetId);
+            var asset = await _asset.GetAssetById(assetRequestDto.assetId);
             
-            if (asset.Asset_Status == Models.MultiValues.AssetStatus.Allocated || asset.Asset_Status == Models.MultiValues.AssetStatus.UnderMaintenance)
+            if (asset.assetStatus == Models.MultiValues.assetStatus.Allocated || asset.assetStatus == Models.MultiValues.assetStatus.UnderMaintenance)
             {
                 _log.LogDebug("Asset Requests Id Already allocated");
 

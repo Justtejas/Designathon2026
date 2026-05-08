@@ -31,8 +31,8 @@ namespace Hexa_Hub.Repository
                 .Select(aa=> new AllocationClassDto
                 {
                     AllocationId = aa.AllocationId,
-                    AssetName = aa.Asset.AssetName,
-                    AssetId = aa.Asset.AssetId,
+                    assetName = aa.Asset.assetName,
+                    assetId = aa.Asset.assetId,
                     userId = aa.User.userId,
                     userName = aa.User.userName,
                     categoryName = aa.Asset.Category.categoryName,
@@ -53,8 +53,8 @@ namespace Hexa_Hub.Repository
                 .Select(a => new AllocationDto
                 {
                     userId = a.userId,
-                    AssetName = a.Asset.AssetName,
-                    AssetId = a.Asset.AssetId,
+                    assetName = a.Asset.assetName,
+                    assetId = a.Asset.assetId,
                     categoryName = a.Asset.Category.categoryName,
                     categoryId = a.Asset.Category.categoryId,
                     Value = a.Asset.Value,
@@ -157,9 +157,9 @@ namespace Hexa_Hub.Repository
                 .Select(aa => new AllocationClassDto
                 {
                     AllocationId = aa.AllocationId,
-                    AssetName = aa.Asset.AssetName,
+                    assetName = aa.Asset.assetName,
                     userName = aa.User.userName,
-                    AssetId = aa.Asset.AssetId,
+                    assetId = aa.Asset.assetId,
                     userId = aa.User.userId,
                     categoryName = aa.Asset.Category.categoryName,
                     subCategoryName = aa.Asset.SubCategories.subCategoryName,
@@ -187,7 +187,7 @@ namespace Hexa_Hub.Repository
         //public async Task<AssetAllocation> AllocateAssetAsync(AssetAllocationDto allocationDto, int adminuserId)
         //{
         //    // Check if the asset exists
-        //    var asset = await _context.Assets.FindAsync(allocationDto.AssetId);
+        //    var asset = await _context.Assets.FindAsync(allocationDto.assetId);
         //    if (asset == null)
         //    {
         //        throw new AssetNotFoundException("Asset not found.");
@@ -210,7 +210,7 @@ namespace Hexa_Hub.Repository
         //    // Create the AssetAllocation entity
         //    var assetAllocation = new AssetAllocation
         //    {
-        //        AssetId = allocationDto.AssetId,
+        //        assetId = allocationDto.assetId,
         //        userId = allocationDto.userId,
         //        AssetReqId = allocationDto.AssetReqId,
         //        AllocatedDate = DateTime.Now,
@@ -229,7 +229,7 @@ namespace Hexa_Hub.Repository
         //    // Employee details
         //    string toEmail = user.userMail;     // Employee's email
         //    string subject = "Asset Allocation Notification";
-        //    string message = $"Dear {user.userName},<br>Your asset {asset.AssetName} has been allocated successfully on {assetAllocation.AllocatedDate}.";
+        //    string message = $"Dear {user.userName},<br>Your asset {asset.assetName} has been allocated successfully on {assetAllocation.AllocatedDate}.";
 
         //    // Send email notification from Admin to Employee
         //    await _email.SendEmailAsync(fromEmail, fromName, toEmail, subject, message);

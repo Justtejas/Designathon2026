@@ -63,7 +63,7 @@ export default function AssetPage() {
             try {
                 const response = await axios.get('http://localhost:7287/api/AssetRequests');
                 console.log('Fetched Assets Response:', JSON.stringify(response.data));
-                setAssetsRequest(response.data.$values || []);
+                setAssetsRequest(response.data || []);
             } catch (error) {
                 console.error('Error fetching assets:', error);
             }
