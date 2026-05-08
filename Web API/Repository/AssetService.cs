@@ -180,8 +180,8 @@ namespace Hexa_Hub.Repository
         //    existingAsset.serialNumber = assetDto.serialNumber;
         //    existingAsset.Model = assetDto.Model;
         //    existingAsset.manufacturingDate = assetDto.manufacturingDate;
-        //    existingAsset.Location = assetDto.Location;
-        //    existingAsset.Value = assetDto.Value;
+        //    existingasset.Location = assetDto.Location;
+        //    existingasset.Value = assetDto.Value;
         //    existingAsset.expiryDate = assetDto.expiryDate;
 
 
@@ -222,8 +222,8 @@ namespace Hexa_Hub.Repository
             existingAsset.serialNumber = assetDto.serialNumber;
             existingAsset.Model = assetDto.Model;
             existingAsset.manufacturingDate = assetDto.manufacturingDate;
-            existingAsset.Location = assetDto.Location;
-            existingAsset.Value = assetDto.Value;
+            existingasset.Location = assetDto.Location;
+            existingasset.Value = assetDto.Value;
             existingAsset.expiryDate = assetDto.expiryDate;
 
             _context.Assets.Update(existingAsset);

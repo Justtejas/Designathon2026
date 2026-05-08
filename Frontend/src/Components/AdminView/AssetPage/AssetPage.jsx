@@ -126,6 +126,7 @@ export default function AssetPage() {
                 setAssets(prevAssets => prevAssets.filter((asset) => asset.assetId !== deleteId));
                 setOpenDialog(false);
                 setDeleteId(null);
+                showToast('Asset deleted Successfully', 'success');
             } catch (error) {
                 console.error('Error deleting asset:', error);
                 setErrorMessage('Error deleting asset. Please try again.');
@@ -138,8 +139,8 @@ export default function AssetPage() {
         return assets.filter((asset) => {
             const categoryMatch = selectedCategory ? asset.categoryName === selectedCategory : true;
             const subCategoryMatch = selectedSubCategory ? asset.subCategoryName === selectedSubCategory : true;
-            const ValueMatch = asset.value >= minValue && asset.value <= maxValue;
-            const statusMatch = selectedStatus ? asset.assetStatusName === selectedStatus : true;
+            const ValueMatch = asset.Value >= minValue && asset.Value <= maxValue;
+            const statusMatch = selectedStatus ? asset.assetStatus === selectedStatus : true;
             return (
                 categoryMatch &&
                 subCategoryMatch &&
@@ -147,8 +148,7 @@ export default function AssetPage() {
                 statusMatch &&
                 (
                     asset.assetName.toLowerCase().includes(searchLower) ||
-                    asset.assetId.toString().includes(searchLower) ||
-                    asset.location.toLowerCase().includes(searchLower)
+                    asset.Location.toLowerCase().includes(searchLower)
                 )
             );
         });
@@ -190,11 +190,11 @@ export default function AssetPage() {
             const assetData = [
                 asset.assetId,
                 asset.assetName,
-                asset.location,
-                asset.value,
+                asset.Location,
+                asset.Value,
                 asset.categoryName,
                 asset.subCategoryName,
-                asset.assetStatusName
+                asset.assetStatus
             ];
             tableRows.push(assetData);
         });
@@ -460,12 +460,12 @@ export default function AssetPage() {
                                             </TableCell>
                                             <TableCell>{asset.assetId}</TableCell>
                                             <TableCell>{asset.assetName}</TableCell>
-                                            <TableCell>{asset.location}</TableCell>
-                                            <TableCell>{asset.value}</TableCell>
+                                            <TableCell>{asset.Location}</TableCell>
+                                            <TableCell>{asset.Value}</TableCell>
                                             <TableCell>{asset.categoryName}</TableCell>
                                             <TableCell>{asset.subCategoryName}</TableCell>
-                                            <TableCell sx={{ color: asset.assetStatusName === 'Allocated' ? '#0BDA51' : asset.assetStatusName === 'OpenToRequest' ? '#36A2EB' : '#FF7518', fontWeight: 'bold' }}>
-                                                {asset.assetStatusName}
+                                            <TableCell sx={{ color: asset.assetStatus === 'Allocated' ? '#0BDA51' : asset.assetStatus === 'OpenToRequest' ? '#36A2EB' : '#FF7518', fontWeight: 'bold' }}>
+                                                {asset.assetStatus}
                                             </TableCell>
                                             <TableCell>
                                                 <Link to={`/admin/asset/${asset.assetId}`}>

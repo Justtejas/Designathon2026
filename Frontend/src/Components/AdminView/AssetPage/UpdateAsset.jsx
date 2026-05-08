@@ -92,8 +92,8 @@ const UpdateAsset = () => {
                 serialNumber: response.data.serialNumber,
                 Model: response.data.Model,
                 manufacturingDate: response.data.manufacturingDate,
-                Location: response.data.location,
-                Value: response.data.value,
+                Location: response.data.Location,
+                Value: response.data.Value,
                 expiryDate: response.data.expiryDate,
             });
 
@@ -132,8 +132,8 @@ const UpdateAsset = () => {
             serialNumber: formData.serialNumber,
             Model: formData.Model,
             manufacturingDate: formData.manufacturingDate,
-            location: formData.Location,
-            value: parseFloat(formData.Value),
+            Location: formData.Location,
+            Value: parseFloat(formData.Value),
             expiryDate: formData.expiryDate,
         };
     

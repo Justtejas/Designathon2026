@@ -52,17 +52,23 @@ def serialize_asset_dto_class(doc):
     """Serialize for AssetDtoClass with category/subcategory info"""
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
+        existing_category = categories.find_one({"categoryId": doc.get('categoryId')})
+        existing_subcategory = subcategories.find_one({"subCategoryId": doc.get('subCategoryId')})
         return {
             "assetId": doc.get('assetId'),
             "assetName": doc.get('assetName'),
             "Location": doc.get('Location'),
             "Value": doc.get('Value'),
+            "assetImage": doc.get('assetImage'),
             "Model": doc.get('Model'),
             "serialNumber": doc.get('serialNumber'),
-            "categoryName": doc.get('categoryName'),
+            "assetDescription": doc.get('assetDescription'),
+            "categoryName": existing_category.get('categoryName'),
             "categoryId": doc.get('categoryId'),
             "subCategoryId": doc.get('subCategoryId'),
-            "subCategoryName": doc.get('subCategoryName'),
+            "subCategoryName": existing_subcategory.get('subCategoryName'),
+            "manufacturingDate": doc.get('manufacturingDate'),
+            "expiryDate": doc.get('expiryDate'),
             "assetStatus": doc.get('assetStatus', 'OpenToRequest')
         }
     return None
@@ -238,8 +244,9 @@ def put_asset(asset_id):
         if not is_admin():
             return jsonify({"error": "Admin access required"}), 403
         data = request.get_json()
-        logger.info(f"Updating asset {asset_id}")
-        if data.get("assetId") != asset_id:
+        logger.info(data)
+        logger.info(f"Updating asset {asset_id} {data.get("assetId")}")
+        if data.get("assetId") !=str (asset_id):
             return jsonify({"error": "ID mismatch"}), 400
         update_data = {
             "$set": {

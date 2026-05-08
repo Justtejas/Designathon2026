@@ -27,7 +27,7 @@ namespace Hexa_Hub.DTO
         public DateTime? expiryDate { get; set; }
 
         // Add this computed property to return the assetStatus as a string
-        public string assetStatusName => assetStatus.ToString();  // This converts the enum to a string
+        public string assetStatus => assetStatus.ToString();  // This converts the enum to a string
 
         // The existing property (you can keep it if needed)
         public assetStatus? assetStatus { get; set; }

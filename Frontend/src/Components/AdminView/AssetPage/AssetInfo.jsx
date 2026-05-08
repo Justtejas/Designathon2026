@@ -95,12 +95,12 @@ const AssetInfo = () => {
                                 <Box>
                                     <Typography variant="h4">{asset.assetName}</Typography>
                                     <Chip
-                                        label={asset.assetStatusName}
+                                        label={asset.assetStatus}
                                         color="secondary"
                                         sx={{
                                             mt: 1,
-                                            backgroundColor: asset.assetStatusName === 'Allocated' ? '#0BDA51' :
-                                                asset.assetStatusName === 'OpenToRequest' ? '#36A2EB' : '#FF7518',
+                                            backgroundColor: asset.assetStatus === 'Allocated' ? '#0BDA51' :
+                                                asset.assetStatus === 'OpenToRequest' ? '#36A2EB' : '#FF7518',
                                             color: '#000000' ,
                                             fontWeight: 'bold'
                                         }}
@@ -115,8 +115,8 @@ const AssetInfo = () => {
                                 <InfoItem label="Sub Category" value={asset.subCategoryName} />
                                 <InfoItem label="Serial Number" value={asset.serialNumber || 'N/A'} />
                                 <InfoItem label="Model" value={asset.Model || 'N/A'} />
-                                <InfoItem label="Location" value={asset.location} />
-                                <InfoItem label="Value" value={asset.value} />
+                                <InfoItem label="Location" value={asset.Location} />
+                                <InfoItem label="Value" value={asset.Value} />
                                 <InfoItem label="Manufacturing Date" value={new Date(asset.manufacturingDate).toLocaleDateString() || 'N/A'} />
                                 <InfoItem label="Expiry Date" value={asset.expiryDate ? new Date(asset.expiryDate).toLocaleDateString() : 'N/A'} />
                             </Grid>

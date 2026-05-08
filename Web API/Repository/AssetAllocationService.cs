@@ -57,7 +57,7 @@ namespace Hexa_Hub.Repository
                     assetId = a.Asset.assetId,
                     categoryName = a.Asset.Category.categoryName,
                     categoryId = a.Asset.Category.categoryId,
-                    Value = a.Asset.Value,
+                    Value = a.asset.Value,
                     Model = a.Asset.Model,
                     AllocatedDate = a.AllocatedDate
                 })

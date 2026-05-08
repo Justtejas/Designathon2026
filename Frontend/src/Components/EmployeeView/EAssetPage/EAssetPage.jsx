@@ -122,7 +122,7 @@ const Assets = () => {
         // setFilteredAssets(data);
         setFilteredAssets(assetsWithImages);
         // Extract unique locations
-        const uniqueLocations = [...new Set(data.map(asset => asset.location))];
+        const uniqueLocations = [...new Set(data.map(asset => asset.Location))];
         setLocations(uniqueLocations);
 
         // Extract unique categories
@@ -130,11 +130,11 @@ const Assets = () => {
         setCategory(uniqueCategories);
 
         // Extract unique asset statuses
-        const uniqueStatuses = [...new Set(data.map(asset => asset.assetStatusName))];
+        const uniqueStatuses = [...new Set(data.map(asset => asset.assetStatus))];
         setassetStatuses(uniqueStatuses);
 
         if (data.length > 0) {
-          const values = data.map(asset => asset.value);
+          const values = data.map(asset => asset.Value);
           setMinValue(Math.min(...values));
           setMaxValue(Math.max(...values));
           setCurrentMaxValue(Math.max(...values));
@@ -158,11 +158,11 @@ const Assets = () => {
 
 
   const openPrompt = (asset) => {
-    if (asset.assetStatusName === 'Allocated') {
+    if (asset.assetStatus === 'Allocated') {
       setErrorMessage(`Asset "${asset.assetName}" is already allocated. Please select available assets.`);
       return;
     }
-    if (asset.assetStatusName === 'UnderMaintenance') {
+    if (asset.assetStatus === 'UnderMaintenance') {
       setErrorMessage(`Asset "${asset.assetName}" is under Maintenane. Please select available assets.`);
       return;
     }
@@ -239,7 +239,7 @@ const Assets = () => {
 
   useEffect(() => {
     if (Array.isArray(assetsData)) {
-      const filtered = assetsData.filter((asset) => asset.value <= currentMaxValue);
+      const filtered = assetsData.filter((asset) => asset.Value <= currentMaxValue);
       setFilteredAssets(filtered);
     }
   }, [currentMaxValue, assetsData]);
@@ -247,9 +247,9 @@ const Assets = () => {
   useEffect(() => {
     const filtered = assetsData.filter(asset => {
       const matchesSearch = asset.assetName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesLocation = selectedLocation ? asset.location === selectedLocation : true;
+      const matchesLocation = selectedLocation ? asset.Location === selectedLocation : true;
       const matchesCategory = selectedCategory ? asset.categoryName === selectedCategory : true;
-      const matchesStatus = selectedassetStatus ? asset.assetStatusName === selectedassetStatus : true;
+      const matchesStatus = selectedassetStatus ? asset.assetStatus === selectedassetStatus : true;
       return matchesSearch && matchesLocation && matchesCategory && matchesStatus;
     });
     setFilteredAssets(filtered);
@@ -316,7 +316,7 @@ const Assets = () => {
     setSelectedLocation(location);
     setLocationDropdownOpen(false); // Close dropdown after selection
     // Filter assets based on the selected location
-    const filtered = assetsData.filter(asset => asset.location === location);
+    const filtered = assetsData.filter(asset => asset.Location === location);
     setFilteredAssets(filtered);
   };
 
@@ -491,12 +491,12 @@ const Assets = () => {
                 <h2 className="text-xl font-bold text-indigo-950">{asset.assetName}</h2>
                 <p className="text-sm text-gray-600">{asset.assetDescription}</p>
                 <p className="text-gray-800">Serial No: {asset.serialNumber}</p>
-                <p className="text-red-400 font-bold">₹{asset.value}</p>
-                <p className="text-gray-800">Location: {asset.location}</p>
+                <p className="text-red-400 font-bold">₹{asset.Value}</p>
+                <p className="text-gray-800">Location: {asset.Location}</p>
                 <p className="text-gray-800 font-semibold" >{asset.categoryName}</p>
                 <p className="text-gray-800">Model: {asset.Model}</p>
-                <span className={`text-sm font-semibold ${asset.assetStatusName === 'OpenToRequest' ? 'text-green-500' : 'text-red-500'}`}>
-                  {asset.assetStatusName}
+                <span className={`text-sm font-semibold ${asset.assetStatus === 'OpenToRequest' ? 'text-green-500' : 'text-red-500'}`}>
+                  {asset.assetStatus}
                 </span>
                 <div className="absolute bottom-2 right-6">
                   <FontAwesomeIcon
