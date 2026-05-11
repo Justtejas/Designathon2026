@@ -275,6 +275,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
             <img
               src={imagePreview}
               alt="Profile"
+              defaultValue={"No Picture"}
               className="w-32 h-32 rounded-full border-2 border-gray-300 object-cover"
             />
             {/* Edit Icon */}
