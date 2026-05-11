@@ -6,7 +6,7 @@ namespace Hexa_Hub.Interface
     {
         Task<List<AuditsDto>> GetAllAudits();
         Task<Audit?> GetAuditById(int id);
-        Task<AuditsDto?> GetAuditId(int id);
+        Task<AuditsDto?> GetauditId(int id);
         Task<List<AllocatedAssetDto>> GetAllocatedAssetsAsync();
         //Task AddAuditReq(Audit audit);
         Task<Audit> AddAduit(AuditsDto auditDto);

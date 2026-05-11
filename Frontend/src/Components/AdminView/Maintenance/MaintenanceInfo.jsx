@@ -92,9 +92,9 @@ const MaintenanceInfo = () => {
                                 <InfoItem label="User Id" value={maintenance.userId || 'N/A'} />
                                 <InfoItem label="User Name" value={maintenance.userName} />
                                 <InfoItem label="Asset Id" value={maintenance.assetId || 'N/A'} />  
-                                <InfoItem label="Maintenance Date" value={maintenance.maintenance_date} />
-                                <InfoItem label="Cost" value={maintenance.cost} />
-                                <InfoItem label="Description" value={maintenance.maintenance_Description} />
+                                <InfoItem label="Maintenance Date" value={maintenance.maintenanceDate} />
+                                <InfoItem label="Cost" value={maintenance.Cost} />
+                                <InfoItem label="Description" value={maintenance.maintenanceDescription} />
                             </Grid>
                         </CardContent>
                     </Card>

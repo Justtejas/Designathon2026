@@ -86,7 +86,7 @@ def handle_return_status_update(return_doc, return_status):
             asset_requests.delete_one({
                 "assetId": return_doc["assetId"],
                 "userId": return_doc["userId"],
-                "Request_Status": "Allocated"
+                "requestStatus": "Allocated"
             })
  
 @return_requests_blueprint.route("/api/ReturnRequests/all", methods=["GET"])

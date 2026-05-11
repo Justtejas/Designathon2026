@@ -21,9 +21,9 @@ const AddAudit = () => {
     const [formData, setFormData] = useState({
         assetId: '',
         userId: '',
-        AuditDate: new Date().toISOString().split('T')[0], 
-        AuditMessage: '',
-        Audit_Status: 'Sent',
+        auditDate: new Date().toISOString().split('T')[0], 
+        auditMessage: '',
+        auditStatus: 'Sent',
     });
 
     const [users, setUsers] = useState([]);
@@ -81,9 +81,9 @@ const AddAudit = () => {
             setFormData({
                 assetId: '',
                 userId: '',
-                AuditDate: new Date().toISOString().split('T')[0], 
-                AuditMessage: '', 
-                Audit_Status: 'Sent',
+                auditDate: new Date().toISOString().split('T')[0], 
+                auditMessage: '', 
+                auditStatus: 'Sent',
             });
         } catch (error) {
             console.error('Error adding audit:', error);
@@ -163,9 +163,9 @@ const AddAudit = () => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
-                                            name="AuditDate"
+                                            name="auditDate"
                                             label="Audit Date"
-                                            value={formData.AuditDate}
+                                            value={formData.auditDate}
                                             InputLabelProps={{
                                                 shrink: true,
                                             }}
@@ -175,9 +175,9 @@ const AddAudit = () => {
                                     <Grid item xs={12}>
                                         <TextField
                                             fullWidth
-                                            name="AuditMessage"
+                                            name="auditMessage"
                                             label="Audit Message"
-                                            value={formData.AuditMessage}
+                                            value={formData.auditMessage}
                                             variant="outlined"
                                             multiline
                                             rows={4}
@@ -188,9 +188,9 @@ const AddAudit = () => {
                                         <TextField
                                             fullWidth
                                             select
-                                            name="Audit_Status"
+                                            name="auditStatus"
                                             label="Audit Status"
-                                            value={formData.Audit_Status}
+                                            value={formData.auditStatus}
                                             onChange={handleChange}
                                             variant="outlined"
                                             InputProps={{ readOnly: true }} 

@@ -30,18 +30,18 @@ namespace Hexa_Hub.Repository
                 .Include(aa=>aa.User)
                 .Select(aa=> new AllocationClassDto
                 {
-                    AllocationId = aa.AllocationId,
+                    allocationId = aa.allocationId,
                     assetName = aa.Asset.assetName,
                     assetId = aa.Asset.assetId,
                     userId = aa.User.userId,
                     userName = aa.User.userName,
                     categoryName = aa.Asset.Category.categoryName,
                     subCategoryName = aa.Asset.SubCategories.subCategoryName,
-                    AssetReqDate = aa.AssetRequests.AssetReqDate,
-                    AssetReqId = aa.AssetReqId,
-                    AllocatedDate = aa.AllocatedDate,
+                    assetReqDate = aa.AssetRequests.assetReqDate,
+                    assetReqId = aa.assetReqId,
+                    allocatedDate = aa.allocatedDate,
                 })
-                .OrderByDescending(aa => aa.AllocatedDate)
+                .OrderByDescending(aa => aa.allocatedDate)
                 .ToListAsync();
         }
 
@@ -59,7 +59,7 @@ namespace Hexa_Hub.Repository
                     categoryId = a.Asset.Category.categoryId,
                     Value = a.asset.Value,
                     Model = a.Asset.Model,
-                    AllocatedDate = a.AllocatedDate
+                    allocatedDate = a.allocatedDate
                 })
                 .ToListAsync();
 
@@ -71,14 +71,14 @@ namespace Hexa_Hub.Repository
         {
             var monthname = DateTime.ParseExact(month, "MMMM", null).Month;
             return await _context.AssetAllocations
-                                 .Where(a => a.AllocatedDate.Month == monthname)
+                                 .Where(a => a.allocatedDate.Month == monthname)
                                  .ToListAsync();
         }
 
         public async Task<List<AssetAllocation>> GetAllocationsByYearAsync(int year)
         {
             return await _context.AssetAllocations
-                                 .Where(a => a.AllocatedDate.Year == year)
+                                 .Where(a => a.allocatedDate.Year == year)
                                  .ToListAsync();
         }
 
@@ -86,14 +86,14 @@ namespace Hexa_Hub.Repository
         {
             var monthname = DateTime.ParseExact(month, "MMMM", null).Month;
             return await _context.AssetAllocations
-                                 .Where(a => a.AllocatedDate.Month == monthname && a.AllocatedDate.Year == year)
+                                 .Where(a => a.allocatedDate.Month == monthname && a.allocatedDate.Year == year)
                                  .ToListAsync();
         }
 
         public async Task<List<AssetAllocation>> GetAllocationsByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             return await _context.AssetAllocations
-                                 .Where(a => a.AllocatedDate >= startDate && a.AllocatedDate <= endDate)
+                                 .Where(a => a.allocatedDate >= startDate && a.allocatedDate <= endDate)
                                  .ToListAsync();
         }
 
@@ -144,7 +144,7 @@ namespace Hexa_Hub.Repository
                     .ThenInclude(asset => asset.Category)
                     .ThenInclude(category => category.SubCategories)
                 .Include(aa => aa.User)
-                .FirstOrDefaultAsync(aa => aa.AllocationId == id);
+                .FirstOrDefaultAsync(aa => aa.allocationId == id);
         }
 
         public async Task<AllocationClassDto?> GetAllocationById(int id)
@@ -156,18 +156,18 @@ namespace Hexa_Hub.Repository
                 .Include(aa => aa.User)
                 .Select(aa => new AllocationClassDto
                 {
-                    AllocationId = aa.AllocationId,
+                    allocationId = aa.allocationId,
                     assetName = aa.Asset.assetName,
                     userName = aa.User.userName,
                     assetId = aa.Asset.assetId,
                     userId = aa.User.userId,
                     categoryName = aa.Asset.Category.categoryName,
                     subCategoryName = aa.Asset.SubCategories.subCategoryName,
-                    AssetReqDate = aa.AssetRequests.AssetReqDate,
-                    AssetReqId = aa.AssetReqId,
-                    AllocatedDate = aa.AllocatedDate,
+                    assetReqDate = aa.AssetRequests.assetReqDate,
+                    assetReqId = aa.assetReqId,
+                    allocatedDate = aa.allocatedDate,
                 })
-                .FirstOrDefaultAsync(aa => aa.AllocationId == id);
+                .FirstOrDefaultAsync(aa => aa.allocationId == id);
         }
 
         public async Task<List<AssetAllocation>> GetAllocationListById(int userId)
@@ -212,8 +212,8 @@ namespace Hexa_Hub.Repository
         //    {
         //        assetId = allocationDto.assetId,
         //        userId = allocationDto.userId,
-        //        AssetReqId = allocationDto.AssetReqId,
-        //        AllocatedDate = DateTime.Now,
+        //        assetReqId = allocationDto.assetReqId,
+        //        allocatedDate = DateTime.Now,
         //        Asset = asset,
         //        User = user
         //    };
@@ -229,7 +229,7 @@ namespace Hexa_Hub.Repository
         //    // Employee details
         //    string toEmail = user.userMail;     // Employee's email
         //    string subject = "Asset Allocation Notification";
-        //    string message = $"Dear {user.userName},<br>Your asset {asset.assetName} has been allocated successfully on {assetAllocation.AllocatedDate}.";
+        //    string message = $"Dear {user.userName},<br>Your asset {asset.assetName} has been allocated successfully on {assetAllocation.allocatedDate}.";
 
         //    // Send email notification from Admin to Employee
         //    await _email.SendEmailAsync(fromEmail, fromName, toEmail, subject, message);

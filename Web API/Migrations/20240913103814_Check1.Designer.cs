@@ -85,29 +85,29 @@ namespace Hexa_Hub.Migrations
 
             ModelBuilder.Entity("AssetAllocation", b =>
                 {
-                    b.Property<int>("AllocationId")
+                    b.Property<int>("allocationId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AllocationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("allocationId"));
 
-                    b.Property<DateTime>("AllocatedDate")
+                    b.Property<DateTime>("allocatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("assetId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AssetReqId")
+                    b.Property<int>("assetReqId")
                         .HasColumnType("int");
 
                     b.Property<int>("userId")
                         .HasColumnType("int");
 
-                    b.HasKey("AllocationId");
+                    b.HasKey("allocationId");
 
                     b.HasIndex("assetId");
 
-                    b.HasIndex("AssetReqId")
+                    b.HasIndex("assetReqId")
                         .IsUnique();
 
                     b.HasIndex("userId");
@@ -117,19 +117,19 @@ namespace Hexa_Hub.Migrations
 
             ModelBuilder.Entity("AssetRequest", b =>
                 {
-                    b.Property<int>("AssetReqId")
+                    b.Property<int>("assetReqId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssetReqId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("assetReqId"));
 
                     b.Property<int>("assetId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("AssetReqDate")
+                    b.Property<DateTime>("assetReqDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("AssetReqReason")
+                    b.Property<string>("assetReqReason")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -137,13 +137,13 @@ namespace Hexa_Hub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Request_Status")
+                    b.Property<string>("requestStatus")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("userId")
                         .HasColumnType("int");
 
-                    b.HasKey("AssetReqId");
+                    b.HasKey("assetReqId");
 
                     b.HasIndex("assetId");
 
@@ -154,28 +154,28 @@ namespace Hexa_Hub.Migrations
 
             ModelBuilder.Entity("Audit", b =>
                 {
-                    b.Property<int>("AuditId")
+                    b.Property<int>("auditId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuditId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("auditId"));
 
                     b.Property<int>("assetId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("AuditDate")
+                    b.Property<DateTime?>("auditDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("AuditMessage")
+                    b.Property<string>("auditMessage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Audit_Status")
+                    b.Property<string>("auditStatus")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("userId")
                         .HasColumnType("int");
 
-                    b.HasKey("AuditId");
+                    b.HasKey("auditId");
 
                     b.HasIndex("assetId");
 
@@ -204,11 +204,11 @@ namespace Hexa_Hub.Migrations
 
             ModelBuilder.Entity("MaintenanceLog", b =>
                 {
-                    b.Property<int>("MaintenanceId")
+                    b.Property<int>("maintenanceId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaintenanceId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("maintenanceId"));
 
                     b.Property<int>("assetId")
                         .HasColumnType("int");
@@ -216,16 +216,16 @@ namespace Hexa_Hub.Migrations
                     b.Property<decimal?>("Cost")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Maintenance_Description")
+                    b.Property<string>("maintenanceDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Maintenance_date")
+                    b.Property<DateTime>("maintenanceDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("userId")
                         .HasColumnType("int");
 
-                    b.HasKey("MaintenanceId");
+                    b.HasKey("maintenanceId");
 
                     b.HasIndex("assetId");
 
@@ -422,7 +422,7 @@ namespace Hexa_Hub.Migrations
 
                     b.HasOne("AssetRequest", "AssetRequests")
                         .WithOne("AssetAlocation")
-                        .HasForeignKey("AssetAllocation", "AssetReqId")
+                        .HasForeignKey("AssetAllocation", "assetReqId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 

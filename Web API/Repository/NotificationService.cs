@@ -14,25 +14,25 @@ namespace Hexa_Hub.Repository
         }
 
         //AUDIT NOTIFICATIONS
-        public async Task SendAudit (string userMail, string userName, int AuditId)
+        public async Task SendAudit (string userMail, string userName, int auditId)
         {
             var subject = "Aduit Request";
-            var emailBody = $"Dear {userName},<br><br>You have been assigned an Audit Request {AuditId} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory";
+            var emailBody = $"Dear {userName},<br><br>You have been assigned an Audit Request {auditId} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
-        public async Task AduitCompleted(string userMail,int AuditId)
+        public async Task AduitCompleted(string userMail,int auditId)
         {
             var subject = "Aduit Request Completed";
-            var emailBody = $"Greetings Maventory,<br><br>Audit Request For Audit ID : {AuditId} has been Completed.";
+            var emailBody = $"Greetings Maventory,<br><br>Audit Request For Audit ID : {auditId} has been Completed.";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
 
-        public async Task AuditInProgress(string userMail, int AuditId)
+        public async Task AuditInProgress(string userMail, int auditId)
         {
             var subject = "Aduit Request Completed";
-            var emailBody = $"Greetings Maventory,<br><br>Audit Request For Audit ID : {AuditId} has been Set to InProgress.";
+            var emailBody = $"Greetings Maventory,<br><br>Audit Request For Audit ID : {auditId} has been Set to InProgress.";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }
@@ -84,7 +84,7 @@ namespace Hexa_Hub.Repository
         public async Task ServiceRequestCompleted(string userMail, string userName, int assetId, int ServiceId, IssueType issueType)
         {
             var subject = "Service Request Completion";
-            var emailBody = $"Dear {userName},<br><br>Service Request {ServiceId} which have been Raised for {assetId} with {issueType.ToString()} has been Completed and the cost will be detained from salary .<br><br>Best regards,<br>Maventory";
+            var emailBody = $"Dear {userName},<br><br>Service Request {ServiceId} which have been Raised for {assetId} with {issueType.ToString()} has been Completed and the Cost will be detained from salary .<br><br>Best regards,<br>Maventory";
 
             await _emailService.SendEmailAsync(userMail, subject, emailBody);
         }

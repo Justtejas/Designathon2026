@@ -24,16 +24,16 @@ namespace Hexa_Hub.Repository
                 .Include(ml => ml.User)
                 .Select(ml => new MaintenanceClassDto
                 {
-                    MaintenanceId = ml.MaintenanceId,
+                    maintenanceId = ml.maintenanceId,
                     assetId = ml.Asset.assetId,
                     assetName = ml.Asset.assetName,
                     userId = ml.User.userId,
                     userName = ml.User.userName,
-                    Maintenance_date = ml.Maintenance_date,
+                    maintenanceDate = ml.maintenanceDate,
                     Cost = ml.Cost,
-                    Maintenance_Description = ml.Maintenance_Description,
+                    maintenanceDescription = ml.maintenanceDescription,
                 })
-                .OrderByDescending(ml=>ml.Maintenance_date)
+                .OrderByDescending(ml=>ml.maintenanceDate)
                 .ToListAsync();
         }
 
@@ -53,16 +53,16 @@ namespace Hexa_Hub.Repository
                 .Include(ml => ml.User)
                 .Select(ml=> new MaintenanceClassDto
                 {
-                    MaintenanceId = ml.MaintenanceId,
+                    maintenanceId = ml.maintenanceId,
                     assetId = ml.Asset.assetId,
                     assetName = ml.Asset.assetName,
                     userId = ml.User.userId,
                     userName = ml.User.userName,
-                    Maintenance_date = ml.Maintenance_date,
+                    maintenanceDate = ml.maintenanceDate,
                     Cost = ml.Cost,
-                    Maintenance_Description = ml.Maintenance_Description,
+                    maintenanceDescription = ml.maintenanceDescription,
                 })
-                .FirstOrDefaultAsync(ml => ml.MaintenanceId == id);
+                .FirstOrDefaultAsync(ml => ml.maintenanceId == id);
         }
 
         public async Task<List<MaintenanceLog>> GetMaintenanceLogById(int userId)
@@ -103,9 +103,9 @@ namespace Hexa_Hub.Repository
         //        return false;
         //    }
 
-        //    existingLog.Maintenance_date = maintenanceDto.Maintenance_date;
+        //    existingLog.maintenanceDate = maintenanceDto.maintenanceDate;
         //    existingLog.Cost = maintenanceDto.Cost;
-        //    existingLog.Maintenance_Description = maintenanceDto.Maintenance_Description;
+        //    existingLog.maintenanceDescription = maintenanceDto.maintenanceDescription;
 
         //    _context.MaintenanceLogs.Update(existingLog);
 
@@ -114,15 +114,15 @@ namespace Hexa_Hub.Repository
 
         public async Task<bool> UpdateMaintenanceLog(MaintenanceClassDto maintenanceClassDto)
         {
-            var existingLog = await _context.MaintenanceLogs.FindAsync(maintenanceClassDto.MaintenanceId);
+            var existingLog = await _context.MaintenanceLogs.FindAsync(maintenanceClassDto.maintenanceId);
             if (existingLog == null)
             {
                 return false;
             }
 
-            existingLog.Maintenance_date = maintenanceClassDto.Maintenance_date;
+            existingLog.maintenanceDate = maintenanceClassDto.maintenanceDate;
             existingLog.Cost = maintenanceClassDto.Cost;
-            existingLog.Maintenance_Description = maintenanceClassDto.Maintenance_Description;
+            existingLog.maintenanceDescription = maintenanceClassDto.maintenanceDescription;
 
             _context.MaintenanceLogs.Update(existingLog);
             return true;

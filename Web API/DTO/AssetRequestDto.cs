@@ -7,7 +7,7 @@ namespace Hexa_Hub.DTO
     public class AssetRequestDto
     {
 
-        public int AssetReqId { get; set; }
+        public int assetReqId { get; set; }
 
         [Required]
         public int userId { get; set; }
@@ -21,10 +21,10 @@ namespace Hexa_Hub.DTO
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime AssetReqDate { get; set; }
+        public DateTime assetReqDate { get; set; }
 
         [Required]
-        public string AssetReqReason { get; set; }
-        public string Request_Status { get; set; }
+        public string assetReqReason { get; set; }
+        public string requestStatus { get; set; }
     }
 }

@@ -31,10 +31,10 @@ public class DataContext : DbContext
                     v => Enum.Parse<assetStatus>(v));
 
             ModelBuilder.Entity<AssetRequest>()
-                .Property(r => r.Request_Status)
+                .Property(r => r.requestStatus)
                 .HasConversion(
                     v => v.ToString(),
-                    v => Enum.Parse<RequestStatus>(v));
+                    v => Enum.Parse<requestStatus>(v));
 
             ModelBuilder.Entity<ReturnRequest>()
                 .Property(r => r.ReturnStatus)
@@ -49,10 +49,10 @@ public class DataContext : DbContext
                     v => Enum.Parse<ServiceReqStatus>(v));
 
             ModelBuilder.Entity<Audit>()
-                .Property(r => r.Audit_Status)
+                .Property(r => r.auditStatus)
                 .HasConversion(
                     v => v.ToString(),
-                    v => Enum.Parse<AuditStatus>(v));
+                    v => Enum.Parse<auditStatus>(v));
 
             ModelBuilder.Entity<ServiceRequest>()
                 .Property(r => r.Issue_Type)
@@ -95,7 +95,7 @@ public class DataContext : DbContext
             ModelBuilder.Entity<AssetAllocation>()
                 .HasOne(aa => aa.AssetRequests)
                 .WithOne(ar => ar.AssetAlocation)
-                .HasForeignKey<AssetAllocation>(aa => aa.AssetReqId)
+                .HasForeignKey<AssetAllocation>(aa => aa.assetReqId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //Audit Configuration

@@ -74,7 +74,7 @@ namespace Hexa_Hub.Controllers
         [Authorize]
         public async Task<ActionResult<Audit>> GetAuditsById(int id)
         {
-            var audit = await _auditRepo.GetAuditId(id);
+            var audit = await _auditRepo.GetauditId(id);
             return Ok(audit);
         }
 
@@ -116,7 +116,7 @@ namespace Hexa_Hub.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != auditDto.AuditId)
+            if (id != auditDto.auditId)
             {
                 return BadRequest("Audit ID mismatch.");
             }
@@ -132,15 +132,15 @@ namespace Hexa_Hub.Controllers
             {
                 return Forbid($"Sorry you are not User {userId}");
             }
-            existingAudit.AuditDate = auditDto.AuditDate;
-            existingAudit.AuditMessage = auditDto.AuditMessage;
-            if (Enum.TryParse<AuditStatus>(auditDto.Audit_Status, out var status))
+            existingAudit.auditDate = auditDto.auditDate;
+            existingAudit.auditMessage = auditDto.auditMessage;
+            if (Enum.TryParse<auditStatus>(auditDto.auditStatus, out var status))
             {
-                existingAudit.Audit_Status = status;
+                existingAudit.auditStatus = status;
             }
             else
             {
-                return BadRequest($"Invalid Audit Status: {auditDto.Audit_Status}");
+                return BadRequest($"Invalid Audit Status: {auditDto.auditStatus}");
             }
 
 
@@ -148,25 +148,25 @@ namespace Hexa_Hub.Controllers
             {
                 await _auditRepo.UpdateAudit(existingAudit);
                 await _auditRepo.Save();
-                if (existingAudit.Audit_Status == AuditStatus.Completed)
+                if (existingAudit.auditStatus == auditStatus.Completed)
                 {
                     var adminUsers = await _userRepo.GetUsersByAdmin();
 
                     foreach (var admin in adminUsers)
                     {
 
-                        await _notificationService.AduitCompleted(admin.userMail, existingAudit.AuditId);
+                        await _notificationService.AduitCompleted(admin.userMail, existingAudit.auditId);
                     }
                     var admins = await _userRepo.GetUsersByRole(UserType.Admin);
                 }
-                if (existingAudit.Audit_Status == AuditStatus.InProgress)
+                if (existingAudit.auditStatus == auditStatus.InProgress)
                 {
                     var adminUsers = await _userRepo.GetUsersByAdmin();
 
                     foreach (var admin in adminUsers)
                     {
 
-                        await _notificationService.AuditInProgress(admin.userMail, existingAudit.AuditId);
+                        await _notificationService.AuditInProgress(admin.userMail, existingAudit.auditId);
                     }
                     var admins = await _userRepo.GetUsersByRole(UserType.Admin);
                 }
@@ -204,14 +204,14 @@ namespace Hexa_Hub.Controllers
                 await _notificationService.SendAudit(
                     employee.userMail,
                     employee.userName,
-                    audit.AuditId
+                    audit.auditId
                 );
             }
             else
             {
                 return NotFound("Employee not found.");
             }
-            return CreatedAtAction("GetAudit", new { id = audit.AuditId }, audit);
+            return CreatedAtAction("GetAudit", new { id = audit.auditId }, audit);
         }
 
 
@@ -236,7 +236,7 @@ namespace Hexa_Hub.Controllers
 
         private bool AuditExists(int id)
         {
-            return _context.Audits.Any(e => e.AuditId == id);
+            return _context.Audits.Any(e => e.auditId == id);
         }
     }
 }

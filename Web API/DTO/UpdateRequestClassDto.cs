@@ -6,7 +6,7 @@ namespace Hexa_Hub.DTO
 {
     public class UpdateRequestClassDto
     {
-        public int AssetReqId { get; set; }
+        public int assetReqId { get; set; }
         public string userName { get; set; }
         public string assetName { get; set; }
         public int userId { get; set; }
@@ -14,10 +14,10 @@ namespace Hexa_Hub.DTO
         public string categoryName { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime AssetReqDate { get; set; }
-        public string AssetReqReason { get; set; }
-        public string RequestStatusName => RequestStatus.ToString();
-        public RequestStatus? RequestStatus { get; set; }
+        public DateTime assetReqDate { get; set; }
+        public string assetReqReason { get; set; }
+        public string requestStatusName => requestStatus.ToString();
+        public requestStatus? requestStatus { get; set; }
     }
 
 }

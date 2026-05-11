@@ -11,7 +11,7 @@ const Notifications = () => {
     
     const [notificationStatus, setNotificationStatus] = useState('active'); // Manage notification visibility
     const [showSuccessPrompt, setShowSuccessPrompt] = useState(false);
-    const [auditStatus, setAuditStatus] = useState('');
+    const [auditStatus, setauditStatus] = useState('');
     const [showTrackDetails, setShowTrackDetails] = useState(false);
     const [assetAllocations, setAssetAllocations] = useState([]); // Store asset allocations
     const [isLoading, setIsLoading] = useState(true); // For loading state
@@ -24,10 +24,10 @@ const Notifications = () => {
     const [userId, setuserId] = useState(null);
     const [userName, setuserName] = useState(null);
     const [assetName, setassetName] = useState('');
-    const [selectedAuditId, setSelectedAuditId] = useState(null);
+    const [selectedauditId, setSelectedauditId] = useState(null);
     const [selectedassetId, setSelectedassetId] = useState(null);
-    const [auditMessage, setAuditMessage] = useState('');
-    const [nextAuditDate, setNextAuditDate] = useState(new Date('2024-04-11'));
+    const [auditMessage, setauditMessage] = useState('');
+    const [nextauditDate, setNextauditDate] = useState(new Date('2024-04-11'));
     const [showAuditUpdateSuccess, setShowAuditUpdateSuccess] = useState(false);
     const defaultImage = "Images/AssetDefault.jpg";
 
@@ -38,8 +38,8 @@ const Notifications = () => {
     // Function to handle the audit completion
     const handleAccept = () => {
         const currentDate = new Date();
-        const newNextAuditDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
-        setNextAuditDate(newNextAuditDate);
+        const newNextauditDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
+        setNextauditDate(newNextauditDate);
     };
 
     useEffect(() => {
@@ -59,7 +59,7 @@ const Notifications = () => {
 
                     const filteredRequests = requests.filter(request => {
                         const requestDate = new Date(request.auditDate); 
-                        return request.audit_Status === "Sent" && requestDate >= fiveDaysAgo && requestDate <= today;
+                        return request.auditStatus === "Sent" && requestDate >= fiveDaysAgo && requestDate <= today;
                     });
 
                     if (filteredRequests && filteredRequests.length > 0) {
@@ -78,10 +78,10 @@ const Notifications = () => {
     }, []);
 
     const acceptAuditRequest = async (auditId, assetId) => {
-        setSelectedAuditId(auditId); // Set the ID of the audit to be updated
+        setSelectedauditId(auditId); // Set the ID of the audit to be updated
         setSelectedassetId(assetId);
         setNotificationStatus('completed'); // Show the audit update section
-        setAuditMessage('');
+        setauditMessage('');
         setShowSuccessPrompt(true);
 
 
@@ -278,19 +278,19 @@ const Notifications = () => {
             }
 
             const auditUpdateData = {
-                auditId: selectedAuditId,
+                auditId: selectedauditId,
                 assetId: selectedassetId,
                 userId: userId,
                 auditDate: new Date().toISOString(),
                 auditMessage: auditMessage,
-                audit_Status: auditStatus,
+                auditStatus: auditStatus,
                 assetName: assetData.assetName,
                 userName: userName
             };
 
             console.log("Audit update data:", auditUpdateData); 
 
-            await axios.put(`http://localhost:7287/api/Audits/${selectedAuditId}`, auditUpdateData, {
+            await axios.put(`http://localhost:7287/api/Audits/${selectedauditId}`, auditUpdateData, {
                 headers: {
                     'Content-Type': 'application/json',
                     accept: '*/*'
@@ -406,7 +406,7 @@ const Notifications = () => {
                                 <p>Asset Name: <span className="font-semibold text-yellow-400">{assetName}</span></p>
                                 <select
                                     value={auditStatus}
-                                    onChange={(e) => setAuditStatus(e.target.value)}
+                                    onChange={(e) => setauditStatus(e.target.value)}
                                     className="border border-gray-300 bg-slate-200 text-indigo-950 rounded p-2 mb-2"
                                 >
                                     <option value="" disabled >Update Status</option>
@@ -416,7 +416,7 @@ const Notifications = () => {
                                 </select>
                                 <textarea
                                     value={auditMessage}
-                                    onChange={(e) => setAuditMessage(e.target.value)}
+                                    onChange={(e) => setauditMessage(e.target.value)}
                                     placeholder="Enter audit message..."
                                     className="border border-gray-300 bg-slate-200 text-indigo-950 rounded p-2 w-full h-24"
                                 />
@@ -596,7 +596,7 @@ const Notifications = () => {
                 <div className="flex justify-center items-center bg-white text-indigo-950 p-4 rounded-lg mt-8 shadow-lg">
                     <FontAwesomeIcon icon={faCalendarAlt} className="text-red-500 mr-2" />
                     <span className="text-lg font-medium">
-                        Reminder: Your next audit is scheduled for <strong>{nextAuditDate.toLocaleDateString()}</strong>
+                        Reminder: Your next audit is scheduled for <strong>{nextauditDate.toLocaleDateString()}</strong>
                     </span>
                 </div>
             </div>

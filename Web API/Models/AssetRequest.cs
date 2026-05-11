@@ -9,7 +9,7 @@ public class AssetRequest
 {
     [Required]
     [Key]
-    public int AssetReqId { get; set; }
+    public int assetReqId { get; set; }
 
     [Required]
     public int userId { get; set; }
@@ -23,13 +23,13 @@ public class AssetRequest
     [Required]
     [DataType(DataType.Date)]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-    public DateTime AssetReqDate { get; set; }
+    public DateTime assetReqDate { get; set; }
 
     [Required]
-    public string AssetReqReason { get; set; }
+    public string assetReqReason { get; set; }
 
-    [DefaultValue(RequestStatus.Pending)]
-    public RequestStatus? Request_Status { get; set; } = RequestStatus.Pending;
+    [DefaultValue(requestStatus.Pending)]
+    public requestStatus? requestStatus { get; set; } = requestStatus.Pending;
 
     //Navigation Properties
     // 1 - 1 Relation

@@ -8,7 +8,7 @@ public class Audit
 {
     [Required]
     [Key]
-    public int AuditId { get; set; }
+    public int auditId { get; set; }
 
     [Required]
     public int assetId { get; set; }
@@ -18,12 +18,12 @@ public class Audit
 
     [DataType(DataType.Date)]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-    public DateTime? AuditDate { get; set; }
+    public DateTime? auditDate { get; set; }
 
-    public string? AuditMessage { get; set; }
+    public string? auditMessage { get; set; }
 
-    [DefaultValue(AuditStatus.Sent)]
-    public AuditStatus? Audit_Status { get; set; } = AuditStatus.Sent;
+    [DefaultValue(auditStatus.Sent)]
+    public auditStatus? auditStatus { get; set; } = auditStatus.Sent;
 
     //Navigation Properties
     // 1 - 1 Relation

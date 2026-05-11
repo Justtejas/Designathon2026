@@ -28,7 +28,7 @@ namespace Hexa_Hub.DTO
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime AllocatedDate { get; set; } = DateTime.Now;
+        public DateTime allocatedDate { get; set; } = DateTime.Now;
 
 
     }

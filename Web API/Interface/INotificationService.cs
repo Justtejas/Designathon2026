@@ -6,8 +6,8 @@ namespace Hexa_Hub.Interface
     {
         Task SendAllocationApproved(string userMail, string userName, string assetName, int assetId);
         Task SendAllocationRejected(string userMail, string userName, string assetName, int assetId);
-        Task SendAudit(string userMail, string userName, int AuditId);
-        Task AduitCompleted(string userMail, int AuditId);
+        Task SendAudit(string userMail, string userName, int auditId);
+        Task AduitCompleted(string userMail, int auditId);
         Task ServiceRequestSent(string userMail, int assetId, int ServiceId, IssueType issueType);
         Task ServiceRequestApproved(string userMail, string userName, int assetId, int ServiceId, IssueType issueType);
         Task ServiceRequestCompleted(string userMail, string userName, int assetId, int ServiceId, IssueType issueType);
@@ -19,7 +19,7 @@ namespace Hexa_Hub.Interface
         Task AssetRequestSent(string userMail, int assetId);
 
         Task UserProfileCreated(string userMail, string userName, string Password);
-        Task AuditInProgress(string userMail, int AuditId);
+        Task AuditInProgress(string userMail, int auditId);
 
 
 

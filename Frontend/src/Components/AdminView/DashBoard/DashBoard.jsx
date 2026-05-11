@@ -313,7 +313,7 @@ export default function Dashboard() {
                                                     <TableCell>{row.userName || 'N/A'}</TableCell>
                                                     <TableCell>{row.auditDate ? new Date(row.auditDate).toLocaleDateString() : 'N/A'}</TableCell>
                                                     <TableCell>{row.auditMessage || 'N/A'}</TableCell>
-                                                    <TableCell style={{ color: row.audit_Status === 'Completed' ? "#0BDA51" : "#36A2EB" }}>{row.audit_Status || 'N/A'}</TableCell>
+                                                    <TableCell style={{ color: row.auditStatus === 'Completed' ? "#0BDA51" : "#36A2EB" }}>{row.auditStatus || 'N/A'}</TableCell>
                                                 </TableRow>
                                             ))
                                         ) : (

@@ -105,9 +105,9 @@ namespace Hexa_Hub.Controllers
                 }
 
                 // Update the fields
-                existingLog.Maintenance_date = maintenanceClassDto.Maintenance_date;
+                existingLog.maintenanceDate = maintenanceClassDto.maintenanceDate;
                 existingLog.Cost = maintenanceClassDto.Cost;
-                existingLog.Maintenance_Description = maintenanceClassDto.Maintenance_Description;
+                existingLog.maintenanceDescription = maintenanceClassDto.maintenanceDescription;
 
                 // Call the update method
                 await _maintenanceLogRepo.UpdateMaintenanceLog(existingLog);
@@ -187,7 +187,7 @@ namespace Hexa_Hub.Controllers
 
         private bool MaintenanceLogExists(int id)
         {
-            return _context.MaintenanceLogs.Any(e => e.MaintenanceId == id);
+            return _context.MaintenanceLogs.Any(e => e.maintenanceId == id);
         }
     }
 }

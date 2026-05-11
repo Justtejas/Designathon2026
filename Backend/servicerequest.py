@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from pymongo import MongoClient
-from auth import get_user_id, get_user_role
+from auth import get_user_id, get_user_role,get_next_sequence
 from datetime import datetime
 import os
 import logging
@@ -183,11 +183,13 @@ def put_service_request(service_id):
                 {"$set": {"assetStatus": "UnderMaintenance"}}
             )
             # Create maintenance log
+            maintenanceId = get_next_sequence("maintenance")
             maintenance_log = {
+                "maintenanceId": maintenanceId,
                 "assetId": data.get("assetId"),
                 "userId": data.get("userId"),
-                "Maintenance_date": datetime.now().isoformat(),
-                "Maintenance_Description": data.get("ServiceDescription")
+                "maintenanceDate": datetime.now().isoformat(),
+                "maintenanceDescription": data.get("ServiceDescription")
             }
             maintenance_logs.insert_one(maintenance_log)
         elif new_status == "Completed":

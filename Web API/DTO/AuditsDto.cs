@@ -6,7 +6,7 @@ namespace Hexa_Hub.DTO
 {
     public class AuditsDto
     {
-        public int AuditId { get; set; }
+        public int auditId { get; set; }
 
         public int assetId { get; set; }
 
@@ -14,11 +14,11 @@ namespace Hexa_Hub.DTO
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime? AuditDate { get; set; }
+        public DateTime? auditDate { get; set; }
 
-        public string? AuditMessage { get; set; }
+        public string? auditMessage { get; set; }
        
-        public string Audit_Status { get; set; }
+        public string auditStatus { get; set; }
 
         public string? assetName { get; set; }
 

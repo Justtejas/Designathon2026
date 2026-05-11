@@ -85,11 +85,11 @@ const AuditInfo = () => {
                                 <Box>
                                     <Typography variant="h4">{audit.assetName}</Typography>
                                     <Chip
-                                        label={audit.audit_Status}
+                                        label={audit.auditStatus}
                                         color="secondary"
                                         sx={{
                                             mt: 1,
-                                            backgroundColor: audit.audit_Status === 'Completed' ? '#0BDA51' :audit.audit_Status === 'InProgress' ? '#FF7518':
+                                            backgroundColor: audit.auditStatus === 'Completed' ? '#0BDA51' :audit.auditStatus === 'InProgress' ? '#FF7518':
                                             '#36A2EB' ,
                                             color: '#000000' ,
                                             fontWeight: 'bold'

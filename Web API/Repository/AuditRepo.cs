@@ -36,11 +36,11 @@ namespace Hexa_Hub.Repository
         {
             var audit = new Audit
             {
-                AuditId = auditDto.AuditId,
+                auditId = auditDto.auditId,
                 assetId = auditDto.assetId,
                 userId = auditDto.userId,
-                AuditDate = auditDto.AuditDate,
-                AuditMessage = auditDto.AuditMessage
+                auditDate = auditDto.auditDate,
+                auditMessage = auditDto.auditMessage
             };
             await _context.AddAsync(audit);
 
@@ -57,7 +57,7 @@ namespace Hexa_Hub.Repository
                 throw new AuditNotFoundException($"Audit with ID {id} Not Found");
             }
 
-            if (aId.Audit_Status == Models.MultiValues.AuditStatus.Completed)
+            if (aId.auditStatus == Models.MultiValues.auditStatus.Completed)
             {
                 throw new InvalidOperationException("Cannot Delete an Completed Audit");
             }
@@ -72,16 +72,16 @@ namespace Hexa_Hub.Repository
                 .Include(a=>a.Asset)
                 .Select(a => new AuditsDto
                 {
-                    AuditId = a.AuditId,
+                    auditId = a.auditId,
                     assetId = a.assetId,
                     userId = a.userId,
-                    AuditDate = a.AuditDate,
-                    AuditMessage = a.AuditMessage,
-                    Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" : a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
+                    auditDate = a.auditDate,
+                    auditMessage = a.auditMessage,
+                    auditStatus = a.auditStatus == auditStatus.Completed ? "Completed" : a.auditStatus == auditStatus.InProgress ? "InProgress" : "Sent",
                     assetName = a.Asset.assetName,
                     userName = a.User.userName
                 })
-                .OrderByDescending(a => a.AuditDate)
+                .OrderByDescending(a => a.auditDate)
                 .ToListAsync();
         }
 
@@ -90,18 +90,18 @@ namespace Hexa_Hub.Repository
             var audits =  await _context.Audits
                 .Include(a => a.User)
                 .Include(a => a.Asset)
-                .OrderByDescending(a => a.AuditDate)
+                .OrderByDescending(a => a.auditDate)
                 .Take(5)
                 .ToListAsync();
             return audits.Select(a => new AuditsDto
             {
-                AuditId = a.AuditId,
+                auditId = a.auditId,
                 assetId = a.assetId,
                 userId = a.userId,
-                AuditDate = a.AuditDate,
-                AuditMessage = a.AuditMessage,
-                Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" :
-               a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
+                auditDate = a.auditDate,
+                auditMessage = a.auditMessage,
+                auditStatus = a.auditStatus == auditStatus.Completed ? "Completed" :
+               a.auditStatus == auditStatus.InProgress ? "InProgress" : "Sent",
                 assetName = a.Asset?.assetName,
                 userName = a.User?.userName
             }).ToList();
@@ -111,27 +111,27 @@ namespace Hexa_Hub.Repository
             return await _context.Audits
                     .Include(a => a.User)
                     .Include(a => a.Asset)
-                    .FirstOrDefaultAsync(a=>a.AuditId == id);
+                    .FirstOrDefaultAsync(a=>a.auditId == id);
         }
 
-        public async Task<AuditsDto?> GetAuditId(int id)
+        public async Task<AuditsDto?> GetauditId(int id)
         {
             return await _context.Audits
                     .Include(a => a.User)
                     .Include(a => a.Asset)
                     .Select(a => new AuditsDto
                     {
-                        AuditId = a.AuditId,
+                        auditId = a.auditId,
                         assetId = a.assetId,
                         userId = a.userId,
-                        AuditDate = a.AuditDate,
-                        AuditMessage = a.AuditMessage,
-                        Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" :
-               a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
+                        auditDate = a.auditDate,
+                        auditMessage = a.auditMessage,
+                        auditStatus = a.auditStatus == auditStatus.Completed ? "Completed" :
+               a.auditStatus == auditStatus.InProgress ? "InProgress" : "Sent",
                         assetName = a.Asset.assetName,
                         userName = a.User.userName
                     })
-                    .FirstOrDefaultAsync(a => a.AuditId == id);
+                    .FirstOrDefaultAsync(a => a.auditId == id);
         }
 
         //public async Task<List<Audit>> GetAuditsByuserId(int userId)
@@ -151,13 +151,13 @@ namespace Hexa_Hub.Repository
                 .Include(a => a.User)
                 .Select(a => new AuditsDto
                 {
-                    AuditId = a.AuditId,
+                    auditId = a.auditId,
                     assetId = a.assetId,
                     userId = a.userId,
-                    AuditDate = a.AuditDate,
-                    AuditMessage = a.AuditMessage,
-                    Audit_Status = a.Audit_Status == AuditStatus.Completed ? "Completed" :
-               a.Audit_Status == AuditStatus.InProgress ? "InProgress" : "Sent",
+                    auditDate = a.auditDate,
+                    auditMessage = a.auditMessage,
+                    auditStatus = a.auditStatus == auditStatus.Completed ? "Completed" :
+               a.auditStatus == auditStatus.InProgress ? "InProgress" : "Sent",
                     assetName = a.Asset.assetName,
                     userName = a.User.userName
                 })

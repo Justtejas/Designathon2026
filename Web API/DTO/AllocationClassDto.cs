@@ -6,7 +6,7 @@ namespace Hexa_Hub.DTO
 {
     public class AllocationClassDto
     {
-        public int AllocationId { get; set; }
+        public int allocationId { get; set; }
 
         public string assetName { get; set; }
         public int assetId { get; set; }
@@ -17,13 +17,13 @@ namespace Hexa_Hub.DTO
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime AssetReqDate { get; set; }
+        public DateTime assetReqDate { get; set; }
 
-        public int AssetReqId { get; set; }
+        public int assetReqId { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime AllocatedDate { get; set; } = DateTime.Now;
+        public DateTime allocatedDate { get; set; } = DateTime.Now;
 
     }
 }

@@ -27,8 +27,8 @@ namespace AssetHubTests
         {
             var expectedMaintenanceLog = new List<MaintenanceLog>()
             {
-                new MaintenanceLog{MaintenanceId = 1,Maintenance_Description = "Test Log 1", userId= 8},
-                new MaintenanceLog{MaintenanceId = 2,Maintenance_Description = "Test Log 2", userId = 9}
+                new MaintenanceLog{maintenanceId = 1,maintenanceDescription = "Test Log 1", userId= 8},
+                new MaintenanceLog{maintenanceId = 2,maintenanceDescription = "Test Log 2", userId = 9}
             };
 
             _repoMock.Setup(ml => ml.GetAllMaintenanceLog())
@@ -38,8 +38,8 @@ namespace AssetHubTests
 
             Assert.IsNotNull(result, "Result should not be null");
             Assert.AreEqual(2, result.Count, "There Should be 2 Results");
-            Assert.AreEqual("Test Log 1", result[0].Maintenance_Description);
-            Assert.AreEqual("Test Log 2", result[1].Maintenance_Description);
+            Assert.AreEqual("Test Log 1", result[0].maintenanceDescription);
+            Assert.AreEqual("Test Log 2", result[1].maintenanceDescription);
         }
 
         [TestCase]
@@ -48,8 +48,8 @@ namespace AssetHubTests
             var id = 1;
             var expectedMaintenanceLog = new List<MaintenanceLog>()
             {
-                new MaintenanceLog{MaintenanceId = 1,Maintenance_Description = "Test Log 1", userId= id},
-                new MaintenanceLog{MaintenanceId = 2,Maintenance_Description = "Test Log 2", userId = id}
+                new MaintenanceLog{maintenanceId = 1,maintenanceDescription = "Test Log 1", userId= id},
+                new MaintenanceLog{maintenanceId = 2,maintenanceDescription = "Test Log 2", userId = id}
             };
             _repoMock.Setup(ml => ml.GetMaintenanceLogById(id))
                 .ReturnsAsync(expectedMaintenanceLog);
@@ -63,20 +63,20 @@ namespace AssetHubTests
         [TestCase]
         public async Task AddMaintenanceLog()
         {
-            var Log = new MaintenanceLog { MaintenanceId = 3, Maintenance_Description = "Test Log 1", userId = 8 };
+            var Log = new MaintenanceLog { maintenanceId = 3, maintenanceDescription = "Test Log 1", userId = 8 };
 
             _repoMock.Setup(ml => ml.AddMaintenanceLog(Log))
                 .Callback((MaintenanceLog maintenanceLog) => { });
 
             await _repo.AddMaintenanceLog(Log);
 
-            _repoMock.Verify(ml => ml.AddMaintenanceLog(It.Is<MaintenanceLog>(m => m.MaintenanceId == Log.MaintenanceId && m.Maintenance_Description == Log.Maintenance_Description)), Times.Once);
+            _repoMock.Verify(ml => ml.AddMaintenanceLog(It.Is<MaintenanceLog>(m => m.maintenanceId == Log.maintenanceId && m.maintenanceDescription == Log.maintenanceDescription)), Times.Once);
         }
 
         [TestCase]
         public async Task UpdateLog()
         {
-            var Log = new MaintenanceClassDto { MaintenanceId = 3, Maintenance_Description = "Test Log 1", userId = 8 };
+            var Log = new MaintenanceClassDto { maintenanceId = 3, maintenanceDescription = "Test Log 1", userId = 8 };
 
             _repoMock.Setup(ml => ml.UpdateMaintenanceLog(Log)).ReturnsAsync(true);
 

@@ -16,7 +16,7 @@ public class MultiValues
         Admin=1
     }
 
-    public enum RequestStatus
+    public enum requestStatus
     {
         Pending=0,
         Allocated=1,
@@ -30,7 +30,7 @@ public class MultiValues
         Installation=3
     }
 
-    public enum AuditStatus
+    public enum auditStatus
     {
         Sent=0,
         InProgress =1,

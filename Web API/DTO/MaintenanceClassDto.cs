@@ -3,7 +3,7 @@ namespace Hexa_Hub.DTO
 {
     public class MaintenanceClassDto
     {
-        public int MaintenanceId { get; set; }
+        public int maintenanceId { get; set; }
         public int assetId { get; set; }
         public int userId { get; set; }
         public string assetName { get; set; }
@@ -11,9 +11,9 @@ namespace Hexa_Hub.DTO
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime Maintenance_date { get; set; }
+        public DateTime maintenanceDate { get; set; }
         public decimal? Cost { get; set; }
-        public string? Maintenance_Description { get; set; }
+        public string? maintenanceDescription { get; set; }
 
     }
 }

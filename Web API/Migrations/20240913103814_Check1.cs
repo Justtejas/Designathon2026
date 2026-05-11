@@ -53,7 +53,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "int");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Audit_Status",
+                name: "auditStatus",
                 table: "Audits",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -61,7 +61,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "int");
 
             migrationBuilder.AlterColumn<string>(
-                name: "AuditMessage",
+                name: "auditMessage",
                 table: "Audits",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -69,7 +69,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "nvarchar(max)");
 
             migrationBuilder.AlterColumn<DateTime>(
-                name: "AuditDate",
+                name: "auditDate",
                 table: "Audits",
                 type: "datetime2",
                 nullable: true,
@@ -85,7 +85,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "int");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Request_Status",
+                name: "requestStatus",
                 table: "AssetRequests",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -139,7 +139,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
-                name: "Audit_Status",
+                name: "auditStatus",
                 table: "Audits",
                 type: "int",
                 nullable: false,
@@ -149,7 +149,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<string>(
-                name: "AuditMessage",
+                name: "auditMessage",
                 table: "Audits",
                 type: "nvarchar(max)",
                 nullable: false,
@@ -159,7 +159,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
-                name: "AuditDate",
+                name: "auditDate",
                 table: "Audits",
                 type: "datetime2",
                 nullable: false,
@@ -179,7 +179,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
-                name: "Request_Status",
+                name: "requestStatus",
                 table: "AssetRequests",
                 type: "int",
                 nullable: false,

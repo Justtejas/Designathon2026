@@ -79,7 +79,7 @@ export default function AuditPage() {
             const searchLower = searchTerm.toLowerCase();
             const dateMatch = (!minDate || new Date(audit.assetReqDate) >= new Date(minDate)) &&
                 (!maxDate || new Date(audit.assetReqDate) <= new Date(maxDate));
-            const statusMatch = !selectedStatus || audit.audit_Status === selectedStatus; 
+            const statusMatch = !selectedStatus || audit.auditStatus === selectedStatus; 
             return (
                 (
                     audit.userName.toLowerCase().includes(searchLower) ||
@@ -115,7 +115,7 @@ export default function AuditPage() {
                 auditRequest.auditDate,
                 auditRequest.assetName,
                 auditRequest.userName,
-                auditRequest.audit_Status
+                auditRequest.auditStatus
             ];
             tableRows.push(RequestData);
         });
@@ -368,8 +368,8 @@ export default function AuditPage() {
                                             <TableCell>{audit.userName}</TableCell>
                                             <TableCell>{audit.assetName}</TableCell>
                                             <TableCell sx={{
-                                                color: audit.audit_Status === 'Sent' ? '#36A2EB' : audit.audit_Status === 'InProgress' ? '#FF7518':'#0BDA51',
-                                            }}>{audit.audit_Status}</TableCell>
+                                                color: audit.auditStatus === 'Sent' ? '#36A2EB' : audit.auditStatus === 'InProgress' ? '#FF7518':'#0BDA51',
+                                            }}>{audit.auditStatus}</TableCell>
                                             <TableCell>
                                                 <Link to={`/admin/audit/${audit.auditId}`}>
                                                     <IconButton>

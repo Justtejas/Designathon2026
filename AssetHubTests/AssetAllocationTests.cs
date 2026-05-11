@@ -25,8 +25,8 @@ namespace AssetHubTests
             // Arrange
             var expectedAssetAllocation = new List<AllocationClassDto>
                 {
-                new AllocationClassDto { AllocationId = 1, assetId = 1},
-                new AllocationClassDto { AllocationId = 2, assetId = 2}
+                new AllocationClassDto { allocationId = 1, assetId = 1},
+                new AllocationClassDto { allocationId = 2, assetId = 2}
                 };
 
             // Mock the repository methods
@@ -39,15 +39,15 @@ namespace AssetHubTests
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
 
-            Assert.AreEqual(1, result[0].AllocationId);
-            Assert.AreEqual(2, result[1].AllocationId);
+            Assert.AreEqual(1, result[0].allocationId);
+            Assert.AreEqual(2, result[1].allocationId);
         }
 
         [TestCase]
         public async Task AddAssetAllocation_ShouldAddAssetAllocation()
         {
             // Arrange
-            var newAssetAllocation = new AssetAllocation { AllocationId = 3, assetId = 4 };
+            var newAssetAllocation = new AssetAllocation { allocationId = 3, assetId = 4 };
 
 
             // Mock
@@ -57,7 +57,7 @@ namespace AssetHubTests
             await assetAllocation.AddAllocation(newAssetAllocation);
 
             //Assert
-            assetAllocationMock.Verify(repo => repo.AddAllocation(It.Is<AssetAllocation>(a => a.AllocationId == newAssetAllocation.AllocationId && a.assetId == newAssetAllocation.assetId)), Times.Once);
+            assetAllocationMock.Verify(repo => repo.AddAllocation(It.Is<AssetAllocation>(a => a.allocationId == newAssetAllocation.allocationId && a.assetId == newAssetAllocation.assetId)), Times.Once);
         }
 
         [TestCase]

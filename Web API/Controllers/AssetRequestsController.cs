@@ -68,7 +68,7 @@ namespace Hexa_Hub.Controllers
         public async Task<IActionResult> PutAssetRequest(int id, [FromBody] UpdateRequestClassDto assetRequestDto)
         {
             _log.LogInfo("Update Asset Requests Process Started");
-            if (id != assetRequestDto.AssetReqId)
+            if (id != assetRequestDto.assetReqId)
             {
                 _log.LogDebug("Asset Requests Id Doesnt match");
                 return BadRequest(new { error = "Id doesn't match" });
@@ -82,7 +82,7 @@ namespace Hexa_Hub.Controllers
                 return NotFound(new { error = "Request not found" });
             }
 
-            if (existingRequest.Request_Status == RequestStatus.Allocated || existingRequest.Request_Status == RequestStatus.Rejected)
+            if (existingRequest.requestStatus == requestStatus.Allocated || existingRequest.requestStatus == requestStatus.Rejected)
             {
                 _log.LogDebug("Asset Requests Id Already allocated or Rejected");
 
@@ -94,7 +94,7 @@ namespace Hexa_Hub.Controllers
                 await _assetRequest.UpdateAssetRequest(id, assetRequestDto);
                 _log.LogInfo("Updated Asset Requests");
 
-                return Ok(new { message = $"{assetRequestDto.AssetReqId} has been updated" });
+                return Ok(new { message = $"{assetRequestDto.assetReqId} has been updated" });
             }
             catch (AssetRequestNotFoundException ex)
             {
@@ -140,7 +140,7 @@ namespace Hexa_Hub.Controllers
             await _assetRequest.Save();
 
 
-            return CreatedAtAction("GetAssetRequests", new { id = assetRequestDto.AssetReqId }, assetRequestDto);
+            return CreatedAtAction("GetAssetRequests", new { id = assetRequestDto.assetReqId }, assetRequestDto);
         }
 
         // DELETE: api/AssetRequests/5
@@ -161,7 +161,7 @@ namespace Hexa_Hub.Controllers
                 {
                     return Forbid("You are not allowed to Delete Request");
                 }
-                if(assetRequest.Request_Status == RequestStatus.Allocated)
+                if(assetRequest.requestStatus == requestStatus.Allocated)
                 {
                     return Forbid("The Request has already been Allocated. Please raise an ticket in Return Section if the asset is not needed.");
                 }
@@ -181,7 +181,7 @@ namespace Hexa_Hub.Controllers
 
         private bool AssetRequestExists(int id)
         {
-            return _context.AssetRequests.Any(e => e.AssetReqId == id);
+            return _context.AssetRequests.Any(e => e.assetReqId == id);
         }
 
         // GET: api/AssetRequest/filter-by-month?monthName=January
@@ -282,7 +282,7 @@ namespace Hexa_Hub.Controllers
 
         [HttpGet("Status")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<AssetRequestDto>>> GetAssetRequestByStatus([FromQuery] RequestStatus status)
+        public async Task<ActionResult<IEnumerable<AssetRequestDto>>> GetAssetRequestByStatus([FromQuery] requestStatus status)
         {
             var assetreqDtos = await _assetRequest.GetAssetRequestByStatus(status);
 

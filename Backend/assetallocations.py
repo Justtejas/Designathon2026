@@ -26,12 +26,13 @@ except Exception:
 
 # --- MongoDB Client & Collection ---
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-DB_NAME = os.getenv("MONGODB_DB", "MaventoryDB")
-COLLECTION_NAME = os.getenv("ASSET_ALLOCATIONS_COLLECTION", "AssetAllocations")
+
 
 client = MongoClient(MONGODB_URI)
-db = client[DB_NAME]
-allocations_col = db[COLLECTION_NAME]
+db = client['MaventoryDB']
+users = db['Users']
+assets = db['Assets']
+allocations_col = db['AssetAllocations']
 
 # --- Blueprint ---
 asset_allocations_bp = Blueprint("asset_allocations", __name__, url_prefix="/api/AssetAllocations")
@@ -89,27 +90,26 @@ def to_allocation_dto(doc):
         "categoryId": doc.get("categoryId"),
         "Value": doc.get("Value"),
         "Model": doc.get("Model"),
-        "AllocatedDate": serialize_dates(doc.get("AllocatedDate")),
+        "allocatedDate": serialize_dates(doc.get("allocatedDate")),
     }
 
 def to_allocation_class_dto(doc):
     # Mirrors AllocationClassDto
+    existing_user = users.find_one({"userId": doc.get('userId')})
+    existing_asset = assets.find_one({"assetId": doc.get('assetId')})
     return {
-        "AllocationId": doc.get("AllocationId"),
-        "assetName": doc.get("assetName"),
+        "allocationId": doc.get("allocationId"),
+        "assetName": existing_asset.get("assetName"),
         "assetId": doc.get("assetId"),
         "userId": doc.get("userId"),
-        "userName": doc.get("userName"),
-        "categoryName": doc.get("categoryName"),
-        "subCategoryName": doc.get("subCategoryName"),
-        "AssetReqDate": serialize_dates(doc.get("AssetReqDate")),
-        "AssetReqId": doc.get("AssetReqId"),
-        "AllocatedDate": serialize_dates(doc.get("AllocatedDate")),
+        "userName": existing_user.get("userName"),
+        "assetReqId": doc.get("assetReqId"),
+        "allocatedDate": serialize_dates(doc.get("allocatedDate")),
     }
 
 def find_by_id_or_allocation_id(id_str):
     """
-    Accepts either a Mongo ObjectId (24 hex chars) or an integer AllocationId.
+    Accepts either a Mongo ObjectId (24 hex chars) or an integer allocationId.
     Returns the matching document or None.
     """
     # Try ObjectId
@@ -120,10 +120,10 @@ def find_by_id_or_allocation_id(id_str):
                 return doc
     except Exception:
         pass
-    # Try integer AllocationId
+    # Try integer allocationId
     try:
         alloc_id = int(id_str)
-        doc = allocations_col.find_one({"AllocationId": alloc_id})
+        doc = allocations_col.find_one({"allocationId": alloc_id})
         return doc
     except Exception:
         return None
@@ -156,14 +156,14 @@ def get_asset_allocations():
             return jsonify({"error": "Unauthorized"}), 401
 
         if role == "Admin":
-            cursor = allocations_col.find({}).sort("AllocatedDate", DESCENDING)
+            cursor = allocations_col.find({}).sort("allocatedDate", DESCENDING)
             docs = list(cursor)
             dtos = [to_allocation_class_dto(d) for d in docs]
             return jsonify(dtos), 200
         else:
             docs = list(
                 allocations_col.find({"userId": uid})
-                .sort("AllocatedDate", DESCENDING)
+                .sort("allocatedDate", DESCENDING)
             )
             if not docs:
                 return jsonify({"error": f"No Allocation can be found for the User {uid}"}), 404
@@ -183,7 +183,7 @@ def filter_by_month():
     try:
         month_num = parse_month_name(month)
         docs = list(allocations_col.find({
-            "$expr": {"$eq": [{"$month": "$AllocatedDate"}, month_num]}
+            "$expr": {"$eq": [{"$month": "$allocatedDate"}, month_num]}
         }))
         if not docs:
             return jsonify({"error": f"No allocations found for the month of {month}."}), 404
@@ -208,7 +208,7 @@ def filter_by_year():
 
     try:
         docs = list(allocations_col.find({
-            "$expr": {"$eq": [{"$year": "$AllocatedDate"}, year]}
+            "$expr": {"$eq": [{"$year": "$allocatedDate"}, year]}
         }))
         if not docs:
             return jsonify({"error": f"No allocations found for the year {year}."}), 404
@@ -235,8 +235,8 @@ def filter_by_month_and_year():
         docs = list(allocations_col.find({
             "$expr": {
                 "$and": [
-                    {"$eq": [{"$month": "$AllocatedDate"}, month_num]},
-                    {"$eq": [{"$year": "$AllocatedDate"}, year]}
+                    {"$eq": [{"$month": "$allocatedDate"}, month_num]},
+                    {"$eq": [{"$year": "$allocatedDate"}, year]}
                 ]
             }
         }))
@@ -263,7 +263,7 @@ def filter_by_date_range():
             return jsonify({"error": "Start date cannot be greater than end date."}), 400
 
         docs = list(allocations_col.find({
-            "AllocatedDate": {"$gte": start_dt, "$lte": end_dt}
+            "allocatedDate": {"$gte": start_dt, "$lte": end_dt}
         }))
 
         if not docs:

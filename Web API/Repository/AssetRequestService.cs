@@ -37,17 +37,17 @@ namespace Hexa_Hub.Repository
                 .Include(ar => ar.User)
                 .Select(ar => new AssetRequestClassDto
                 {
-                    AssetReqId = ar.AssetReqId,
+                    assetReqId = ar.assetReqId,
                     userName = ar.User.userName,
                     userId = ar.User.userId,
                     assetId = ar.Asset.assetId,
                     assetName =ar.Asset.assetName,
                     categoryName = ar.Asset.Category.categoryName,
-                    AssetReqDate = ar.AssetReqDate,
-                    AssetReqReason = ar.AssetReqReason,
-                    RequestStatus = ar.Request_Status ?? RequestStatus.Pending,
+                    assetReqDate = ar.assetReqDate,
+                    assetReqReason = ar.assetReqReason,
+                    requestStatus = ar.requestStatus ?? requestStatus.Pending,
                 })
-                .OrderByDescending(ar => ar.AssetReqDate)
+                .OrderByDescending(ar => ar.assetReqDate)
                 .ToListAsync();
         }
         public async Task<List<AssetRequest>> GetAssetRequestByMonthAsync(string month)
@@ -56,7 +56,7 @@ namespace Hexa_Hub.Repository
 
             var monthname = DateTime.ParseExact(month, "MMMM", null).Month;
             return await _context.AssetRequests
-                                 .Where(a => a.AssetReqDate.Month == monthname)
+                                 .Where(a => a.assetReqDate.Month == monthname)
                                  .ToListAsync();
         }
 
@@ -65,7 +65,7 @@ namespace Hexa_Hub.Repository
             _log.LogInfo("Fetching Asset Requests by year");
 
             return await _context.AssetRequests
-                                 .Where(a => a.AssetReqDate.Year == year)
+                                 .Where(a => a.assetReqDate.Year == year)
                                  .ToListAsync();
         }
 
@@ -75,7 +75,7 @@ namespace Hexa_Hub.Repository
 
             var monthname = DateTime.ParseExact(month, "MMMM", null).Month;
             return await _context.AssetRequests
-                                 .Where(a => a.AssetReqDate.Month == monthname && a.AssetReqDate.Year == year)
+                                 .Where(a => a.assetReqDate.Month == monthname && a.assetReqDate.Year == year)
                                  .ToListAsync();
         }
 
@@ -84,25 +84,25 @@ namespace Hexa_Hub.Repository
             _log.LogInfo("Fetching Asset Requests date range");
 
             return await _context.AssetRequests
-                                 .Where(a => a.AssetReqDate>= startDate && a.AssetReqDate <= endDate)
+                                 .Where(a => a.assetReqDate>= startDate && a.assetReqDate <= endDate)
                                  .ToListAsync();
         }
 
-        public async Task<IEnumerable<AssetRequestDto>> GetAssetRequestByStatus(RequestStatus status)
+        public async Task<IEnumerable<AssetRequestDto>> GetAssetRequestByStatus(requestStatus status)
         {
             _log.LogInfo("Fetching Asset Requests by status");
 
             var reqByStatus = await (from request in _context.AssetRequests
-                                        where request.Request_Status == status
+                                        where request.requestStatus == status
                                         select new AssetRequestDto
                                         {
-                                            AssetReqId = request.AssetReqId,
+                                            assetReqId = request.assetReqId,
                                             userId = request.userId,
                                             assetId = request.assetId,
                                             categoryId = request.categoryId,
-                                            AssetReqDate = request.AssetReqDate,
-                                            AssetReqReason= request.AssetReqReason, 
-                                            Request_Status = request.Request_Status.ToString()
+                                            assetReqDate = request.assetReqDate,
+                                            assetReqReason= request.assetReqReason, 
+                                            requestStatus = request.requestStatus.ToString()
                                            
                                         }).ToListAsync();
 
@@ -129,15 +129,15 @@ namespace Hexa_Hub.Repository
                 .Include(sr => sr.User)
                 .Select(ar => new AssetRequestClassDto
                 {
-                    AssetReqId = ar.AssetReqId,
+                    assetReqId = ar.assetReqId,
                     userName = ar.User.userName,
                     userId = ar.User.userId,
                     assetId = ar.Asset.assetId,
                     assetName = ar.Asset.assetName,
                     categoryName = ar.Asset.Category.categoryName,
-                    AssetReqDate = ar.AssetReqDate,
-                    AssetReqReason = ar.AssetReqReason,
-                    RequestStatus = ar.Request_Status ?? RequestStatus.Pending,
+                    assetReqDate = ar.assetReqDate,
+                    assetReqReason = ar.assetReqReason,
+                    requestStatus = ar.requestStatus ?? requestStatus.Pending,
                 })
                 .ToListAsync();
         }
@@ -149,7 +149,7 @@ namespace Hexa_Hub.Repository
             return await _context.AssetRequests
                 .Include(ar => ar.Asset)
                 .Include(ar => ar.User)
-                .FirstOrDefaultAsync(u => u.AssetReqId == id);
+                .FirstOrDefaultAsync(u => u.assetReqId == id);
         }
 
         public async Task<AssetRequestClassDto> GetAssetRequestId(int id)
@@ -161,17 +161,17 @@ namespace Hexa_Hub.Repository
                 .Include(ar => ar.User)
                 .Select(ar => new AssetRequestClassDto
                 {
-                    AssetReqId = ar.AssetReqId,
+                    assetReqId = ar.assetReqId,
                     userName = ar.User.userName,
                     userId = ar.User.userId,
                     assetName = ar.Asset.assetName,
                     categoryName = ar.Asset.Category.categoryName,
-                    AssetReqDate = ar.AssetReqDate,
-                    AssetReqReason = ar.AssetReqReason,
-                    RequestStatus = ar.Request_Status ?? RequestStatus.Pending,
+                    assetReqDate = ar.assetReqDate,
+                    assetReqReason = ar.assetReqReason,
+                    requestStatus = ar.requestStatus ?? requestStatus.Pending,
                     assetId = ar.Asset.assetId,
                 })
-                .FirstOrDefaultAsync(ar => ar.AssetReqId == id);
+                .FirstOrDefaultAsync(ar => ar.assetReqId == id);
         }
 
         public async Task AddAssetRequest(AssetRequestDto dto)
@@ -180,12 +180,12 @@ namespace Hexa_Hub.Repository
 
             var req = new AssetRequest
             {
-                AssetReqId = dto.AssetReqId,
+                assetReqId = dto.assetReqId,
                 userId = dto.userId,
                 assetId = dto.assetId,
                 categoryId = dto.categoryId,
-                AssetReqDate = dto.AssetReqDate,
-                AssetReqReason = dto.AssetReqReason
+                assetReqDate = dto.assetReqDate,
+                assetReqReason = dto.assetReqReason
             };
 
             _context.AssetRequests.Add(req);
@@ -208,16 +208,16 @@ namespace Hexa_Hub.Repository
         //        throw new AssetRequestNotFoundException($"Asset request with ID {id} not found.");
         //    }
 
-        //    if (assetRequestDto.Request_Status != existingRequest.Request_Status.ToString())
+        //    if (assetRequestDto.requestStatus != existingRequest.requestStatus.ToString())
         //    {
-        //        if (Enum.TryParse(assetRequestDto.Request_Status, out RequestStatus parsedStatus))
+        //        if (Enum.TryParse(assetRequestDto.requestStatus, out requestStatus parsedStatus))
         //        {
-        //            existingRequest.Request_Status = parsedStatus;
+        //            existingRequest.requestStatus = parsedStatus;
 
-        //            if (parsedStatus == RequestStatus.Allocated)
+        //            if (parsedStatus == requestStatus.Allocated)
         //             {
         //                var existingAllocId = await _context.AssetAllocations
-        //                    .FirstOrDefaultAsync(aa => aa.AssetReqId == assetRequestDto.AssetReqId);
+        //                    .FirstOrDefaultAsync(aa => aa.assetReqId == assetRequestDto.assetReqId);
 
         //                if (existingAllocId == null)
         //                {
@@ -225,8 +225,8 @@ namespace Hexa_Hub.Repository
         //                    {
         //                        assetId = assetRequestDto.assetId,
         //                        userId = assetRequestDto.userId,
-        //                        AssetReqId = assetRequestDto.AssetReqId,
-        //                        AllocatedDate = DateTime.Now
+        //                        assetReqId = assetRequestDto.assetReqId,
+        //                        allocatedDate = DateTime.Now
         //                    };
         //                    await _assetAlloc.AddAllocation(assetAllocation);
 
@@ -251,7 +251,7 @@ namespace Hexa_Hub.Repository
         //                    }
         //                }
         //            }
-        //            else if(parsedStatus == RequestStatus.Rejected)
+        //            else if(parsedStatus == requestStatus.Rejected)
         //            {
         //                var asset = await _asset.GetAssetById(assetRequestDto.assetId);
         //                if (asset != null)
@@ -295,20 +295,20 @@ namespace Hexa_Hub.Repository
                 throw new AssetRequestNotFoundException($"Asset request with ID {id} not found.");
             }
 
-            if (assetRequestDto.RequestStatusName != existingRequest.Request_Status.ToString())
+            if (assetRequestDto.requestStatusName != existingRequest.requestStatus.ToString())
             {
-                if (Enum.TryParse(assetRequestDto.RequestStatusName, out RequestStatus parsedStatus))
+                if (Enum.TryParse(assetRequestDto.requestStatusName, out requestStatus parsedStatus))
                 {
-                    existingRequest.Request_Status = parsedStatus;
+                    existingRequest.requestStatus = parsedStatus;
 
                     switch (parsedStatus)
                     {
-                        case RequestStatus.Allocated:
+                        case requestStatus.Allocated:
                             await HandleAllocation(assetRequestDto, existingRequest);
                             _log.LogInfo("allocated Asset Requests");
                             break;
 
-                        case RequestStatus.Rejected:
+                        case requestStatus.Rejected:
                             await HandleRejection(assetRequestDto);
                             _log.LogInfo("Rejected Asset Requests");
 
@@ -337,7 +337,7 @@ namespace Hexa_Hub.Repository
             _log.LogInfo("Allocation Asset Requests Process started");
 
             var existingAllocId = await _context.AssetAllocations
-                .FirstOrDefaultAsync(aa => aa.AssetReqId == assetRequestDto.AssetReqId);
+                .FirstOrDefaultAsync(aa => aa.assetReqId == assetRequestDto.assetReqId);
 
             if (existingAllocId == null)
             {
@@ -345,8 +345,8 @@ namespace Hexa_Hub.Repository
                 {
                     assetId = assetRequestDto.assetId,
                     userId = assetRequestDto.userId,
-                    AssetReqId = assetRequestDto.AssetReqId,
-                    AllocatedDate = DateTime.Now
+                    assetReqId = assetRequestDto.assetReqId,
+                    allocatedDate = DateTime.Now
                 };
 
                 await _assetAlloc.AddAllocation(assetAllocation);

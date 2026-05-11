@@ -7,7 +7,7 @@ public class AssetAllocation
 {
     [Required]
     [Key]
-    public int AllocationId { get; set; }
+    public int allocationId { get; set; }
 
     [Required]
     public int assetId { get; set; }
@@ -16,12 +16,12 @@ public class AssetAllocation
     public int userId { get; set; }
 
     [Required]
-    public int AssetReqId { get; set; }
+    public int assetReqId { get; set; }
 
     [Required]
     [DataType(DataType.Date)]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-    public DateTime AllocatedDate { get; set; } = DateTime.Now;
+    public DateTime allocatedDate { get; set; } = DateTime.Now;
 
     //Navigation Properties
     // 1 - 1 Relation

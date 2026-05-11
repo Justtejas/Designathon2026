@@ -130,18 +130,18 @@ namespace Hexa_Hub.Migrations
                 name: "AssetRequests",
                 columns: table => new
                 {
-                    AssetReqId = table.Column<int>(type: "int", nullable: false)
+                    assetReqId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     userId = table.Column<int>(type: "int", nullable: false),
                     assetId = table.Column<int>(type: "int", nullable: false),
                     categoryId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AssetReqDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AssetReqReason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Request_Status = table.Column<int>(type: "int", nullable: false)
+                    assetReqDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    assetReqReason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    requestStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssetRequests", x => x.AssetReqId);
+                    table.PrimaryKey("PK_AssetRequests", x => x.assetReqId);
                     table.ForeignKey(
                         name: "FK_AssetRequests_Assets_assetId",
                         column: x => x.assetId,
@@ -158,17 +158,17 @@ namespace Hexa_Hub.Migrations
                 name: "Audits",
                 columns: table => new
                 {
-                    AuditId = table.Column<int>(type: "int", nullable: false)
+                    auditId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     assetId = table.Column<int>(type: "int", nullable: false),
                     userId = table.Column<int>(type: "int", nullable: false),
-                    AuditDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AuditMessage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Audit_Status = table.Column<int>(type: "int", nullable: false)
+                    auditDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    auditMessage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    auditStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Audits", x => x.AuditId);
+                    table.PrimaryKey("PK_Audits", x => x.auditId);
                     table.ForeignKey(
                         name: "FK_Audits_Assets_assetId",
                         column: x => x.assetId,
@@ -185,17 +185,17 @@ namespace Hexa_Hub.Migrations
                 name: "MaintenanceLogs",
                 columns: table => new
                 {
-                    MaintenanceId = table.Column<int>(type: "int", nullable: false)
+                    maintenanceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     assetId = table.Column<int>(type: "int", nullable: false),
                     userId = table.Column<int>(type: "int", nullable: false),
-                    Maintenance_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    maintenanceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Maintenance_Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    maintenanceDescription = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MaintenanceLogs", x => x.MaintenanceId);
+                    table.PrimaryKey("PK_MaintenanceLogs", x => x.maintenanceId);
                     table.ForeignKey(
                         name: "FK_MaintenanceLogs_Assets_assetId",
                         column: x => x.assetId,
@@ -269,21 +269,21 @@ namespace Hexa_Hub.Migrations
                 name: "AssetAllocations",
                 columns: table => new
                 {
-                    AllocationId = table.Column<int>(type: "int", nullable: false)
+                    allocationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     assetId = table.Column<int>(type: "int", nullable: false),
                     userId = table.Column<int>(type: "int", nullable: false),
-                    AssetReqId = table.Column<int>(type: "int", nullable: false),
-                    AllocatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    assetReqId = table.Column<int>(type: "int", nullable: false),
+                    allocatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssetAllocations", x => x.AllocationId);
+                    table.PrimaryKey("PK_AssetAllocations", x => x.allocationId);
                     table.ForeignKey(
-                        name: "FK_AssetAllocations_AssetRequests_AssetReqId",
-                        column: x => x.AssetReqId,
+                        name: "FK_AssetAllocations_AssetRequests_assetReqId",
+                        column: x => x.assetReqId,
                         principalTable: "AssetRequests",
-                        principalColumn: "AssetReqId");
+                        principalColumn: "assetReqId");
                     table.ForeignKey(
                         name: "FK_AssetAllocations_Assets_assetId",
                         column: x => x.assetId,
@@ -302,9 +302,9 @@ namespace Hexa_Hub.Migrations
                 column: "assetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssetAllocations_AssetReqId",
+                name: "IX_AssetAllocations_assetReqId",
                 table: "AssetAllocations",
-                column: "AssetReqId",
+                column: "assetReqId",
                 unique: true);
 
             migrationBuilder.CreateIndex(

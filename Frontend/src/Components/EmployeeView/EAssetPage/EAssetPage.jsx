@@ -57,7 +57,7 @@ const Assets = () => {
     assetReqDate: new Date().toISOString().split('T')[0],
     assetReqReason: '',
     assetType: '',
-    request_Status: 'Pending', // Default status
+    requestStatus: 'Pending', // Default status
     categoryId: ''
   });
 
@@ -228,7 +228,7 @@ const Assets = () => {
         assetReqDate: new Date().toISOString().split('T')[0],
         assetReqReason: '',
         assetType: '',
-        request_Status: 'Pending',
+        requestStatus: 'Pending',
         categoryId: ''
       });
       setShowForm(false);

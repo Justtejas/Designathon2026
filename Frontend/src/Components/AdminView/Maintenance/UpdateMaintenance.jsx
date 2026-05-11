@@ -23,9 +23,9 @@ const UpdateMaintenanceLog = () => {
         userId: '',
         assetName: '',
         userName: '',
-        maintenance_date: new Date().toISOString().split('T')[0],
-        cost: '',
-        maintenance_Description: '',
+        maintenanceDate: new Date().toISOString().split('T')[0],
+        Cost: '',
+        maintenanceDescription: '',
     });
     const [error, setError] = useState(null);
 
@@ -42,9 +42,9 @@ const UpdateMaintenanceLog = () => {
                     userId: data.userId,
                     assetName: data.assetName,
                     userName: data.userName,
-                    maintenance_date: new Date(data.maintenance_date).toISOString().split('T')[0],
-                    cost: data.cost || '',
-                    maintenance_Description: data.maintenance_Description || '',
+                    maintenanceDate: new Date(data.maintenanceDate).toISOString().split('T')[0],
+                    Cost: data.Cost || '',
+                    maintenanceDescription: data.maintenanceDescription || '',
                 });
             } catch (error) {
                 console.error('Error fetching maintenance log details:', error);
@@ -72,9 +72,9 @@ const UpdateMaintenanceLog = () => {
             assetName: maintenanceLog.assetName,
             userName: maintenanceLog.userName,
             userId: maintenanceLog.userId,
-            maintenance_date: maintenanceLog.maintenance_date,
-            cost: parseFloat(maintenanceLog.cost) || 0, // Ensure cost is a number
-            maintenance_Description: maintenanceLog.maintenance_Description,
+            maintenanceDate: maintenanceLog.maintenanceDate,
+            Cost: parseFloat(maintenanceLog.Cost) || 0, // Ensure Cost is a number
+            maintenanceDescription: maintenanceLog.maintenanceDescription,
         };
     
         console.log('Data to update:', dataToUpdate); // Log the data being sent
@@ -148,26 +148,26 @@ const UpdateMaintenanceLog = () => {
                         />
                         <TextField
                             label="Maintenance Date"
-                            name="maintenance_date"
+                            name="maintenanceDate"
                             type="date"
-                            value={maintenanceLog.maintenance_date}
+                            value={maintenanceLog.maintenanceDate}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
                             label="Cost"
-                            name="cost"
+                            name="Cost"
                             type="number"
-                            value={maintenanceLog.cost}
+                            value={maintenanceLog.Cost}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
                         />
                         <TextField
                             label="Maintenance Description"
-                            name="maintenance_Description"
-                            value={maintenanceLog.maintenance_Description}
+                            name="maintenanceDescription"
+                            value={maintenanceLog.maintenanceDescription}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"

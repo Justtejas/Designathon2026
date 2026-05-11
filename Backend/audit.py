@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from pymongo import MongoClient
-from auth import get_user_id, get_user_role, is_admin
+from auth import get_user_id, get_user_role, is_admin, get_next_sequence
 from datetime import datetime
 import os
 import logging
@@ -76,15 +76,15 @@ def serialize_audit_doc(doc):
             "InProgress": "InProgress", 
             "Sent": "Sent"
         }
-        audit_status = doc.get('Audit_Status', 'Sent')
-        display_status = status_map.get(audit_status, audit_status)
+        auditStatus = doc.get('auditStatus', 'Sent')
+        display_status = status_map.get(auditStatus, auditStatus)
         return {
-            "AuditId": doc.get('AuditId'),
+            "auditId": doc.get('auditId'),
             "assetId": doc.get('assetId'),
             "userId": doc.get('userId'),
-            "AuditDate": doc.get('AuditDate'),
-            "AuditMessage": doc.get('AuditMessage'),
-            "Audit_Status": display_status,
+            "auditDate": doc.get('auditDate'),
+            "auditMessage": doc.get('auditMessage'),
+            "auditStatus": display_status,
             "assetName": doc.get('assetName'),
             "userName": doc.get('userName')
         }
@@ -132,10 +132,10 @@ def get_audits():
         logger.info(f"Fetching audits for user: {user_id}")
         if is_admin():
             # Admin sees all audits
-            audits_list = list(audits.find({}).sort("AuditDate", -1))
+            audits_list = list(audits.find({}).sort("auditDate", -1))
         else:
             # Employee sees only their audits
-            audits_list = list(audits.find({"userId": user_id}).sort("AuditDate", -1))
+            audits_list = list(audits.find({"userId": user_id}).sort("auditDate", -1))
         if not audits_list:
             return jsonify({"error": "id not Found"}), 404
         serialized_audits = [serialize_audit_doc(audit) for audit in audits_list]
@@ -167,17 +167,17 @@ def get_all_audits():
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
             {
                 "$project": {
-                    "AuditId": 1,
+                    "auditId": 1,
                     "assetId": 1,
                     "userId": 1,
-                    "AuditDate": 1,
-                    "AuditMessage": 1,
-                    "Audit_Status": 1,
+                    "auditDate": 1,
+                    "auditMessage": 1,
+                    "auditStatus": 1,
                     "assetName": "$asset.assetName",
                     "userName": "$user.userName"
                 }
             },
-            {"$sort": {"AuditDate": -1}},
+            {"$sort": {"auditDate": -1}},
             {"$limit": 5}
         ]
         audits_cursor = audits.aggregate(pipeline)
@@ -193,7 +193,7 @@ def get_audit_by_id(audit_id):
     try:
         logger.info(f"Fetching audit by ID: {audit_id}")
         pipeline = [
-            {"$match": {"AuditId": audit_id}},
+            {"$match": {"auditId": audit_id}},
             {"$lookup": {
                 "from": "Users",
                 "localField": "userId",
@@ -210,12 +210,12 @@ def get_audit_by_id(audit_id):
             {"$unwind": {"path": "$asset", "preserveNullAndEmptyArrays": True}},
             {
                 "$project": {
-                    "AuditId": 1,
+                    "auditId": 1,
                     "assetId": 1,
                     "userId": 1,
-                    "AuditDate": 1,
-                    "AuditMessage": 1,
-                    "Audit_Status": 1,
+                    "auditDate": 1,
+                    "auditMessage": 1,
+                    "auditStatus": 1,
                     "assetName": "$asset.assetName",
                     "userName": "$user.userName"
                 }
@@ -238,10 +238,10 @@ def get_audit(audit_id):
         logger.info(f"Fetching audit {audit_id}")
         if is_admin():
             # Admin can see any audit
-            pipeline = [{"$match": {"AuditId": audit_id}}]
+            pipeline = [{"$match": {"auditId": audit_id}}]
         else:
             # Employee can only see their own audits
-            pipeline = [{"$match": {"AuditId": audit_id, "userId": user_id}}]
+            pipeline = [{"$match": {"auditId": audit_id, "userId": user_id}}]
         pipeline += [
             {"$lookup": {
                 "from": "Users",
@@ -276,27 +276,27 @@ def put_audit(audit_id):
             return jsonify({"error": "Employee access required"}), 403
         data = request.get_json()
         logger.info(f"Updating audit {audit_id}")
-        if data.get("AuditId") != audit_id:
+        if data.get("auditId") != audit_id:
             return jsonify({"error": "Audit ID mismatch"}), 400
         # Check if audit exists and belongs to user
-        existing_audit = audits.find_one({"AuditId": audit_id})
+        existing_audit = audits.find_one({"auditId": audit_id})
         if not existing_audit:
             return jsonify({"error": "id not Found"}), 404
         if existing_audit.get("userId") != user_id:
             return jsonify({"error": f"Sorry you are not User {user_id}"}), 403
         # Validate status
-        new_status = data.get("Audit_Status")
+        new_status = data.get("auditStatus")
         valid_statuses = ["Completed", "InProgress", "Sent"]
         if new_status not in valid_statuses:
             return jsonify({"error": f"Invalid Audit Status: {new_status}"}), 400
         # Update audit
         update_result = audits.update_one(
-            {"AuditId": audit_id},
+            {"auditId": audit_id},
             {
                 "$set": {
-                    "AuditDate": data.get("AuditDate", existing_audit.get("AuditDate")),
-                    "AuditMessage": data.get("AuditMessage", existing_audit.get("AuditMessage")),
-                    "Audit_Status": new_status
+                    "auditDate": data.get("auditDate", existing_audit.get("auditDate")),
+                    "auditMessage": data.get("auditMessage", existing_audit.get("auditMessage")),
+                    "auditStatus": new_status
                 }
             }
         )
@@ -323,13 +323,14 @@ def post_audit():
             return jsonify({"error": "Admin access required"}), 403
         data = request.get_json()
         logger.info("Creating new audit")
+        auditId = get_next_sequence("audit")
         audit_doc = {
-            "AuditId": data.get("AuditId"),
+            "auditId": auditId,
             "assetId": data.get("assetId"),
             "userId": data.get("userId"),
-            "AuditDate": data.get("AuditDate", datetime.now().isoformat()),
-            "AuditMessage": data.get("AuditMessage"),
-            "Audit_Status": "Sent"
+            "auditDate": data.get("auditDate", datetime.now().isoformat()),
+            "auditMessage": data.get("auditMessage"),
+            "auditStatus": "Sent"
         }
         result = audits.insert_one(audit_doc)
         logger.info(f"Created audit with ID: {result.inserted_id}")
@@ -339,7 +340,7 @@ def post_audit():
             send_email(
                 employee["userMail"],
                 "Audit Request",
-                f"Dear {employee['userName']},<br><br>You have been assigned an Audit Request {audit_doc['AuditId']} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory"
+                f"Dear {employee['userName']},<br><br>You have been assigned an Audit Request {audit_doc['auditId']} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory"
             )
         else:
             return jsonify({"error": "Employee not found"}), 404
@@ -355,12 +356,12 @@ def delete_audit(audit_id):
         if not is_admin():
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Deleting audit {audit_id}")
-        existing_audit = audits.find_one({"AuditId": audit_id})
+        existing_audit = audits.find_one({"auditId": audit_id})
         if not existing_audit:
             return jsonify({"error": f"Audit with ID {audit_id} not found"}), 404
-        if existing_audit.get("Audit_Status") == "Completed":
+        if existing_audit.get("auditStatus") == "Completed":
             return jsonify({"error": "Cannot delete a completed audit"}), 400
-        result = audits.delete_one({"AuditId": audit_id})
+        result = audits.delete_one({"auditId": audit_id})
         if result.deleted_count == 0:
             return jsonify({"error": "Failed to delete audit"}), 404
         logger.info(f"Deleted audit {audit_id}")

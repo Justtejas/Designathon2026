@@ -30,12 +30,12 @@ def serialize_maintenance_simple(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "MaintenanceId": doc.get('MaintenanceId'),
+            "maintenanceId": doc.get('maintenanceId'),
             "assetId": doc.get('assetId'),
             "userId": doc.get('userId'),
-            "Maintenance_date": doc.get('Maintenance_date'),
+            "maintenanceDate": doc.get('maintenanceDate'),
             "Cost": doc.get('Cost'),
-            "Maintenance_Description": doc.get('Maintenance_Description')
+            "maintenanceDescription": doc.get('maintenanceDescription')
         }
     return None
  
@@ -44,14 +44,14 @@ def serialize_maintenance_class(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "MaintenanceId": doc.get('MaintenanceId'),
+            "maintenanceId": doc.get('maintenanceId'),
             "assetId": doc.get('assetId'),
             "assetName": doc.get('assetName'),
             "userId": doc.get('userId'),
             "userName": doc.get('userName'),
-            "Maintenance_date": doc.get('Maintenance_date'),
+            "maintenanceDate": doc.get('maintenanceDate'),
             "Cost": doc.get('Cost'),
-            "Maintenance_Description": doc.get('Maintenance_Description')
+            "maintenanceDescription": doc.get('maintenanceDescription')
         }
     return None
  
@@ -78,17 +78,17 @@ def get_all_maintenance_log():
             {
                 "$project": {
                     "_id": 0,
-                    "MaintenanceId": "$MaintenanceId",
+                    "maintenanceId": "$maintenanceId",
                     "assetId": "$assetId",
                     "assetName": "$asset.assetName",
                     "userId": "$userId",
                     "userName": "$user.userName",
-                    "Maintenance_date": 1,
+                    "maintenanceDate": 1,
                     "Cost": 1,
-                    "Maintenance_Description": 1
+                    "maintenanceDescription": 1
                 }
             },
-            {"$sort": {"Maintenance_date": -1}}
+            {"$sort": {"maintenanceDate": -1}}
         ]
         logs_cursor = maintenance_logs.aggregate(pipeline)
         logs_list = list(logs_cursor)
@@ -105,10 +105,10 @@ def get_maintenance_logs():
         logger.info(f"Fetching maintenance logs for user: {user_id}")
         if is_admin():
             # Admin sees all logs
-            logs_list = list(maintenance_logs.find({}).sort("Maintenance_date", -1))
+            logs_list = list(maintenance_logs.find({}).sort("maintenanceDate", -1))
         else:
             # User sees only their logs
-            logs_list = list(maintenance_logs.find({"userId": user_id}).sort("Maintenance_date", -1))
+            logs_list = list(maintenance_logs.find({"userId": user_id}).sort("maintenanceDate", -1))
         if not logs_list:
             user_msg = f"No maintenance logs found for user {user_id}"
             logger.info(user_msg)
@@ -126,7 +126,7 @@ def get_maintenance_log_by_id(log_id):
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Fetching maintenance log by ID: {log_id}")
         pipeline = [
-            {"$match": {"MaintenanceId": log_id}},
+            {"$match": {"maintenanceId": log_id}},
             {"$lookup": {
                 "from": "Assets",
                 "localField": "assetId",
@@ -144,14 +144,14 @@ def get_maintenance_log_by_id(log_id):
             {
                 "$project": {
                     "_id": 0,
-                    "MaintenanceId": "$MaintenanceId",
+                    "maintenanceId": "$maintenanceId",
                     "assetId": "$assetId",
                     "assetName": "$asset.assetName",
                     "userId": "$userId",
                     "userName": "$user.userName",
-                    "Maintenance_date": 1,
+                    "maintenanceDate": 1,
                     "Cost": 1,
-                    "Maintenance_Description": 1
+                    "maintenanceDescription": 1
                 }
             }
         ]
@@ -171,7 +171,7 @@ def get_maintenance_log_by_user(user_id):
         if not is_admin():
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Fetching maintenance logs for user: {user_id}")
-        logs_list = list(maintenance_logs.find({"userId": user_id}).sort("Maintenance_date", -1))
+        logs_list = list(maintenance_logs.find({"userId": user_id}).sort("maintenanceDate", -1))
         if not logs_list:
             return jsonify({"error": f"No maintenance logs found for user {user_id}"}), 404
         serialized_logs = [serialize_maintenance_simple(log) for log in logs_list]
@@ -188,22 +188,22 @@ def put_maintenance_log(log_id):
         data = request.get_json()
         logger.info(f"Updating maintenance log {log_id}")
         # Validate required fields
-        required_fields = ["Maintenance_date", "Cost", "Maintenance_Description"]
+        required_fields = ["maintenanceDate", "Cost", "maintenanceDescription"]
         for field in required_fields:
             if not data.get(field):
                 return jsonify({"error": f"{field} is required"}), 400
         # Get existing log
-        existing_log = maintenance_logs.find_one({"MaintenanceId": log_id})
+        existing_log = maintenance_logs.find_one({"maintenanceId": log_id})
         if not existing_log:
             return jsonify({"error": f"No maintenance log found with ID {log_id}"}), 404
         update_data = {
             "$set": {
-                "Maintenance_date": data.get("Maintenance_date"),
+                "maintenanceDate": data.get("maintenanceDate"),
                 "Cost": float(data.get("Cost")),
-                "Maintenance_Description": data.get("Maintenance_Description")
+                "maintenanceDescription": data.get("maintenanceDescription")
             }
         }
-        result = maintenance_logs.update_one({"MaintenanceId": log_id}, update_data)
+        result = maintenance_logs.update_one({"maintenanceId": log_id}, update_data)
         if result.matched_count == 0:
             return jsonify({"error": f"No maintenance log found with ID {log_id}"}), 404
         logger.info(f"Updated maintenance log {log_id}")
@@ -218,7 +218,7 @@ def delete_maintenance_log(log_id):
         if not is_admin():
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Deleting maintenance log {log_id}")
-        result = maintenance_logs.delete_one({"MaintenanceId": log_id})
+        result = maintenance_logs.delete_one({"maintenanceId": log_id})
         if result.deleted_count == 0:
             logger.warning(f"Maintenance log {log_id} not found")
             return jsonify({"error": f"Maintenance log with ID {log_id} not found"}), 404

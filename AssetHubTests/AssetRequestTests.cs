@@ -25,8 +25,8 @@ namespace AssetHubTests
             // Arrange
             var expectedAssetRequest = new List<AssetRequestClassDto>
                 {
-                new AssetRequestClassDto { AssetReqId=1,RequestStatus=RequestStatus.Pending},
-                new AssetRequestClassDto { AssetReqId = 2, RequestStatus=RequestStatus.Allocated}
+                new AssetRequestClassDto { assetReqId=1,requestStatus=requestStatus.Pending},
+                new AssetRequestClassDto { assetReqId = 2, requestStatus=requestStatus.Allocated}
                 };
 
             // Mock the repository methods
@@ -39,15 +39,15 @@ namespace AssetHubTests
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
 
-            Assert.AreEqual(RequestStatus.Pending, result[0].RequestStatus);
-            Assert.AreEqual(RequestStatus.Allocated, result[1].RequestStatus);
+            Assert.AreEqual(requestStatus.Pending, result[0].requestStatus);
+            Assert.AreEqual(requestStatus.Allocated, result[1].requestStatus);
         }
 
         [TestCase]
         public async Task AddAssetRequest_ShouldAddAssetRequest()
         {
             // Arrange
-            var newAssetRequest = new AssetRequestDto { AssetReqId = 3, assetId = 2 };
+            var newAssetRequest = new AssetRequestDto { assetReqId = 3, assetId = 2 };
 
 
             // Mock
@@ -57,7 +57,7 @@ namespace AssetHubTests
             await assetRequest.AddAssetRequest(newAssetRequest);
 
             //Assert
-            assetRequestMock.Verify(repo => repo.AddAssetRequest(It.Is<AssetRequestDto>(a => a.AssetReqId == newAssetRequest.AssetReqId && a.Request_Status == newAssetRequest.Request_Status)), Times.Once);
+            assetRequestMock.Verify(repo => repo.AddAssetRequest(It.Is<AssetRequestDto>(a => a.assetReqId == newAssetRequest.assetReqId && a.requestStatus == newAssetRequest.requestStatus)), Times.Once);
         }
 
         [TestCase]
@@ -93,23 +93,23 @@ namespace AssetHubTests
         {
             var updateRequestDto = new UpdateRequestClassDto
             {
-                AssetReqId = 1
+                assetReqId = 1
             };
 
             var updatedRequest = new AssetRequest
             {
-                AssetReqId = 1,
-                Request_Status = RequestStatus.Allocated
+                assetReqId = 1,
+                requestStatus = requestStatus.Allocated
             };
             assetRequestMock.Setup(repo => repo.UpdateAssetRequest(It.IsAny<int>(), It.IsAny<UpdateRequestClassDto>()))
                 .ReturnsAsync(updatedRequest);
-            var result = await assetRequest.UpdateAssetRequest(updateRequestDto.AssetReqId, updateRequestDto);
+            var result = await assetRequest.UpdateAssetRequest(updateRequestDto.assetReqId, updateRequestDto);
             Assert.IsNotNull(result, "Result should not be null");
-            Assert.AreEqual(updatedRequest.AssetReqId, result.AssetReqId, "AssetReq ID should match");
-            Assert.AreEqual(updatedRequest.Request_Status, result.Request_Status, "Request Status should be updated");
+            Assert.AreEqual(updatedRequest.assetReqId, result.assetReqId, "AssetReq ID should match");
+            Assert.AreEqual(updatedRequest.requestStatus, result.requestStatus, "Request Status should be updated");
 
-            assetRequestMock.Verify(repo => repo.UpdateAssetRequest(It.Is<int>(id => id == updateRequestDto.AssetReqId),
-                It.Is<UpdateRequestClassDto>(a => a.RequestStatusName == updateRequestDto.RequestStatusName)), Times.Once);
+            assetRequestMock.Verify(repo => repo.UpdateAssetRequest(It.Is<int>(id => id == updateRequestDto.assetReqId),
+                It.Is<UpdateRequestClassDto>(a => a.requestStatusName == updateRequestDto.requestStatusName)), Times.Once);
         }
     }
 }

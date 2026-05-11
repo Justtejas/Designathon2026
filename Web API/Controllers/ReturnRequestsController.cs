@@ -156,15 +156,15 @@ namespace Hexa_Hub.Controllers
 
                         if (allocation != null)
                         {
-                            await _assetAlloc.DeleteAllocation(allocation.AllocationId);
+                            await _assetAlloc.DeleteAllocation(allocation.allocationId);
                         }
 
                         var assetRequest = await _context.AssetRequests
-                            .FirstOrDefaultAsync(a => a.assetId == existingRequest.assetId && a.userId == existingRequest.userId && a.Request_Status == Models.MultiValues.RequestStatus.Allocated);
+                            .FirstOrDefaultAsync(a => a.assetId == existingRequest.assetId && a.userId == existingRequest.userId && a.requestStatus == Models.MultiValues.requestStatus.Allocated);
 
                         if (assetRequest != null)
                         {
-                            await _assetRequest.DeleteAssetRequest(assetRequest.AssetReqId);
+                            await _assetRequest.DeleteAssetRequest(assetRequest.assetReqId);
                         }
                     }
                 }
@@ -260,16 +260,16 @@ namespace Hexa_Hub.Controllers
 
         //                if (allocation != null)
         //                {
-        //                    await _assetAlloc.DeleteAllocation(allocation.AllocationId);
+        //                    await _assetAlloc.DeleteAllocation(allocation.allocationId);
         //                    await _assetAlloc.Save();
         //                }
 
         //                var assetRequest = await _context.AssetRequests
-        //                    .FirstOrDefaultAsync(a => a.assetId == existingRequest.assetId && a.userId == existingRequest.userId && a.Request_Status == Models.MultiValues.RequestStatus.Allocated);
+        //                    .FirstOrDefaultAsync(a => a.assetId == existingRequest.assetId && a.userId == existingRequest.userId && a.requestStatus == Models.MultiValues.requestStatus.Allocated);
 
         //                if (assetRequest != null)
         //                {
-        //                    await _assetRequest.DeleteAssetRequest(assetRequest.AssetReqId);
+        //                    await _assetRequest.DeleteAssetRequest(assetRequest.assetReqId);
         //                    await _asset.Save();
         //                }
         //            }
@@ -367,29 +367,29 @@ namespace Hexa_Hub.Controllers
         //                {
         //                    try
         //                    {
-        //                        await _assetAlloc.DeleteAllocation(allocation.AllocationId);
+        //                        await _assetAlloc.DeleteAllocation(allocation.allocationId);
         //                        await _assetAlloc.Save();
         //                    }
         //                    catch (Exception ex)
         //                    {
-        //                        return BadRequest($"Failed to delete allocation with ID {allocation.AllocationId}: {ex.Message}");
+        //                        return BadRequest($"Failed to delete allocation with ID {allocation.allocationId}: {ex.Message}");
         //                    }
         //                }
 
         //                var assetRequest = await _context.AssetRequests
-        //                    .Where(a => a.assetId == existingRequest.assetId && a.userId == existingRequest.userId && a.Request_Status == Models.MultiValues.RequestStatus.Allocated)
+        //                    .Where(a => a.assetId == existingRequest.assetId && a.userId == existingRequest.userId && a.requestStatus == Models.MultiValues.requestStatus.Allocated)
         //                    .FirstOrDefaultAsync();
 
         //                if (assetRequest != null)
         //                {
         //                    try
         //                    {
-        //                        _assetRequest.DeleteAssetRequest(assetRequest.AssetReqId);
+        //                        _assetRequest.DeleteAssetRequest(assetRequest.assetReqId);
         //                        await _asset.Save();
         //                    }
         //                    catch (Exception ex)
         //                    {
-        //                        return BadRequest($"Failed to delete AssetRequest with ID {assetRequest.AssetReqId}: {ex.Message}");
+        //                        return BadRequest($"Failed to delete AssetRequest with ID {assetRequest.assetReqId}: {ex.Message}");
         //                    }
         //                }
         //            }

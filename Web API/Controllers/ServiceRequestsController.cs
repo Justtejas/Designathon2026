@@ -104,8 +104,8 @@ namespace Hexa_Hub.Controllers
                     {
                         assetId = serviceRequestDto.assetId,
                         userId = serviceRequestDto.userId,
-                        Maintenance_date = DateTime.Now,
-                        Maintenance_Description = serviceRequestDto.ServiceDescription
+                        maintenanceDate = DateTime.Now,
+                        maintenanceDescription = serviceRequestDto.ServiceDescription
                     };
                     _maintenanceLog.AddMaintenanceLog(maintenanceLog);
                     await _maintenanceLog.Save();
@@ -264,8 +264,8 @@ namespace Hexa_Hub.Controllers
             //{
             //    assetId = serviceRequest.assetId,
             //    userId = loggedInuserId,
-            //    Maintenance_date = DateTime.Now,
-            //    Maintenance_Description = serviceRequest.ServiceDescription
+            //    maintenanceDate = DateTime.Now,
+            //    maintenanceDescription = serviceRequest.ServiceDescription
             //};
 
             //_maintenanceLog.AddMaintenanceLog(maintenanceLog);

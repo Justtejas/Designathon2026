@@ -15,7 +15,7 @@ namespace Hexa_Hub.Interface
         Task<List<AssetRequest>> GetAssetRequestByMonthAndYearAsync(string month, int year);
         Task<List<AssetRequest>> GetAssetRequestByDateRangeAsync(DateTime startDate, DateTime endDate);
 
-        Task<IEnumerable<AssetRequestDto>> GetAssetRequestByStatus(RequestStatus status);
+        Task<IEnumerable<AssetRequestDto>> GetAssetRequestByStatus(requestStatus status);
         //Task<AssetRequest> UpdateAssetRequest(int id, AssetRequestDto assetRequestDto);
         Task<AssetRequest> UpdateAssetRequest(int id, UpdateRequestClassDto assetRequestDto);
         Task DeleteAssetRequest(int id);

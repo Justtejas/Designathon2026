@@ -70,8 +70,8 @@ export default function MaintenancePage() {
     const filteredLogs = useMemo(() => {
         return maintenanceLogs.filter((log) => {
             const searchLower = searchTerm.toLowerCase();
-            const dateMatch = (!minDate || new Date(log.maintenance_date) >= new Date(minDate)) &&
-                (!maxDate || new Date(log.maintenance_date) <= new Date(maxDate));
+            const dateMatch = (!minDate || new Date(log.maintenanceDate) >= new Date(minDate)) &&
+                (!maxDate || new Date(log.maintenanceDate) <= new Date(maxDate));
             return (
                 log.assetName.toLowerCase().includes(searchLower) &&
                 (selectedStatus ? log.serviceReqStatusName === selectedStatus : true) &&
@@ -104,9 +104,9 @@ export default function MaintenancePage() {
                 log.maintenanceId,
                 log.userName,
                 log.assetName,
-                log.maintenance_date,
-                log.maintenance_Description,
-                log.cost
+                log.maintenanceDate,
+                log.maintenanceDescription,
+                log.Cost
             ];
             tableRows.push(requestData);
         });
@@ -331,8 +331,8 @@ export default function MaintenancePage() {
                                             <TableCell>{log.maintenanceId}</TableCell>
                                             <TableCell>{log.assetName}</TableCell>
                                             <TableCell>{log.userName}</TableCell>
-                                            <TableCell>{new Date(log.maintenance_date).toLocaleDateString()}</TableCell>
-                                            <TableCell>{log.maintenance_Description}</TableCell>
+                                            <TableCell>{new Date(log.maintenanceDate).toLocaleDateString()}</TableCell>
+                                            <TableCell>{log.maintenanceDescription}</TableCell>
                                             <TableCell>
                                                 <Link to={`/admin/maintenance/${log.maintenanceId}`}>
                                                     <IconButton>
