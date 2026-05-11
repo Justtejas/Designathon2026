@@ -37,16 +37,16 @@ public class DataContext : DbContext
                     v => Enum.Parse<requestStatus>(v));
 
             ModelBuilder.Entity<ReturnRequest>()
-                .Property(r => r.ReturnStatus)
+                .Property(r => r.returnStatus)
                 .HasConversion(
                     v => v.ToString(),
                     v => Enum.Parse<ReturnReqStatus>(v));
 
             ModelBuilder.Entity<ServiceRequest>()
-                .Property(r => r.ServiceReqStatus)
+                .Property(r => r.serviceReqStatus)
                 .HasConversion(
                     v => v.ToString(),
-                    v => Enum.Parse<ServiceReqStatus>(v));
+                    v => Enum.Parse<serviceReqStatus>(v));
 
             ModelBuilder.Entity<Audit>()
                 .Property(r => r.auditStatus)
@@ -55,10 +55,10 @@ public class DataContext : DbContext
                     v => Enum.Parse<auditStatus>(v));
 
             ModelBuilder.Entity<ServiceRequest>()
-                .Property(r => r.Issue_Type)
+                .Property(r => r.issueType)
                 .HasConversion(
                     v => v.ToString(),
-                    v => Enum.Parse<IssueType>(v));
+                    v => Enum.Parse<issueType>(v));
 
         base.OnModelCreating(ModelBuilder);
 

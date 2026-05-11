@@ -212,19 +212,19 @@ namespace Hexa_Hub.Migrations
                 name: "ReturnRequests",
                 columns: table => new
                 {
-                    ReturnId = table.Column<int>(type: "int", nullable: false)
+                    returnId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     userId = table.Column<int>(type: "int", nullable: false),
                     assetId = table.Column<int>(type: "int", nullable: false),
                     categoryId = table.Column<int>(type: "int", nullable: false),
-                    ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    returnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Condition = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReturnStatus = table.Column<int>(type: "int", nullable: false)
+                    returnStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReturnRequests", x => x.ReturnId);
+                    table.PrimaryKey("PK_ReturnRequests", x => x.returnId);
                     table.ForeignKey(
                         name: "FK_ReturnRequests_Assets_assetId",
                         column: x => x.assetId,
@@ -241,18 +241,18 @@ namespace Hexa_Hub.Migrations
                 name: "ServiceRequests",
                 columns: table => new
                 {
-                    ServiceId = table.Column<int>(type: "int", nullable: false)
+                    serviceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     assetId = table.Column<int>(type: "int", nullable: false),
                     userId = table.Column<int>(type: "int", nullable: false),
-                    ServiceRequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Issue_Type = table.Column<int>(type: "int", nullable: false),
-                    ServiceDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ServiceReqStatus = table.Column<int>(type: "int", nullable: false)
+                    serviceRequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    issueType = table.Column<int>(type: "int", nullable: false),
+                    serviceDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    serviceReqStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceRequests", x => x.ServiceId);
+                    table.PrimaryKey("PK_ServiceRequests", x => x.serviceId);
                     table.ForeignKey(
                         name: "FK_ServiceRequests_Assets_assetId",
                         column: x => x.assetId,

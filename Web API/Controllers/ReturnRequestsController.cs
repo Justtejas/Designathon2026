@@ -85,7 +85,7 @@ namespace Hexa_Hub.Controllers
         }
 
 
-        [HttpGet("GetByReturnId/{id}")]
+        [HttpGet("GetByreturnId/{id}")]
         [Authorize]
         public async Task<ActionResult<ReturnRequest>> GetReturnRequestByid(int id)
         {
@@ -115,7 +115,7 @@ namespace Hexa_Hub.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutReturnRequest(int id, ReturnClassDto returnRequestDto)
         {
-            if (id != returnRequestDto.ReturnId)
+            if (id != returnRequestDto.returnId)
             {
                 return BadRequest("Return Id Mismatch");
             }
@@ -131,22 +131,22 @@ namespace Hexa_Hub.Controllers
             existingRequest.userId = returnRequestDto.userId;
             existingRequest.assetId = returnRequestDto.assetId;
             existingRequest.categoryId = returnRequestDto.categoryId;
-            existingRequest.ReturnDate = returnRequestDto.ReturnDate;
+            existingRequest.returnDate = returnRequestDto.returnDate;
             existingRequest.Reason = returnRequestDto.Reason;
             existingRequest.Condition = returnRequestDto.Condition;
-            existingRequest.ReturnStatus = returnRequestDto.ReturnStatus;
+            existingRequest.returnStatus = returnRequestDto.returnStatus;
 
             // Additional logic for asset status change and notifications
-            if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Approved ||
-                existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned ||
-                existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
+            if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Approved ||
+                existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Returned ||
+                existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
             {
-                existingRequest.ReturnDate = DateTime.Now;
+                existingRequest.returnDate = DateTime.Now;
 
                 var asset = await _context.Assets.FindAsync(existingRequest.assetId);
                 if (asset != null)
                 {
-                    if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned)
+                    if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Returned)
                     {
                         asset.assetStatus = Models.MultiValues.assetStatus.OpenToRequest;
                         _context.Entry(asset).State = EntityState.Modified;
@@ -172,7 +172,7 @@ namespace Hexa_Hub.Controllers
                 var user = await _context.Users.FindAsync(existingRequest.userId);
                 if (user != null)
                 {
-                    switch (existingRequest.ReturnStatus)
+                    switch (existingRequest.returnStatus)
                     {
                         case Models.MultiValues.ReturnReqStatus.Approved:
                             await _notificationService.ReturnRequestApproved(user.userMail, user.userName, existingRequest.assetId, id);
@@ -210,7 +210,7 @@ namespace Hexa_Hub.Controllers
         //[Authorize(Roles = "Admin")]
         //public async Task<IActionResult> PutReturnRequest(int id, ReturnClassDto returnRequestDto)
         //{
-        //    if (id != returnRequestDto.ReturnId)
+        //    if (id != returnRequestDto.returnId)
         //    {
         //        return BadRequest("Return Id Mismatch");
         //    }
@@ -226,14 +226,14 @@ namespace Hexa_Hub.Controllers
         //    existingRequest.userId = returnRequestDto.userId;
         //    existingRequest.assetId = returnRequestDto.assetId;
         //    existingRequest.categoryId = returnRequestDto.categoryId;
-        //    existingRequest.ReturnDate = returnRequestDto.ReturnDate;
+        //    existingRequest.returnDate = returnRequestDto.returnDate;
         //    existingRequest.Reason = returnRequestDto.Reason;
         //    existingRequest.Condition = returnRequestDto.Condition;
 
         //    // Handle the return status update
-        //    if (returnRequestDto.ReturnStatus != null)
+        //    if (returnRequestDto.returnStatus != null)
         //    {
-        //        existingRequest.ReturnStatus = returnRequestDto.ReturnStatus;
+        //        existingRequest.returnStatus = returnRequestDto.returnStatus;
         //    }
         //    else
         //    {
@@ -241,16 +241,16 @@ namespace Hexa_Hub.Controllers
         //    }
 
         //    // Additional logic for asset status change and notifications
-        //    if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Approved ||
-        //        existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned ||
-        //        existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
+        //    if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Approved ||
+        //        existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Returned ||
+        //        existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
         //    {
-        //        existingRequest.ReturnDate = DateTime.Now;
+        //        existingRequest.returnDate = DateTime.Now;
 
         //        var asset = await _context.Assets.FindAsync(existingRequest.assetId);
         //        if (asset != null)
         //        {
-        //            if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned)
+        //            if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Returned)
         //            {
         //                asset.assetStatus = Models.MultiValues.assetStatus.OpenToRequest;
         //                _context.Entry(asset).State = EntityState.Modified;
@@ -278,15 +278,15 @@ namespace Hexa_Hub.Controllers
         //        var user = await _context.Users.FindAsync(existingRequest.userId);
         //        if (user != null)
         //        {
-        //            if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Approved)
+        //            if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Approved)
         //            {
         //                await _notificationService.ReturnRequestApproved(user.userMail, user.userName, existingRequest.assetId, id);
         //            }
-        //            else if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned)
+        //            else if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Returned)
         //            {
         //                await _notificationService.ReturnRequestCompleted(user.userMail, user.userName, existingRequest.assetId);
         //            }
-        //            else if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
+        //            else if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
         //            {
         //                await _notificationService.ReturnRequestRejected(user.userMail, user.userName, existingRequest.assetId, id);
         //            }
@@ -316,7 +316,7 @@ namespace Hexa_Hub.Controllers
         //[Authorize(Roles = "Admin")]
         //public async Task<IActionResult> PutReturnRequest(int id, ReturnClassDto returnRequestDto)
         //{
-        //    if (id != returnRequestDto.ReturnId)
+        //    if (id != returnRequestDto.returnId)
         //    {
         //        return BadRequest("Return Id Mismatch");
         //    }
@@ -330,14 +330,14 @@ namespace Hexa_Hub.Controllers
         //    existingRequest.userId = returnRequestDto.userId;
         //    existingRequest.assetId = returnRequestDto.assetId;
         //    existingRequest.categoryId = returnRequestDto.categoryId;
-        //    existingRequest.ReturnDate = returnRequestDto.ReturnDate;
+        //    existingRequest.returnDate = returnRequestDto.returnDate;
         //    existingRequest.Reason = returnRequestDto.Reason;
         //    existingRequest.Condition = returnRequestDto.Condition;
 
         //    // Handle the return status update
-        //    if (returnRequestDto.ReturnStatus.HasValue)
+        //    if (returnRequestDto.returnStatus.HasValue)
         //    {
-        //        existingRequest.ReturnStatus = returnRequestDto.ReturnStatus.Value;
+        //        existingRequest.returnStatus = returnRequestDto.returnStatus.Value;
         //    }
         //    else
         //    {
@@ -345,16 +345,16 @@ namespace Hexa_Hub.Controllers
         //    }
 
         //    // Additional logic for asset status change and notifications
-        //    if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Approved ||
-        //        existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned ||
-        //        existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
+        //    if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Approved ||
+        //        existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Returned ||
+        //        existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
         //    {
-        //        existingRequest.ReturnDate = DateTime.Now;
+        //        existingRequest.returnDate = DateTime.Now;
 
         //        var asset = await _context.Assets.FindAsync(existingRequest.assetId);
         //        if (asset != null)
         //        {
-        //            if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned)
+        //            if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Returned)
         //            {
         //                asset.assetStatus = Models.MultiValues.assetStatus.OpenToRequest;
         //                _context.Entry(asset).State = EntityState.Modified;
@@ -398,15 +398,15 @@ namespace Hexa_Hub.Controllers
         //        var user = await _context.Users.FindAsync(existingRequest.userId);
         //        if (user != null)
         //        {
-        //            if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Approved)
+        //            if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Approved)
         //            {
         //                await _notificationService.ReturnRequestApproved(user.userMail, user.userName, existingRequest.assetId, id);
         //            }
-        //            else if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Returned)
+        //            else if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Returned)
         //            {
         //                await _notificationService.ReturnRequestCompleted(user.userMail, user.userName, existingRequest.assetId);
         //            }
-        //            else if (existingRequest.ReturnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
+        //            else if (existingRequest.returnStatus == Models.MultiValues.ReturnReqStatus.Rejected)
         //            {
         //                await _notificationService.ReturnRequestRejected(user.userMail, user.userName, existingRequest.assetId, id);
         //            }
@@ -452,7 +452,7 @@ namespace Hexa_Hub.Controllers
             await _returnRequestRepo.Save();
 
 
-            return CreatedAtAction("GetReturnRequest", new { id = createdRequest.ReturnId }, createdRequest);
+            return CreatedAtAction("GetReturnRequest", new { id = createdRequest.returnId }, createdRequest);
         }
 
         // DELETE: api/ReturnRequests/5
@@ -485,7 +485,7 @@ namespace Hexa_Hub.Controllers
 
         private bool ReturnRequestExists(int id)
         {
-            return _context.ReturnRequests.Any(e => e.ReturnId == id);
+            return _context.ReturnRequests.Any(e => e.returnId == id);
         }
     }
 }

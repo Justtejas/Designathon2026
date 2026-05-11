@@ -61,9 +61,9 @@ namespace Hexa_Hub.Controllers
         public async Task<IActionResult> PutServiceRequest(int id, ServiceClassDto serviceRequestDto)
         {
             // Validate the ID
-            if (id != serviceRequestDto.ServiceId)
+            if (id != serviceRequestDto.serviceId)
             {
-                return BadRequest($"Given IDs {id} and {serviceRequestDto.ServiceId} don't match.");
+                return BadRequest($"Given IDs {id} and {serviceRequestDto.serviceId} don't match.");
             }
 
             // Fetch existing request
@@ -76,16 +76,16 @@ namespace Hexa_Hub.Controllers
             // Update properties
             existingRequest.assetId = serviceRequestDto.assetId;
             existingRequest.userId = serviceRequestDto.userId;
-            existingRequest.ServiceRequestDate = serviceRequestDto.ServiceRequestDate;
-            existingRequest.Issue_Type = serviceRequestDto.Issue_Type;
-            existingRequest.ServiceDescription = serviceRequestDto.ServiceDescription;
+            existingRequest.serviceRequestDate = serviceRequestDto.serviceRequestDate;
+            existingRequest.issueType = serviceRequestDto.issueType;
+            existingRequest.serviceDescription = serviceRequestDto.serviceDescription;
 
             // Parse and update status
-            if (Enum.TryParse(serviceRequestDto.serviceReqStatus.ToString(), out ServiceReqStatus parsedStatus))
+            if (Enum.TryParse(serviceRequestDto.serviceReqStatus.ToString(), out serviceReqStatus parsedStatus))
             {
-                existingRequest.ServiceReqStatus = parsedStatus;
+                existingRequest.serviceReqStatus = parsedStatus;
 
-                if (parsedStatus == ServiceReqStatus.Approved)
+                if (parsedStatus == serviceReqStatus.Approved)
                 {
                     var asset = await _context.Assets.FindAsync(serviceRequestDto.assetId);
                     if (asset != null)
@@ -98,19 +98,19 @@ namespace Hexa_Hub.Controllers
                     var user = await _context.Users.FindAsync(serviceRequestDto.userId);
                     if (user != null)
                     {
-                        await _notificationService.ServiceRequestApproved(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.Issue_Type);
+                        await _notificationService.ServiceRequestApproved(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.issueType);
                     }
                     var maintenanceLog = new MaintenanceLog
                     {
                         assetId = serviceRequestDto.assetId,
                         userId = serviceRequestDto.userId,
                         maintenanceDate = DateTime.Now,
-                        maintenanceDescription = serviceRequestDto.ServiceDescription
+                        maintenanceDescription = serviceRequestDto.serviceDescription
                     };
                     _maintenanceLog.AddMaintenanceLog(maintenanceLog);
                     await _maintenanceLog.Save();
                 }
-                else if (parsedStatus == ServiceReqStatus.Completed)
+                else if (parsedStatus == serviceReqStatus.Completed)
                 {
                     var asset = await _context.Assets.FindAsync(serviceRequestDto.assetId);
                     if (asset != null)
@@ -122,17 +122,17 @@ namespace Hexa_Hub.Controllers
                     var user = await _context.Users.FindAsync(serviceRequestDto.userId);
                     if (user != null)
                     {
-                        await _notificationService.ServiceRequestCompleted(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.Issue_Type);
+                        await _notificationService.ServiceRequestCompleted(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.issueType);
                     }
                 }
-                //else if(parsedStatus == ServiceReqStatus.Rejected)
+                //else if(parsedStatus == serviceReqStatus.Rejected)
                 //{
 
                 //}
             }
             else
             {
-                return BadRequest("Invalid ServiceReqStatus value.");
+                return BadRequest("Invalid serviceReqStatus value.");
             }
 
             // Update the database
@@ -164,9 +164,9 @@ namespace Hexa_Hub.Controllers
         //[Authorize(Roles = "Admin")]
         //public async Task<IActionResult> PutServiceRequest(int id, ServiceRequestDto serviceRequestDto)
         //{
-        //    if (id != serviceRequestDto.ServiceId)
+        //    if (id != serviceRequestDto.serviceId)
         //    {
-        //        return BadRequest($"Given Id's {id} and {serviceRequestDto.ServiceId} don't match");
+        //        return BadRequest($"Given Id's {id} and {serviceRequestDto.serviceId} don't match");
         //    }
 
         //    var existingRequest = await _serviceRequest.GetServiceRequestById(id);
@@ -177,15 +177,15 @@ namespace Hexa_Hub.Controllers
 
         //    existingRequest.assetId = serviceRequestDto.assetId;
         //    existingRequest.userId = serviceRequestDto.userId;
-        //    existingRequest.ServiceRequestDate = serviceRequestDto.ServiceRequestDate;
-        //    existingRequest.Issue_Type = serviceRequestDto.Issue_Type;
-        //    existingRequest.ServiceDescription = serviceRequestDto.ServiceDescription;
+        //    existingRequest.serviceRequestDate = serviceRequestDto.serviceRequestDate;
+        //    existingRequest.issueType = serviceRequestDto.issueType;
+        //    existingRequest.serviceDescription = serviceRequestDto.serviceDescription;
 
-        //    if (Enum.TryParse(serviceRequestDto.ServiceReqStatus, out ServiceReqStatus parsedStatus))
+        //    if (Enum.TryParse(serviceRequestDto.serviceReqStatus, out serviceReqStatus parsedStatus))
         //    {
-        //        existingRequest.ServiceReqStatus = parsedStatus;
+        //        existingRequest.serviceReqStatus = parsedStatus;
 
-        //        if (parsedStatus == ServiceReqStatus.Approved)
+        //        if (parsedStatus == serviceReqStatus.Approved)
         //        {
         //            var asset = await _context.Assets.FindAsync(serviceRequestDto.assetId);
         //            if (asset != null)
@@ -196,10 +196,10 @@ namespace Hexa_Hub.Controllers
         //            var user = await _context.Users.FindAsync(serviceRequestDto.userId);
         //            if (user != null)
         //            {
-        //                await _notificationService.ServiceRequestApproved(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.Issue_Type);
+        //                await _notificationService.ServiceRequestApproved(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.issueType);
         //            }
         //        }
-        //        else if (parsedStatus == ServiceReqStatus.Completed)
+        //        else if (parsedStatus == serviceReqStatus.Completed)
         //        {
         //            var asset = await _context.Assets.FindAsync(serviceRequestDto.assetId);
         //            if (asset != null)
@@ -210,13 +210,13 @@ namespace Hexa_Hub.Controllers
         //            var user = await _context.Users.FindAsync(serviceRequestDto.userId);
         //            if (user != null)
         //            {
-        //                await _notificationService.ServiceRequestCompleted(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.Issue_Type);
+        //                await _notificationService.ServiceRequestCompleted(user.userMail, user.userName, serviceRequestDto.assetId, id, serviceRequestDto.issueType);
         //            }
         //        }
         //    }
         //    else
         //    {
-        //        return BadRequest("Invalid ServiceReqStatus value");
+        //        return BadRequest("Invalid serviceReqStatus value");
         //    }
 
         //    try
@@ -253,9 +253,9 @@ namespace Hexa_Hub.Controllers
             {
                 assetId = serviceRequestDto.assetId,
                 userId = loggedInuserId,
-                ServiceRequestDate = serviceRequestDto.ServiceRequestDate,
-                Issue_Type = serviceRequestDto.Issue_Type,
-                ServiceDescription = serviceRequestDto.ServiceDescription
+                serviceRequestDate = serviceRequestDto.serviceRequestDate,
+                issueType = serviceRequestDto.issueType,
+                serviceDescription = serviceRequestDto.serviceDescription
             };
             await _serviceRequest.AddServiceRequest(serviceRequest);
             await _serviceRequest.Save();
@@ -265,13 +265,13 @@ namespace Hexa_Hub.Controllers
             //    assetId = serviceRequest.assetId,
             //    userId = loggedInuserId,
             //    maintenanceDate = DateTime.Now,
-            //    maintenanceDescription = serviceRequest.ServiceDescription
+            //    maintenanceDescription = serviceRequest.serviceDescription
             //};
 
             //_maintenanceLog.AddMaintenanceLog(maintenanceLog);
             //await _maintenanceLog.Save();
 
-            return CreatedAtAction("GetServiceRequests", new { id = serviceRequest.ServiceId }, serviceRequest);
+            return CreatedAtAction("GetServiceRequests", new { id = serviceRequest.serviceId }, serviceRequest);
         }
 
 
@@ -292,9 +292,9 @@ namespace Hexa_Hub.Controllers
                 {
                     return Forbid("You are not able to Delete"); 
                 }
-                if(serviceRequest.ServiceReqStatus == ServiceReqStatus.Approved || serviceRequest.ServiceReqStatus == ServiceReqStatus.Completed)
+                if(serviceRequest.serviceReqStatus == serviceReqStatus.Approved || serviceRequest.serviceReqStatus == serviceReqStatus.Completed)
                 {
-                    return BadRequest($"The Service Id {id} for USer {loggedInuserId} is already been {serviceRequest.ServiceReqStatus}");
+                    return BadRequest($"The Service Id {id} for USer {loggedInuserId} is already been {serviceRequest.serviceReqStatus}");
                 }
 
                 await _serviceRequest.DeleteServiceRequest(id);
@@ -308,7 +308,7 @@ namespace Hexa_Hub.Controllers
             }
         }
         [HttpGet("Status/{status}")]
-        public async Task<IActionResult> GetServiceRequestsByStatus(ServiceReqStatus status)
+        public async Task<IActionResult> GetServiceRequestsByStatus(serviceReqStatus status)
         {
             try
             {
@@ -328,7 +328,7 @@ namespace Hexa_Hub.Controllers
 
         private bool ServiceRequestExists(int id)
         {
-            return _context.ServiceRequests.Any(e => e.ServiceId == id);
+            return _context.ServiceRequests.Any(e => e.serviceId == id);
         }
 
         [HttpGet("{id}")]

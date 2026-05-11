@@ -29,7 +29,7 @@ namespace Hexa_Hub.Migrations
                 nullable: true);
 
             migrationBuilder.AlterColumn<string>(
-                name: "ServiceReqStatus",
+                name: "serviceReqStatus",
                 table: "ServiceRequests",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -37,7 +37,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "int");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Issue_Type",
+                name: "issueType",
                 table: "ServiceRequests",
                 type: "nvarchar(max)",
                 nullable: false,
@@ -45,7 +45,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "int");
 
             migrationBuilder.AlterColumn<string>(
-                name: "ReturnStatus",
+                name: "returnStatus",
                 table: "ReturnRequests",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -111,7 +111,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
-                name: "ServiceReqStatus",
+                name: "serviceReqStatus",
                 table: "ServiceRequests",
                 type: "int",
                 nullable: false,
@@ -121,7 +121,7 @@ namespace Hexa_Hub.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
-                name: "Issue_Type",
+                name: "issueType",
                 table: "ServiceRequests",
                 type: "int",
                 nullable: false,
@@ -129,7 +129,7 @@ namespace Hexa_Hub.Migrations
                 oldType: "nvarchar(max)");
 
             migrationBuilder.AlterColumn<int>(
-                name: "ReturnStatus",
+                name: "returnStatus",
                 table: "ReturnRequests",
                 type: "int",
                 nullable: false,

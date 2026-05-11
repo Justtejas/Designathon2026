@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from pymongo import MongoClient
-from auth import get_user_id, get_user_role
+from auth import get_user_id, get_user_role,get_next_sequence
 from datetime import datetime
 import os
 import logging
@@ -32,14 +32,14 @@ def serialize_return_simple(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "ReturnId": doc.get('ReturnId'),
+            "returnId": doc.get('returnId'),
             "userId": doc.get('userId'),
             "assetId": doc.get('assetId'),
             "categoryId": doc.get('categoryId'),
-            "ReturnDate": doc.get('ReturnDate'),
+            "returnDate": doc.get('returnDate'),
             "Reason": doc.get('Reason'),
             "Condition": doc.get('Condition'),
-            "ReturnStatus": doc.get('ReturnStatus', 'Sent')
+            "returnStatus": doc.get('returnStatus', 'Sent')
         }
     return None
  
@@ -47,19 +47,19 @@ def serialize_return_class(doc):
     """Serialize ReturnClassDto with full details"""
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
-        return_status = doc.get('ReturnStatus', 'Sent')
+        return_status = doc.get('returnStatus', 'Sent')
         return {
-            "ReturnId": doc.get('ReturnId'),
+            "returnId": doc.get('returnId'),
             "userId": doc.get('userId'),
             "userName": doc.get('userName'),
             "assetName": doc.get('assetName'),
             "assetId": doc.get('assetId'),
             "categoryId": doc.get('categoryId'),
             "categoryName": doc.get('categoryName'),
-            "ReturnDate": doc.get('ReturnDate'),
+            "returnDate": doc.get('returnDate'),
             "Reason": doc.get('Reason'),
             "Condition": doc.get('Condition'),
-            "ReturnStatus": return_status
+            "returnStatus": return_status
         }
     return None
  
@@ -70,7 +70,7 @@ def user_has_asset(user_id):
 def handle_return_status_update(return_doc, return_status):
     """Handle complex return status logic"""
     if return_status in ["Approved", "Returned", "Rejected"]:
-        return_doc["ReturnDate"] = datetime.now().isoformat()
+        return_doc["returnDate"] = datetime.now().isoformat()
         # Update asset status if returned
         if return_status == "Returned":
             assets.update_one(
@@ -118,20 +118,20 @@ def get_all_return_requests():
             {
                 "$project": {
                     "_id": 0,
-                    "ReturnId": "$ReturnId",
+                    "returnId": "$returnId",
                     "userId": "$userId",
                     "userName": "$user.userName",
                     "assetName": "$asset.assetName",
                     "assetId": "$assetId",
                     "categoryId": "$categoryId",
                     "categoryName": "$category.categoryName",
-                    "ReturnDate": 1,
+                    "returnDate": 1,
                     "Reason": 1,
                     "Condition": 1,
-                    "ReturnStatus": {"$ifNull": ["$ReturnStatus", "Sent"]}
+                    "returnStatus": {"$ifNull": ["$returnStatus", "Sent"]}
                 }
             },
-            {"$sort": {"ReturnDate": -1}}
+            {"$sort": {"returnDate": -1}}
         ]
         requests_cursor = return_requests.aggregate(pipeline)
         requests_list = list(requests_cursor)
@@ -146,7 +146,7 @@ def get_user_return_requests():
     try:
         user_id = get_user_id()
         logger.info(f"Fetching return requests for user: {user_id}")
-        requests_list = list(return_requests.find({"userId": user_id}).sort("ReturnDate", -1))
+        requests_list = list(return_requests.find({"userId": user_id}).sort("returnDate", -1))
         if not requests_list:
             return jsonify({"error": "No details found"}), 404
         serialized_requests = [serialize_return_simple(req) for req in requests_list]
@@ -155,12 +155,12 @@ def get_user_return_requests():
         logger.info(f"Error fetching user return requests: {str(e)}")
         return jsonify({"error": "An error occurred"}), 500
  
-@return_requests_blueprint.route("/api/ReturnRequests/GetByReturnId/<int:return_id>", methods=["GET"])
+@return_requests_blueprint.route("/api/ReturnRequests/GetByreturnId/<int:return_id>", methods=["GET"])
 def get_return_request_by_id(return_id):
     try:
         logger.info(f"Fetching return request by ID: {return_id}")
         pipeline = [
-            {"$match": {"ReturnId": return_id}},
+            {"$match": {"returnId": return_id}},
             {"$lookup": {
                 "from": "Users",
                 "localField": "userId",
@@ -185,17 +185,17 @@ def get_return_request_by_id(return_id):
             {
                 "$project": {
                     "_id": 0,
-                    "ReturnId": "$ReturnId",
+                    "returnId": "$returnId",
                     "userId": "$userId",
                     "userName": "$user.userName",
                     "assetName": "$asset.assetName",
                     "assetId": "$assetId",
                     "categoryId": "$categoryId",
                     "categoryName": "$category.categoryName",
-                    "ReturnDate": 1,
+                    "returnDate": 1,
                     "Reason": 1,
                     "Condition": 1,
-                    "ReturnStatus": {"$ifNull": ["$ReturnStatus", "Sent"]}
+                    "returnStatus": {"$ifNull": ["$returnStatus", "Sent"]}
                 }
             }
         ]
@@ -216,7 +216,7 @@ def get_return_request_admin(return_id):
             return jsonify({"error": "Admin access required"}), 403
         logger.info(f"Admin fetching return request: {return_id}")
         pipeline = [
-            {"$match": {"ReturnId": return_id}},
+            {"$match": {"returnId": return_id}},
             {"$lookup": {
                 "from": "Users",
                 "localField": "userId",
@@ -255,10 +255,10 @@ def put_return_request(return_id):
             return jsonify({"error": "Admin access required"}), 403
         data = request.get_json()
         logger.info(f"Updating return request {return_id}")
-        if data.get("ReturnId") != return_id:
+        if data.get("returnId") != return_id:
             return jsonify({"error": "Return ID mismatch"}), 400
         # Get existing request
-        existing_request = return_requests.find_one({"ReturnId": return_id})
+        existing_request = return_requests.find_one({"returnId": return_id})
         if not existing_request:
             return jsonify({"error": f"Details for the request ID {return_id} not found"}), 404
         # Update fields
@@ -267,16 +267,16 @@ def put_return_request(return_id):
                 "userId": data.get("userId", existing_request.get("userId")),
                 "assetId": data.get("assetId", existing_request.get("assetId")),
                 "categoryId": data.get("categoryId", existing_request.get("categoryId")),
-                "ReturnDate": data.get("ReturnDate", existing_request.get("ReturnDate")),
+                "returnDate": data.get("returnDate", existing_request.get("returnDate")),
                 "Reason": data.get("Reason", existing_request.get("Reason")),
                 "Condition": data.get("Condition", existing_request.get("Condition")),
-                "ReturnStatus": data.get("ReturnStatus", existing_request.get("ReturnStatus", "Sent"))
+                "returnStatus": data.get("returnStatus", existing_request.get("returnStatus", "Sent"))
             }
         }
-        new_status = data.get("ReturnStatus")
+        new_status = data.get("returnStatus")
         # Handle status change logic
         handle_return_status_update(existing_request, new_status)
-        result = return_requests.update_one({"ReturnId": return_id}, update_data)
+        result = return_requests.update_one({"returnId": return_id}, update_data)
         if result.matched_count == 0:
             return jsonify({"error": f"Details for the request ID {return_id} not found"}), 404
         logger.info(f"Updated return request {return_id} to status: {new_status}")
@@ -296,15 +296,16 @@ def post_return_request():
         # Check if user has assets
         if not user_has_asset(user_id):
             return jsonify({"error": "User does not have an asset to return"}), 400
+        returnId = get_next_sequence("Return")
         return_request_doc = {
-            "ReturnId": data.get("ReturnId"),
+            "returnId": returnId,
             "userId": user_id,
             "assetId": data.get("assetId"),
             "categoryId": data.get("categoryId"),
-            "ReturnDate": data.get("ReturnDate"),
+            "returnDate": data.get("returnDate"),
             "Reason": data.get("Reason"),
             "Condition": data.get("Condition"),
-            "ReturnStatus": "Sent"
+            "returnStatus": "Sent"
         }
         result = return_requests.insert_one(return_request_doc)
         logger.info(f"Created return request with ID: {result.inserted_id}")
@@ -322,12 +323,12 @@ def delete_return_request(return_id):
             return jsonify({"error": "Employee access required"}), 403
         logger.info(f"Deleting return request {return_id} for user {user_id}")
         # Check ownership
-        request_doc = return_requests.find_one({"ReturnId": return_id, "userId": user_id})
+        request_doc = return_requests.find_one({"returnId": return_id, "userId": user_id})
         if not request_doc:
             return jsonify({"error": f"Details for the request ID {return_id} not found"}), 404
         if request_doc.get("userId") != user_id:
             return jsonify({"error": "You are not allowed to delete other records"}), 403
-        result = return_requests.delete_one({"ReturnId": return_id})
+        result = return_requests.delete_one({"returnId": return_id})
         if result.deleted_count == 0:
             return jsonify({"error": "Failed to delete return request"}), 404
         logger.info(f"Deleted return request {return_id}")

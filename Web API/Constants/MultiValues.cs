@@ -23,7 +23,7 @@ public class MultiValues
         Rejected=2
     }
 
-    public enum IssueType
+    public enum issueType
     {
         Malfunction=1,
         Repair=2,
@@ -37,7 +37,7 @@ public class MultiValues
         Completed=2
     }
 
-    public enum ServiceReqStatus
+    public enum serviceReqStatus
     {
         UnderReview=0,
         Approved=1,

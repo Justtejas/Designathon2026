@@ -21,11 +21,11 @@ namespace Hexa_Hub.Repository
         {
             var req = new ReturnRequest
             {
-                ReturnId = returnRequestDto.ReturnId,
+                returnId = returnRequestDto.returnId,
                 userId = returnRequestDto.userId,
                 assetId = returnRequestDto.assetId,
                 categoryId = returnRequestDto.categoryId,
-                ReturnDate = returnRequestDto.ReturnDate,
+                returnDate = returnRequestDto.returnDate,
                 Reason = returnRequestDto.Reason,
                 Condition = returnRequestDto.Condition
             };
@@ -36,7 +36,7 @@ namespace Hexa_Hub.Repository
             foreach (var admin in adminUsers)
             {
 
-                await _notificationService.ReturnRequestSent(admin.userMail, returnRequestDto.assetId, req.ReturnId);
+                await _notificationService.ReturnRequestSent(admin.userMail, returnRequestDto.assetId, req.returnId);
             }
             return req;
         }
@@ -56,19 +56,19 @@ namespace Hexa_Hub.Repository
                 .Include(rr => rr.User)
                 .Select(rr=>new ReturnClassDto
                 {
-                    ReturnId = rr.ReturnId,
+                    returnId = rr.returnId,
                     userId = rr.userId,
                     userName = rr.User.userName,
                     assetName = rr.Asset.assetName,
                     assetId = rr.assetId,
                     categoryId = rr.categoryId,
                     categoryName = rr.Asset.Category.categoryName,
-                    ReturnDate = rr.ReturnDate,
+                    returnDate = rr.returnDate,
                     Reason = rr.Reason,
                     Condition = rr.Condition,
-                    ReturnStatus = rr.ReturnStatus ?? Models.MultiValues.ReturnReqStatus.Sent,
+                    returnStatus = rr.returnStatus ?? Models.MultiValues.ReturnReqStatus.Sent,
                 })
-                .OrderByDescending(rr=>rr.ReturnDate)
+                .OrderByDescending(rr=>rr.returnDate)
                 .ToListAsync();
         }
 
@@ -77,7 +77,7 @@ namespace Hexa_Hub.Repository
             return await _context.ReturnRequests
                 .Include(rr => rr.Asset)
                 .Include(rr => rr.User)
-                .FirstOrDefaultAsync(rr => rr.ReturnId == id);
+                .FirstOrDefaultAsync(rr => rr.returnId == id);
         }
 
         public async Task<ReturnClassDto?> GetReturnRequestId(int id)
@@ -88,20 +88,20 @@ namespace Hexa_Hub.Repository
                 .Include(rr => rr.User)
                 .Select(rr => new ReturnClassDto
                 {
-                    ReturnId = rr.ReturnId,
+                    returnId = rr.returnId,
                     userId = rr.userId,
                     userName = rr.User.userName,
                     assetName = rr.Asset.assetName,
                     assetId = rr.assetId,
                     categoryId = rr.categoryId,
                     categoryName = rr.Asset.Category.categoryName,
-                    ReturnDate = rr.ReturnDate,
+                    returnDate = rr.returnDate,
                     Reason = rr.Reason,
                     Condition = rr.Condition,
-                    //ReturnStatus = rr.ReturnStatus,
-                    ReturnStatus = rr.ReturnStatus ?? Models.MultiValues.ReturnReqStatus.Sent,
+                    //returnStatus = rr.returnStatus,
+                    returnStatus = rr.returnStatus ?? Models.MultiValues.ReturnReqStatus.Sent,
                 })
-                .FirstOrDefaultAsync(rr => rr.ReturnId == id);
+                .FirstOrDefaultAsync(rr => rr.returnId == id);
         }
 
         public async Task Save()
@@ -116,7 +116,7 @@ namespace Hexa_Hub.Repository
         //}
         public void UpdateReturnRequest(ReturnClassDto returnRequest)
         {
-            var existingRequest = _context.ReturnRequests.Find(returnRequest.ReturnId);
+            var existingRequest = _context.ReturnRequests.Find(returnRequest.returnId);
             if (existingRequest != null)
             {
                 _context.Entry(existingRequest).CurrentValues.SetValues(returnRequest);
@@ -132,17 +132,17 @@ namespace Hexa_Hub.Repository
                 .Include(rr => rr.User)
                 .Select(rr => new ReturnClassDto
                 {
-                    ReturnId = rr.ReturnId,
+                    returnId = rr.returnId,
                     userId = rr.userId,
                     userName = rr.User.userName,
                     assetName = rr.Asset.assetName,
                     assetId = rr.assetId,
                     categoryId = rr.categoryId,
                     categoryName = rr.Asset.Category.categoryName,
-                    ReturnDate = rr.ReturnDate,
+                    returnDate = rr.returnDate,
                     Reason = rr.Reason,
                     Condition = rr.Condition,
-                    ReturnStatus = rr.ReturnStatus ?? Models.MultiValues.ReturnReqStatus.Sent,
+                    returnStatus = rr.returnStatus ?? Models.MultiValues.ReturnReqStatus.Sent,
                 })
                 .ToListAsync();
         }

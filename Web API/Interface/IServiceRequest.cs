@@ -12,7 +12,7 @@ namespace Hexa_Hub.Interface
         Task<ServiceRequest> UpdateServiceRequest(ServiceRequest existingRequest);
         Task DeleteServiceRequest(int id);
         Task Save();
-        Task<IEnumerable<ServiceRequestDto>> GetServiceReqByStatus(ServiceReqStatus serviceReqStatus);
+        Task<IEnumerable<ServiceRequestDto>> GetServiceReqByStatus(serviceReqStatus serviceReqStatus);
         //Task<List<ServiceRequest>> GetServiceRequestsByuserId(int userId);
         Task<List<ServiceClassDto>> GetServiceRequestsByuserId(int userId);
 

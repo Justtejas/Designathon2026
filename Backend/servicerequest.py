@@ -30,13 +30,13 @@ def serialize_service_simple(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "ServiceId": doc.get('ServiceId'),
+            "serviceId": doc.get('serviceId'),
             "assetId": doc.get('assetId'),
             "userId": doc.get('userId'),
-            "ServiceRequestDate": doc.get('ServiceRequestDate'),
-            "Issue_Type": doc.get('Issue_Type', 'Repair'),
-            "ServiceDescription": doc.get('ServiceDescription'),
-            "ServiceReqStatus": doc.get('ServiceReqStatus', 'UnderReview')
+            "serviceRequestDate": doc.get('serviceRequestDate'),
+            "issueType": doc.get('issueType', 'Repair'),
+            "serviceDescription": doc.get('serviceDescription'),
+            "serviceReqStatus": doc.get('serviceReqStatus', 'UnderReview')
         }
     return None
  
@@ -45,15 +45,15 @@ def serialize_service_class(doc):
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
-            "ServiceId": doc.get('ServiceId'),
+            "serviceId": doc.get('serviceId'),
             "userName": doc.get('userName'),
             "userId": doc.get('userId'),
             "assetId": doc.get('assetId'),
             "assetName": doc.get('assetName'),
-            "ServiceDescription": doc.get('ServiceDescription'),
-            "ServiceRequestDate": doc.get('ServiceRequestDate'),
-            "Issue_Type": doc.get('Issue_Type', 'Repair'),
-            "serviceReqStatus": doc.get('ServiceReqStatus', 'UnderReview')
+            "serviceDescription": doc.get('serviceDescription'),
+            "serviceRequestDate": doc.get('serviceRequestDate'),
+            "issueType": doc.get('issueType', 'Repair'),
+            "serviceReqStatus": doc.get('serviceReqStatus', 'UnderReview')
         }
     return None
  
@@ -86,18 +86,18 @@ def get_service_requests():
                 {
                     "$project": {
                         "_id": 0,
-                        "ServiceId": "$ServiceId",
+                        "serviceId": "$serviceId",
                         "userName": "$user.userName",
                         "userId": "$userId",
                         "assetId": "$assetId",
                         "assetName": "$asset.assetName",
-                        "ServiceDescription": 1,
-                        "ServiceRequestDate": 1,
-                        "Issue_Type": {"$ifNull": ["$Issue_Type", "Repair"]},
-                        "serviceReqStatus": {"$ifNull": ["$ServiceReqStatus", "UnderReview"]}
+                        "serviceDescription": 1,
+                        "serviceRequestDate": 1,
+                        "issueType": {"$ifNull": ["$issueType", "Repair"]},
+                        "serviceReqStatus": {"$ifNull": ["$serviceReqStatus", "UnderReview"]}
                     }
                 },
-                {"$sort": {"ServiceRequestDate": -1}}
+                {"$sort": {"serviceRequestDate": -1}}
             ]
         else:
             # User sees only their requests
@@ -120,18 +120,18 @@ def get_service_requests():
                 {
                     "$project": {
                         "_id": 0,
-                        "ServiceId": "$ServiceId",
+                        "serviceId": "$serviceId",
                         "userName": "$user.userName",
                         "userId": "$userId",
                         "assetId": "$assetId",
                         "assetName": "$asset.assetName",
-                        "ServiceDescription": 1,
-                        "ServiceRequestDate": 1,
-                        "Issue_Type": {"$ifNull": ["$Issue_Type", "Repair"]},
-                        "serviceReqStatus": {"$ifNull": ["$ServiceReqStatus", "UnderReview"]}
+                        "serviceDescription": 1,
+                        "serviceRequestDate": 1,
+                        "issueType": {"$ifNull": ["$issueType", "Repair"]},
+                        "serviceReqStatus": {"$ifNull": ["$serviceReqStatus", "UnderReview"]}
                     }
                 },
-                {"$sort": {"ServiceRequestDate": -1}}
+                {"$sort": {"serviceRequestDate": -1}}
             ]
         requests_cursor = service_requests.aggregate(pipeline)
         requests_list = list(requests_cursor)
@@ -154,25 +154,25 @@ def put_service_request(service_id):
             return jsonify({"error": "Admin access required"}), 403
         data = request.get_json()
         logger.info(f"Updating service request {service_id}")
-        if data.get("ServiceId") != service_id:
-            return jsonify({"error": f"Given IDs {service_id} and {data.get('ServiceId')} don't match"}), 400
+        if data.get("serviceId") != service_id:
+            return jsonify({"error": f"Given IDs {service_id} and {data.get('serviceId')} don't match"}), 400
         # Get existing request
-        existing_request = service_requests.find_one({"ServiceId": service_id})
+        existing_request = service_requests.find_one({"serviceId": service_id})
         if not existing_request:
             return jsonify({"error": f"Service request with ID {service_id} not found"}), 404
         new_status = data.get("serviceReqStatus")
         valid_statuses = ["UnderReview", "Approved", "Completed", "Rejected"]
         if new_status not in valid_statuses:
-            return jsonify({"error": "Invalid ServiceReqStatus value"}), 400
+            return jsonify({"error": "Invalid serviceReqStatus value"}), 400
         # Prepare update data
         update_data = {
             "$set": {
                 "assetId": data.get("assetId", existing_request.get("assetId")),
                 "userId": data.get("userId", existing_request.get("userId")),
-                "ServiceRequestDate": data.get("ServiceRequestDate", existing_request.get("ServiceRequestDate")),
-                "Issue_Type": data.get("Issue_Type", existing_request.get("Issue_Type", "Repair")),
-                "ServiceDescription": data.get("ServiceDescription", existing_request.get("ServiceDescription")),
-                "ServiceReqStatus": new_status
+                "serviceRequestDate": data.get("serviceRequestDate", existing_request.get("serviceRequestDate")),
+                "issueType": data.get("issueType", existing_request.get("issueType", "Repair")),
+                "serviceDescription": data.get("serviceDescription", existing_request.get("serviceDescription")),
+                "serviceReqStatus": new_status
             }
         }
         # Handle status-specific logic
@@ -189,7 +189,7 @@ def put_service_request(service_id):
                 "assetId": data.get("assetId"),
                 "userId": data.get("userId"),
                 "maintenanceDate": datetime.now().isoformat(),
-                "maintenanceDescription": data.get("ServiceDescription")
+                "maintenanceDescription": data.get("serviceDescription")
             }
             maintenance_logs.insert_one(maintenance_log)
         elif new_status == "Completed":
@@ -199,7 +199,7 @@ def put_service_request(service_id):
                 {"$set": {"assetStatus": "Allocated"}}
             )
         # Update service request
-        result = service_requests.update_one({"ServiceId": service_id}, update_data)
+        result = service_requests.update_one({"serviceId": service_id}, update_data)
         if result.matched_count == 0:
             return jsonify({"error": f"Service request with ID {service_id} not found"}), 404
         logger.info(f"Updated service request {service_id} to status: {new_status}")
@@ -219,14 +219,15 @@ def post_service_request():
         # Validate asset exists
         if not asset_exists(data.get("assetId")):
             return jsonify({"error": "Invalid Asset. Asset Not Found"}), 400
+        serviceId = get_next_sequence("serviceReq")
         service_request_doc = {
-            "ServiceId": data.get("ServiceId"),
+            "serviceId": serviceId,
             "assetId": data.get("assetId"),
             "userId": user_id,
-            "ServiceRequestDate": data.get("ServiceRequestDate", datetime.now().isoformat()),
-            "Issue_Type": data.get("Issue_Type", "Repair"),
-            "ServiceDescription": data.get("ServiceDescription"),
-            "ServiceReqStatus": "UnderReview"
+            "serviceRequestDate": data.get("serviceRequestDate", datetime.now().isoformat()),
+            "issueType": data.get("issueType", "Repair"),
+            "serviceDescription": data.get("serviceDescription"),
+            "serviceReqStatus": "UnderReview"
         }
         result = service_requests.insert_one(service_request_doc)
         logger.info(f"Created service request with ID: {result.inserted_id}")
@@ -244,17 +245,17 @@ def delete_service_request(service_id):
             return jsonify({"error": "Employee access required"}), 403
         logger.info(f"Deleting service request {service_id} for user {user_id}")
         # Get request details
-        request_doc = service_requests.find_one({"ServiceId": service_id})
+        request_doc = service_requests.find_one({"serviceId": service_id})
         if not request_doc:
             return jsonify({"error": "ID's Mismatch"}), 404
         if request_doc.get("userId") != user_id:
             return jsonify({"error": "You are not able to delete"}), 403
-        status = request_doc.get("ServiceReqStatus", "UnderReview")
+        status = request_doc.get("serviceReqStatus", "UnderReview")
         if status in ["Approved", "Completed"]:
             return jsonify({
                 "error": f"The Service ID {service_id} for user {user_id} is already {status}"
             }), 400
-        result = service_requests.delete_one({"ServiceId": service_id})
+        result = service_requests.delete_one({"serviceId": service_id})
         if result.deleted_count == 0:
             return jsonify({"error": "Failed to delete service request"}), 404
         logger.info(f"Deleted service request {service_id}")
@@ -267,7 +268,7 @@ def delete_service_request(service_id):
 def get_service_requests_by_status(status):
     try:
         logger.info(f"Fetching service requests by status: {status}")
-        requests_list = list(service_requests.find({"ServiceReqStatus": status}))
+        requests_list = list(service_requests.find({"serviceReqStatus": status}))
         if not requests_list:
             return jsonify({"error": "No service requests found with the given status"}), 404
         serialized_requests = [serialize_service_simple(req) for req in requests_list]
@@ -281,7 +282,7 @@ def get_service_request_by_id(service_id):
     try:
         logger.info(f"Fetching service request by ID: {service_id}")
         pipeline = [
-            {"$match": {"ServiceId": service_id}},
+            {"$match": {"serviceId": service_id}},
             {"$lookup": {
                 "from": "Users",
                 "localField": "userId",
@@ -299,15 +300,15 @@ def get_service_request_by_id(service_id):
             {
                 "$project": {
                     "_id": 0,
-                    "ServiceId": "$ServiceId",
+                    "serviceId": "$serviceId",
                     "userName": "$user.userName",
                     "userId": "$userId",
                     "assetId": "$assetId",
                     "assetName": "$asset.assetName",
-                    "ServiceDescription": 1,
-                    "ServiceRequestDate": 1,
-                    "Issue_Type": {"$ifNull": ["$Issue_Type", "Repair"]},
-                    "serviceReqStatus": {"$ifNull": ["$ServiceReqStatus", "UnderReview"]}
+                    "serviceDescription": 1,
+                    "serviceRequestDate": 1,
+                    "issueType": {"$ifNull": ["$issueType", "Repair"]},
+                    "serviceReqStatus": {"$ifNull": ["$serviceReqStatus", "UnderReview"]}
                 }
             }
         ]

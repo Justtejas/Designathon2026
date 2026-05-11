@@ -24,8 +24,8 @@ namespace AssetHubTests
             // Arrange
             var expectedReturnRequests = new List<ReturnClassDto>
             {
-                new ReturnClassDto { ReturnId = 1, ReturnStatus = ReturnReqStatus.Approved },
-                new ReturnClassDto { ReturnId = 2, ReturnStatus = ReturnReqStatus.Returned }
+                new ReturnClassDto { returnId = 1, returnStatus = ReturnReqStatus.Approved },
+                new ReturnClassDto { returnId = 2, returnStatus = ReturnReqStatus.Returned }
             };
 
             // Mock the repository methods
@@ -37,8 +37,8 @@ namespace AssetHubTests
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
-            Assert.AreEqual(ReturnReqStatus.Approved, result[0].ReturnStatus);
-            Assert.AreEqual(ReturnReqStatus.Returned, result[1].ReturnStatus);
+            Assert.AreEqual(ReturnReqStatus.Approved, result[0].returnStatus);
+            Assert.AreEqual(ReturnReqStatus.Returned, result[1].returnStatus);
         }
 
         [TestCase]
@@ -47,22 +47,22 @@ namespace AssetHubTests
 
             var newReturnRequestDto = new ReturnRequestDto
             {
-                ReturnId = 3,
+                returnId = 3,
                 userId = 1,
                 assetId = 2,
                 categoryId = 3,
-                ReturnDate = DateTime.Now,
+                returnDate = DateTime.Now,
                 Reason = "Reason Test",
                 Condition = "Good"
             };
 
             var expectedReturnRequest = new ReturnRequest
             {
-                ReturnId = newReturnRequestDto.ReturnId,
+                returnId = newReturnRequestDto.returnId,
                 userId = newReturnRequestDto.userId,
                 assetId = newReturnRequestDto.assetId,
                 categoryId = newReturnRequestDto.categoryId,
-                ReturnDate = newReturnRequestDto.ReturnDate,
+                returnDate = newReturnRequestDto.returnDate,
                 Reason = newReturnRequestDto.Reason,
                 Condition = newReturnRequestDto.Condition
             };
@@ -75,7 +75,7 @@ namespace AssetHubTests
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
-            Assert.AreEqual(newReturnRequestDto.ReturnId, result.ReturnId, "ReturnId should match");
+            Assert.AreEqual(newReturnRequestDto.returnId, result.returnId, "returnId should match");
             Assert.AreEqual(newReturnRequestDto.Reason, result.Reason, "Reason should match");
 
          
@@ -113,7 +113,7 @@ namespace AssetHubTests
         public void UpdateReturnRequest_ShouldUpdateReturnRequest()
         {
             // Arrange
-            var updatedReturnRequest = new ReturnClassDto { ReturnId = 1, ReturnStatus = ReturnReqStatus.Rejected };
+            var updatedReturnRequest = new ReturnClassDto { returnId = 1, returnStatus = ReturnReqStatus.Rejected };
 
             // Mock
             returnrepoMock.Setup(repo => repo.UpdateReturnRequest(It.IsAny<ReturnClassDto>()));
@@ -123,7 +123,7 @@ namespace AssetHubTests
 
             // Assert
             returnrepoMock.Verify(repo => repo.UpdateReturnRequest(It.Is<ReturnClassDto>(a =>
-                a.ReturnId == updatedReturnRequest.ReturnId && a.ReturnStatus == updatedReturnRequest.ReturnStatus)), Times.Once);
+                a.returnId == updatedReturnRequest.returnId && a.returnStatus == updatedReturnRequest.returnStatus)), Times.Once);
         }
     }
 }

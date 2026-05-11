@@ -30,8 +30,8 @@ const UpdateReturn = () => {
         categoryName: '',
         categoryId:'',
         returnDate: new Date().toISOString().split('T')[0],
-        reason: '',
-        condition: '',
+        Reason: '',
+        Condition: '',
         returnStatus: 'Sent',
     });
     const [error, setError] = useState(null);
@@ -53,7 +53,7 @@ const UpdateReturn = () => {
     useEffect(() => {
         const fetchReturnRequestDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:7287/api/ReturnRequests/GetByReturnId/${id}`);
+                const response = await axios.get(`http://localhost:7287/api/ReturnRequests/GetByreturnId/${id}`);
                 const data = response.data;
                 console.log(data)
                 setReturnRequest({
@@ -65,8 +65,8 @@ const UpdateReturn = () => {
                     categoryName: data.category ? data.categoryName : '',
                     categoryId: data.categoryId,
                     returnDate: new Date(data.returnDate).toISOString().split('T')[0],
-                    reason: data.reason,
-                    condition: data.condition,
+                    Reason: data.Reason,
+                    Condition: data.Condition,
                     returnStatus: statusMap[data.returnStatus],
                 });
             } catch (error) {
@@ -98,8 +98,8 @@ const UpdateReturn = () => {
                 categoryName: returnRequest.categoryName, 
                 categoryId: returnRequest.categoryId,
                 returnDate: returnRequest.returnDate,
-                reason: returnRequest.reason,
-                condition: returnRequest.condition,
+                Reason: returnRequest.Reason,
+                Condition: returnRequest.Condition,
                 returnStatus: statusMapReverse[returnRequest.returnStatus],
             });
             setTimeout(() => {
@@ -224,8 +224,8 @@ const UpdateReturn = () => {
                         />
                         <TextField
                             label="Reason"
-                            name="reason"
-                            value={returnRequest.reason}
+                            name="Reason"
+                            value={returnRequest.Reason}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"
@@ -233,8 +233,8 @@ const UpdateReturn = () => {
                         />
                         <TextField
                             label="Condition"
-                            name="condition"
-                            value={returnRequest.condition}
+                            name="Condition"
+                            value={returnRequest.Condition}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"

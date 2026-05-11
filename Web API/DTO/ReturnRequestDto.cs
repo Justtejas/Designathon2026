@@ -8,7 +8,7 @@ namespace Hexa_Hub.DTO
     {
         [Required]
         [Key]
-        public int ReturnId { get; set; }
+        public int returnId { get; set; }
 
         [Required]
         public int userId { get; set; }
@@ -22,7 +22,7 @@ namespace Hexa_Hub.DTO
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime ReturnDate { get; set; }
+        public DateTime returnDate { get; set; }
 
         [Required]
         public string Reason { get; set; }
@@ -31,6 +31,6 @@ namespace Hexa_Hub.DTO
         public string Condition { get; set; }
 
      
-        public string ReturnStatus { get; set; } 
+        public string returnStatus { get; set; } 
     }
 }

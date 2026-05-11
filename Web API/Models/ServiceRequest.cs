@@ -5,7 +5,7 @@ public class ServiceRequest
 {
     [Required]
     [Key]
-    public int ServiceId { get; set; }
+    public int serviceId { get; set; }
 
     [Required]
     public int assetId { get; set; }
@@ -16,16 +16,16 @@ public class ServiceRequest
     [Required]
     [DataType(DataType.Date)]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-    public DateTime ServiceRequestDate { get; set; }
+    public DateTime serviceRequestDate { get; set; }
 
     [Required]
-    public IssueType Issue_Type { get; set; }
+    public issueType issueType { get; set; }
 
     [Required]
-    public string ServiceDescription { get; set; }
+    public string serviceDescription { get; set; }
 
-    [DefaultValue(Hexa_Hub.Models.MultiValues.ServiceReqStatus.UnderReview)]
-    public ServiceReqStatus? ServiceReqStatus { get; set; } = Hexa_Hub.Models.MultiValues.ServiceReqStatus.UnderReview;
+    [DefaultValue(Hexa_Hub.Models.MultiValues.serviceReqStatus.UnderReview)]
+    public serviceReqStatus? serviceReqStatus { get; set; } = Hexa_Hub.Models.MultiValues.serviceReqStatus.UnderReview;
 
     //Navigation Properties
     // 1 - 1 Relation

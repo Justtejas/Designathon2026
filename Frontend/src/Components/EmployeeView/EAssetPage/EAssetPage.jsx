@@ -623,7 +623,7 @@ const Assets = () => {
                   <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Request Reason</label>
                   <textarea
                     className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                    placeholder="Enter reason for asset request"
+                    placeholder="Enter Reason for asset request"
                     value={formData.assetReqReason}
                     onChange={(e) => setFormData({ ...formData, assetReqReason: e.target.value })}
                     required

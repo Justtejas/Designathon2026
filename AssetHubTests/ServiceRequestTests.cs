@@ -26,9 +26,9 @@ namespace AssetHubTests
             // Arrange
             var expectedServiceRequest = new List<ServiceClassDto>
                 {
-                new ServiceClassDto { ServiceId=1, serviceReqStatus = ServiceReqStatus.Approved},
+                new ServiceClassDto { serviceId=1, serviceReqStatus = serviceReqStatus.Approved},
 
-                new ServiceClassDto { ServiceId=2, serviceReqStatus = ServiceReqStatus.UnderReview}
+                new ServiceClassDto { serviceId=2, serviceReqStatus = serviceReqStatus.UnderReview}
                 };
 
             // Mock the repository methods
@@ -41,15 +41,15 @@ namespace AssetHubTests
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
 
-            Assert.AreEqual(ServiceReqStatus.Approved, result[0].serviceReqStatus);
-            Assert.AreEqual(ServiceReqStatus.UnderReview, result[1].serviceReqStatus);
+            Assert.AreEqual(serviceReqStatus.Approved, result[0].serviceReqStatus);
+            Assert.AreEqual(serviceReqStatus.UnderReview, result[1].serviceReqStatus);
         }
 
         [TestCase]
         public async Task AddServiceRequest_ShouldAddServiceRequest()
         {
             // Arrange
-            var newServiceRequest = new ServiceRequest { ServiceId = 3, ServiceReqStatus = ServiceReqStatus.Completed };
+            var newServiceRequest = new ServiceRequest { serviceId = 3, serviceReqStatus = serviceReqStatus.Completed };
 
 
             // Mock
@@ -59,7 +59,7 @@ namespace AssetHubTests
             await _serviceRequest.AddServiceRequest(newServiceRequest);
 
             //Assert
-            _serviceRequestMock.Verify(repo => repo.AddServiceRequest(It.Is<ServiceRequest>(a => a.ServiceId == newServiceRequest.ServiceId && a.ServiceReqStatus == newServiceRequest.ServiceReqStatus)), Times.Once);
+            _serviceRequestMock.Verify(repo => repo.AddServiceRequest(It.Is<ServiceRequest>(a => a.serviceId == newServiceRequest.serviceId && a.serviceReqStatus == newServiceRequest.serviceReqStatus)), Times.Once);
         }
 
         [TestCase]
@@ -94,7 +94,7 @@ namespace AssetHubTests
         public async Task UpdateServiceRequest_ShouldUpdateServiceRequest()
         {
             // Arrange
-            var updatedServiceRequest = new ServiceRequest { ServiceId = 1, ServiceReqStatus = ServiceReqStatus.UnderReview };
+            var updatedServiceRequest = new ServiceRequest { serviceId = 1, serviceReqStatus = serviceReqStatus.UnderReview };
 
             // Mock
             _serviceRequestMock.Setup(repo => repo.UpdateServiceRequest(It.IsAny<ServiceRequest>())).ReturnsAsync((ServiceRequest set) => set);
@@ -104,11 +104,11 @@ namespace AssetHubTests
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
-            Assert.AreEqual(updatedServiceRequest.ServiceId, result.ServiceId, "Service ID should match");
-            Assert.AreEqual(updatedServiceRequest.ServiceReqStatus, result.ServiceReqStatus, "Request Status should be updated");
+            Assert.AreEqual(updatedServiceRequest.serviceId, result.serviceId, "Service ID should match");
+            Assert.AreEqual(updatedServiceRequest.serviceReqStatus, result.serviceReqStatus, "Request Status should be updated");
 
             _serviceRequestMock.Verify(repo => repo.UpdateServiceRequest(It.Is<ServiceRequest>(a =>
-                a.ServiceId == updatedServiceRequest.ServiceId && a.ServiceReqStatus == updatedServiceRequest.ServiceReqStatus)), Times.Once);
+                a.serviceId == updatedServiceRequest.serviceId && a.serviceReqStatus == updatedServiceRequest.serviceReqStatus)), Times.Once);
         }
     }
 }

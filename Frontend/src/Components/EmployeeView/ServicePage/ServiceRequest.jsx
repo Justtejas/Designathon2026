@@ -21,7 +21,7 @@ const ServiceRequest = () => {
     assetName: '',
     assetId: '',
     serviceRequestDate: new Date().toISOString().split('T')[0],
-    issue_Type: '',
+    issueType: '',
     serviceDescription: '',
     serviceReqStatus: 'UnderReview',
   });
@@ -117,7 +117,7 @@ const ServiceRequest = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitting Service Request:", formData);
-    if (!formData.assetId || !formData.issue_Type || !formData.serviceDescription) {
+    if (!formData.assetId || !formData.issueType || !formData.serviceDescription) {
       console.error("Form submission failed: Missing required fields");
       return;
     }
@@ -145,11 +145,11 @@ const ServiceRequest = () => {
         assetName: '',
         assetId: '',
         serviceRequestDate: new Date().toISOString().split('T')[0],
-        issue_Type: '',
+        issueType: '',
         serviceDescription: '',
         serviceReqStatus: 'UnderReview',
       });
-      if (!formData.assetId || !formData.issue_Type || !formData.serviceDescription) {
+      if (!formData.assetId || !formData.issueType || !formData.serviceDescription) {
         console.error("Form submission failed: Missing required fields");
         return;
       }
@@ -208,8 +208,8 @@ const ServiceRequest = () => {
                       <td className="px-4 py-2">{request.assetId}</td>
                       <td className="px-4 py-2">{request.assetName ? request.assetName : 'N/A'}</td>
                       <td className="px-4 py-2">{new Date(request.serviceRequestDate).toLocaleDateString()}</td>
-                      {/* <td>{issueTypeMapping[request.issue_Type] || 'Unknown'}</td> */}
-                      <td>{issueTypeMapping[request.issue_Type] !== undefined ? issueTypeMapping[request.issue_Type] : 'Unknown'}</td>
+                      {/* <td>{issueTypeMapping[request.issueType] || 'Unknown'}</td> */}
+                      <td>{issueTypeMapping[request.issueType] !== undefined ? issueTypeMapping[request.issueType] : 'Unknown'}</td>
                       <td className="px-4 py-2">{request.serviceDescription}</td>
                       <td className="px-4 py-2">
                         {request.serviceReqStatus === 0 ? (
@@ -315,8 +315,8 @@ const ServiceRequest = () => {
                           <div className="relative">
                             <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Issue Type</label>
                             <select
-                              value={formData.issue_Type}
-                              onChange={(e) => setFormData({ ...formData, issue_Type: parseInt(e.target.value) })} // Parse to integer
+                              value={formData.issueType}
+                              onChange={(e) => setFormData({ ...formData, issueType: parseInt(e.target.value) })} // Parse to integer
                               className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
                               required
                             >

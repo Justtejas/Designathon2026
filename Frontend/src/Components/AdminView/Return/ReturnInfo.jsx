@@ -32,7 +32,7 @@ const RequestInfo = () => {
             }
 
             try {
-                const response = await axios.get(`http://localhost:7287/api/ReturnRequests/GetByReturnId/${id}`, {
+                const response = await axios.get(`http://localhost:7287/api/ReturnRequests/GetByreturnId/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
@@ -105,8 +105,8 @@ const RequestInfo = () => {
                                 <InfoItem label="Asset Name" value={returnRequest.assetName } />
                                 <InfoItem label="Category" value={returnRequest.categoryName} />
                                 <InfoItem label="Return Date" value={returnRequest.returnDate} />
-                                <InfoItem label="Reason" value={returnRequest.reason} />
-                                <InfoItem label="Condition" value={returnRequest.condition} />
+                                <InfoItem label="Reason" value={returnRequest.Reason} />
+                                <InfoItem label="Condition" value={returnRequest.Condition} />
                             </Grid>
                         </CardContent>
                     </Card>

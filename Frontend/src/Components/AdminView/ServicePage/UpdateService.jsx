@@ -28,7 +28,7 @@ const UpdateServiceRequest = () => {
         userId: '',
         assetId: '',
         serviceRequestDate: new Date().toISOString().split('T')[0],
-        issue_Type: '',
+        issueType: '',
         serviceDescription: '',
         serviceReqStatus: 'UnderReview', // Set initial state as needed
     });
@@ -48,7 +48,7 @@ const UpdateServiceRequest = () => {
                     userId: data.userId,
                     assetId: data.assetId,
                     serviceRequestDate: new Date(data.serviceRequestDate).toISOString().split('T')[0],
-                    issue_Type: data.issueTypeName,
+                    issueType: data.issueTypeName,
                     serviceDescription: data.serviceDescription,
                     serviceReqStatus: data.serviceReqStatusName || 'UnderReview',
                 });
@@ -79,7 +79,7 @@ const UpdateServiceRequest = () => {
             userName: serviceRequest.userName,
             assetName: serviceRequest.assetName,
             serviceRequestDate: serviceRequest.serviceRequestDate,
-            issueType: serviceRequest.issue_Type,
+            issueType: serviceRequest.issueType,
             serviceDescription: serviceRequest.serviceDescription,
             serviceReqStatus:
                 serviceRequest.serviceReqStatus === 'UnderReview' ? 0 :
@@ -166,8 +166,8 @@ const UpdateServiceRequest = () => {
                         />
                         <TextField
                             label="Issue Type"
-                            name="issue_Type"
-                            value={serviceRequest.issue_Type}
+                            name="issueType"
+                            value={serviceRequest.issueType}
                             onChange={handleChange}
                             fullWidth
                             margin="normal"

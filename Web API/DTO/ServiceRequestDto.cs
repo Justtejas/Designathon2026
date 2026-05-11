@@ -7,7 +7,7 @@ namespace Hexa_Hub.DTO
 {
     public class ServiceRequestDto
     {
-        public int ServiceId { get; set; }
+        public int serviceId { get; set; }
 
         [Required]
         public int assetId { get; set; }
@@ -18,15 +18,15 @@ namespace Hexa_Hub.DTO
         [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime ServiceRequestDate { get; set; }
+        public DateTime serviceRequestDate { get; set; }
 
         [Required]
-        public IssueType Issue_Type { get; set; }
+        public issueType issueType { get; set; }
 
  
-        public string ServiceDescription { get; set; }
+        public string serviceDescription { get; set; }
 
         
-        public string ServiceReqStatus { get; set; }
+        public string serviceReqStatus { get; set; }
     }
 }

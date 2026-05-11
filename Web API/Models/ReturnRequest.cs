@@ -8,7 +8,7 @@ public class ReturnRequest
 {
     [Required]
     [Key]
-    public int ReturnId { get; set; }
+    public int returnId { get; set; }
 
     [Required]
     public int userId { get; set; }
@@ -22,7 +22,7 @@ public class ReturnRequest
     [Required]
     [DataType(DataType.Date)]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-    public DateTime ReturnDate { get; set; }
+    public DateTime returnDate { get; set; }
 
     [Required]
     public string Reason { get; set; }
@@ -31,7 +31,7 @@ public class ReturnRequest
     public string Condition { get; set; }
 
     [DefaultValue(ReturnReqStatus.Sent)]
-    public ReturnReqStatus? ReturnStatus { get; set; } = ReturnReqStatus.Sent;
+    public ReturnReqStatus? returnStatus { get; set; } = ReturnReqStatus.Sent;
 
     //Navigation Properties
     // * - 1 Relation

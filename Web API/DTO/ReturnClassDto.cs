@@ -7,7 +7,7 @@ namespace Hexa_Hub.DTO
 {
     public class ReturnClassDto
     { 
-        public int ReturnId { get; set; }
+        public int returnId { get; set; }
         public int userId { get; set; }
         public string userName { get; set; }
         public string assetName { get; set; }
@@ -17,12 +17,12 @@ namespace Hexa_Hub.DTO
 
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime ReturnDate { get; set; }
+        public DateTime returnDate { get; set; }
 
         public string Reason { get; set; }
         public string Condition { get; set; }
 
-        public string ReturnStatusName => ReturnStatus.ToString();
-        public ReturnReqStatus ReturnStatus { get; set; }
+        public string returnStatusName => returnStatus.ToString();
+        public ReturnReqStatus returnStatus { get; set; }
     }
 }

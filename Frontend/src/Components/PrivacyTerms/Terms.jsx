@@ -25,7 +25,7 @@ const Terms = () => {
                 <section className="mb-12">
                     <h1 className="text-3xl font-bold text-center text-indigo-950 mb-6">Terms of Service</h1>
                     <p className="mb-6 text-gray-700">
-                        By using Maventory, you agree to the following terms and conditions. Please read them carefully.
+                        By using Maventory, you agree to the following terms and Conditions. Please read them carefully.
                     </p>
 
                     {/* Section 1 */}

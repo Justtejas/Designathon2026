@@ -20,8 +20,8 @@ const ReturnRequest = () => {
         userId: '',
         assetName: '',
         returnDate: new Date().toISOString().split('T')[0],
-        condition: '',
-        reason: '',
+        Condition: '',
+        Reason: '',
         returnStatus: '',
     });
 
@@ -144,8 +144,8 @@ const ReturnRequest = () => {
             userId: '',
             assetName: '',
             returnDate: new Date().toISOString().split('T')[0],
-            condition: '',
-            reason: '',
+            Condition: '',
+            Reason: '',
             returnStatus: '',
         });
         setShowForm(false);
@@ -196,8 +196,8 @@ const ReturnRequest = () => {
                                             <td className="px-4 py-2">{request.returnId}</td>
                                             <td className="px-4 py-2">{request.assetId}</td>
                                             <td className="px-4 py-2">{new Date(request.returnDate).toLocaleDateString()}</td>
-                                            <td className="px-4 py-2">{request.reason}</td>
-                                            <td className="px-4 py-2">{request.condition}</td>
+                                            <td className="px-4 py-2">{request.Reason}</td>
+                                            <td className="px-4 py-2">{request.Condition}</td>
                                             <td className="px-4 py-2">
                                                 {request.returnStatus === 0 ? (
                                                     <span className="text-blue-600 font-semibold"><FontAwesomeIcon icon={faPaperPlane} /> Sent</span>
@@ -234,7 +234,7 @@ const ReturnRequest = () => {
                                 <div className="mt-4 bg-gray-100 p-4 rounded-lg w-1/2 shadow-lg">
                                     <h2 className="text-lg font-bold">Terms and Conditions</h2>
                                     <p className="mt-2 text-sm">
-                                        Employees must return assets in their original or acceptable condition, as outlined in the asset management policy.
+                                        Employees must return assets in their original or acceptable Condition, as outlined in the asset management policy.
                                         Any damages or missing components will incur charges and may affect future asset allocations.
                                     </p>
                                 </div>
@@ -300,8 +300,8 @@ const ReturnRequest = () => {
                                                             Asset Condition
                                                         </label>
                                                         <select
-                                                            value={formData.condition}
-                                                            onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
+                                                            value={formData.Condition}
+                                                            onChange={(e) => setFormData({ ...formData, Condition: e.target.value })}
                                                             className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
                                                             required
                                                         >
@@ -330,9 +330,9 @@ const ReturnRequest = () => {
                                                     <div className="relative">
                                                         <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Return Reason</label>
                                                         <textarea
-                                                            value={formData.reason}
-                                                            onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                                                            placeholder="Describe the reason"
+                                                            value={formData.Reason}
+                                                            onChange={(e) => setFormData({ ...formData, Reason: e.target.value })}
+                                                            placeholder="Describe the Reason"
                                                             className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
                                                             rows="4"
                                                         />

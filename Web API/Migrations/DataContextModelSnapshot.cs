@@ -232,11 +232,11 @@ namespace Hexa_Hub.Migrations
 
             ModelBuilder.Entity("ReturnRequest", b =>
                 {
-                    b.Property<int>("ReturnId")
+                    b.Property<int>("returnId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReturnId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("returnId"));
 
                     b.Property<int>("assetId")
                         .HasColumnType("int");
@@ -252,16 +252,16 @@ namespace Hexa_Hub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ReturnDate")
+                    b.Property<DateTime>("returnDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ReturnStatus")
+                    b.Property<string>("returnStatus")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("userId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReturnId");
+                    b.HasKey("returnId");
 
                     b.HasIndex("assetId");
 
@@ -272,33 +272,33 @@ namespace Hexa_Hub.Migrations
 
             ModelBuilder.Entity("ServiceRequest", b =>
                 {
-                    b.Property<int>("ServiceId")
+                    b.Property<int>("serviceId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("serviceId"));
 
                     b.Property<int>("assetId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Issue_Type")
+                    b.Property<string>("issueType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ServiceDescription")
+                    b.Property<string>("serviceDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ServiceReqStatus")
+                    b.Property<string>("serviceReqStatus")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ServiceRequestDate")
+                    b.Property<DateTime>("serviceRequestDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("userId")
                         .HasColumnType("int");
 
-                    b.HasKey("ServiceId");
+                    b.HasKey("serviceId");
 
                     b.HasIndex("assetId");
 

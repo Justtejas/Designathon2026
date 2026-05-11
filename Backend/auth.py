@@ -368,7 +368,7 @@ def register_user():
 
         # Ensure the generated userId is unique; if taken, return error (simple behavior)
         if users.find_one({"userId": user_id}):
-            get_next_sequence("users")
+            user_id =get_next_sequence("users")
             return jsonify({"error": "userId already exists. Please use a different role or email"}), 409
         # Create user with default password
         hashed_pw = generate_password_hash("Maventory@123")

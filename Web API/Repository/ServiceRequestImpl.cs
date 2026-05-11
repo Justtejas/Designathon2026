@@ -26,33 +26,33 @@ namespace Hexa_Hub.Repository
                 .Include(sr => sr.User)
                 .Select(sr => new ServiceClassDto
                 {
-                    ServiceId = sr.ServiceId,
+                    serviceId = sr.serviceId,
                     userName = sr.User.userName,
                     userId = sr.User.userId,
                     assetId = sr.Asset.assetId,
                     assetName = sr.Asset.assetName,
-                    ServiceDescription = sr.ServiceDescription,
-                    ServiceRequestDate = sr.ServiceRequestDate,
-                    Issue_Type = sr.Issue_Type != default ? sr.Issue_Type : IssueType.Repair,
-                    serviceReqStatus = sr.ServiceReqStatus ?? ServiceReqStatus.UnderReview,
+                    serviceDescription = sr.serviceDescription,
+                    serviceRequestDate = sr.serviceRequestDate,
+                    issueType = sr.issueType != default ? sr.issueType : issueType.Repair,
+                    serviceReqStatus = sr.serviceReqStatus ?? serviceReqStatus.UnderReview,
                 })
-                .OrderByDescending(sr => sr.ServiceRequestDate)
+                .OrderByDescending(sr => sr.serviceRequestDate)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ServiceRequestDto>> GetServiceReqByStatus (ServiceReqStatus serviceReqStatus)
+        public async Task<IEnumerable<ServiceRequestDto>> GetServiceReqByStatus (serviceReqStatus serviceReqStatus)
         {
             var serviceByStatus = await (from service in _context.ServiceRequests
-                                         where service.ServiceReqStatus == serviceReqStatus
+                                         where service.serviceReqStatus == serviceReqStatus
                                          select new ServiceRequestDto
                                          {
-                                             ServiceId = service.ServiceId,
+                                             serviceId = service.serviceId,
                                              assetId = service.assetId,
                                              userId = service.userId,
-                                             ServiceRequestDate = service.ServiceRequestDate,
-                                             Issue_Type = service.Issue_Type,
-                                             ServiceDescription = service.ServiceDescription,
-                                             ServiceReqStatus = service.ServiceReqStatus.ToString() 
+                                             serviceRequestDate = service.serviceRequestDate,
+                                             issueType = service.issueType,
+                                             serviceDescription = service.serviceDescription,
+                                             serviceReqStatus = service.serviceReqStatus.ToString() 
                                          }).ToListAsync();
 
             return serviceByStatus;
@@ -64,7 +64,7 @@ namespace Hexa_Hub.Repository
             return await _context.ServiceRequests
                 .Include(sr => sr.Asset)
                 .Include(sr => sr.User)
-                .FirstOrDefaultAsync(u => u.ServiceId == id);
+                .FirstOrDefaultAsync(u => u.serviceId == id);
         }
 
         public async Task<ServiceClassDto?> GetServiceById(int id)
@@ -74,17 +74,17 @@ namespace Hexa_Hub.Repository
                 .Include(sr => sr.User)
                  .Select(sr => new ServiceClassDto
                  {
-                     ServiceId = sr.ServiceId,
+                     serviceId = sr.serviceId,
                      userName = sr.User.userName,
                      userId = sr.User.userId,
                      assetId = sr.Asset.assetId,
                      assetName = sr.Asset.assetName,
-                     ServiceDescription = sr.ServiceDescription,
-                     ServiceRequestDate = sr.ServiceRequestDate,
-                     Issue_Type = sr.Issue_Type != default ? sr.Issue_Type : IssueType.Repair,
-                     serviceReqStatus = sr.ServiceReqStatus ?? ServiceReqStatus.UnderReview,
+                     serviceDescription = sr.serviceDescription,
+                     serviceRequestDate = sr.serviceRequestDate,
+                     issueType = sr.issueType != default ? sr.issueType : issueType.Repair,
+                     serviceReqStatus = sr.serviceReqStatus ?? serviceReqStatus.UnderReview,
                  })
-                .FirstOrDefaultAsync(u => u.ServiceId == id);
+                .FirstOrDefaultAsync(u => u.serviceId == id);
         }
 
         public async Task AddServiceRequest(ServiceRequest serviceRequest)
@@ -101,7 +101,7 @@ namespace Hexa_Hub.Repository
             {
                 Console.WriteLine($"Sending email to: {admin.userMail}");
 
-                await _notificationService.ServiceRequestSent(admin.userMail, serviceRequest.assetId, serviceRequest.ServiceId, serviceRequest.Issue_Type);
+                await _notificationService.ServiceRequestSent(admin.userMail, serviceRequest.assetId, serviceRequest.serviceId, serviceRequest.issueType);
             }
         }
 
@@ -143,17 +143,17 @@ namespace Hexa_Hub.Repository
                 .Include(sr => sr.User)
                  .Select(sr => new ServiceClassDto
                  {
-                     ServiceId = sr.ServiceId,
+                     serviceId = sr.serviceId,
                      userName = sr.User.userName,
                      userId = sr.User.userId,
                      assetId = sr.Asset.assetId,
                      assetName = sr.Asset.assetName,
-                     ServiceDescription = sr.ServiceDescription,
-                     ServiceRequestDate = sr.ServiceRequestDate,
-                     Issue_Type = sr.Issue_Type != default ? sr.Issue_Type : IssueType.Repair,
-                     serviceReqStatus = sr.ServiceReqStatus ?? ServiceReqStatus.UnderReview,
+                     serviceDescription = sr.serviceDescription,
+                     serviceRequestDate = sr.serviceRequestDate,
+                     issueType = sr.issueType != default ? sr.issueType : issueType.Repair,
+                     serviceReqStatus = sr.serviceReqStatus ?? serviceReqStatus.UnderReview,
                  })
-                .OrderByDescending(sr => sr.ServiceRequestDate)
+                .OrderByDescending(sr => sr.serviceRequestDate)
                 .ToListAsync();
         }
 
