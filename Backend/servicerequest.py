@@ -16,7 +16,7 @@ client = MongoClient(os.getenv('MONGODB_URI'))
 db = client['MaventoryDB']
 service_requests = db['ServiceRequests']
 assets = db['Assets']
-users = db['Users']
+users = db['users']
 maintenance_logs = db['MaintenanceLogs']
  
 service_requests_blueprint = Blueprint('service_requests', __name__)

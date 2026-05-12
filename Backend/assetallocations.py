@@ -30,7 +30,7 @@ MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
 
 client = MongoClient(MONGODB_URI)
 db = client['MaventoryDB']
-users = db['Users']
+users = db['users']
 assets = db['Assets']
 allocations_col = db['AssetAllocations']
 

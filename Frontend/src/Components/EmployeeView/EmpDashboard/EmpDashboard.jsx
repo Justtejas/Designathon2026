@@ -67,10 +67,11 @@ const EmpDashboard = () => {
         const userId = decoded.userId;
 
         const fetchData = async () => {
-            const assetRes = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`);
-            setAssetTableData(assetRes.data || []);
+            //const assetRes = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`);
+            //setAssetTableData(assetRes.data || []);
 
             const assetReq = await axios.get(`http://localhost:7287/api/AssetRequests`);
+            console.log(assetReq)
             const serviceReq = await axios.get(`http://localhost:7287/api/ServiceRequests`);
             const returnReq = await axios.get(`http://localhost:7287/api/ReturnRequests`);
 

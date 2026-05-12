@@ -18,7 +18,7 @@ client = MongoClient(os.getenv('MONGODB_URI'))
 db = client['MaventoryDB']  # Adjust database name as needed
 asset_requests = db['AssetRequests']
 assets = db['Assets']
-users = db['Users']
+users = db['users']
 categories = db['Categories']
 asset_allocations = db['AssetAllocations']
 
@@ -33,10 +33,11 @@ def serialize_asset_request(doc):
     """Serialize MongoDB document to match C# DTO structure"""
     if doc:
         existing_category = categories.find_one({"categoryId": doc.get('categoryId')})
+        existing_user = users.find_one({"userId": doc.get('userId')})
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
         return {
             "assetReqId": doc.get('assetReqId'),
-            "userName": doc.get('userName'),
+            "userName": existing_user.get('userName'),
             "userId": doc.get('userId'),
             "assetId": doc.get('assetId'),
             "assetName": doc.get('assetName'),
@@ -82,9 +83,10 @@ def get_asset_requests():
                 return jsonify({"error": "No requests found"}), 404
             serialized_requests = [serialize_asset_request(req) for req in requests]
             logger.info(f"Fetched Asset Requests for user: {user_id}")
+            #print(serialized_requests)
             return jsonify(serialized_requests), 200
     except Exception as e:
-        logger.info(f"Error fetching asset requests: {str(e)}")
+        logger.info(f"Error fetching asset requests: {e}")
         return jsonify({"error": "An error occurred while fetching requests"}), 500
 
 @asset_requests_blueprint.route("/api/AssetRequests/GetAll", methods=["GET"])
@@ -138,7 +140,6 @@ def post_asset_request():
             "assetReqDate": data.get("assetReqDate", datetime.now().isoformat()),
             "assetReqReason": data.get("assetReqReason"),
             "requestStatus": "Pending",
-            "userName": data.get("userName"),
             "assetName": data.get("assetName"),
         }
         result = asset_requests.insert_one(asset_request_doc)

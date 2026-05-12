@@ -20,7 +20,7 @@ client = MongoClient(os.getenv('MONGODB_URI'))
 db = client['MaventoryDB']
 audits = db['Audits']
 assets = db['Assets']
-users = db['Users']
+users = db['users']
 asset_allocations = db['AssetAllocations']
  
 # Email Configuration
