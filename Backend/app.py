@@ -12,19 +12,9 @@ from servicerequest import service_requests_blueprint
 from subcategories import subcategories_blueprint
 from flask_cors import CORS
 import os
-from groq import Groq
-from dotenv import load_dotenv
-
-load_dotenv()
-
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-SENDER_EMAIL = os.getenv("SENDER_EMAIL")
-SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-client = Groq(api_key=GROQ_API_KEY)
-
 
 app = Flask(__name__, static_folder='build', static_url_path='')
 for bp in (

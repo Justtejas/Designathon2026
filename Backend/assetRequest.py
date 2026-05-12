@@ -143,6 +143,7 @@ def post_asset_request():
         }
         result = asset_requests.insert_one(asset_request_doc)
         logger.info(f"Added Asset Request with ID: {result.inserted_id}")
+        asset_request_doc["_id"] = str(result.inserted_id)
         return jsonify(asset_request_doc), 201
     except Exception as e:
         logger.info(f"Error creating asset request: {str(e)}")
