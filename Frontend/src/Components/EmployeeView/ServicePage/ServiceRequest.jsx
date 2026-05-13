@@ -1,383 +1,318 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Header from './Header';
-import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
-import CustomPagination from '../../Utils/CustomPagination';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faCircleExclamation, faCircleRight, faThumbsUp, faTimes, faXmark } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from "react";
+import axiosInstance from "../../Utils/api";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import CustomPagination from "../../Utils/CustomPagination";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleCheck,
+  faCircleExclamation,
+  faThumbsUp,
+  faTimes,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import EmployeeHeader from "../EmployeeHeader";
 
 const ServiceRequest = () => {
   const [serviceRequests, setServiceRequests] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [showForm, setShowForm] = useState(false);
-
   const [assetAllocations, setAssetAllocations] = useState([]);
-  const [formData, setFormData] = useState({
-    serviceId: 0,
-    userId: '',
-    assetName: '',
-    assetId: '',
-    serviceRequestDate: new Date().toISOString().split('T')[0],
-    issueType: '',
-    serviceDescription: '',
-    serviceReqStatus: 'UnderReview',
-  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const [formData, setFormData] = useState({
+    serviceId: 0,
+    userId: "",
+    assetName: "",
+    assetId: "",
+    serviceRequestDate: new Date().toISOString().split("T")[0],
+    issueType: "",
+    serviceDescription: "",
+    serviceReqStatus: "UnderReview",
+  });
+
   const issueTypeMapping = {
-    1: 'Malfunction',
-    2: 'Repair',
-    3: 'Installation',
+    1: "Malfunction",
+    2: "Repair",
+    3: "Installation",
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const token = Cookies.get('token');
-      if (token) {
-        const decode = jwtDecode(token);
-        const userId = decode.userId;
+      try {
+        setLoading(true);
+        const token = Cookies.get("token");
+        if (!token) return;
 
-        if (userId) {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            userId: userId,
-          }));
+        const decoded = jwtDecode(token);
+        const userId = decoded.userId;
+        setFormData((p) => ({ ...p, userId }));
 
-          try {
-            // Fetch service requests
-            const serviceResponse = await axios.get('http://localhost:7287/api/ServiceRequests', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-            console.log('Service Requests fetched:', serviceResponse.data);
-            setServiceRequests(serviceResponse.data || []);
+        const [serviceRes, assetRes] = await Promise.allSettled([
+          axiosInstance.get("/ServiceRequests"),
+          axiosInstance.get(`/AssetAllocations/user/${userId}`),
+        ]);
 
-            
-          } catch (error) {
-            setError('Error fetching data');
-            console.error('Error fetching service requests:', error);
-          } 
-          try {
-            const assetResponse = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-            console.log('Asset Allocations fetched:', assetResponse.data);
-            setAssetAllocations(assetResponse.data || []);
-          } catch (assetError) {
-            console.error('Error fetching asset allocations:', assetError.response ? assetError.response.data : assetError.message);
-            setAssetAllocations([]);
-          }finally {
-            setLoading(false);
-          }
-        } else {
-          setError('User ID not found in token payload');
+        if (serviceRes.status === "fulfilled") {
+          setServiceRequests(serviceRes.value.data || []);
         }
-      } else {
-        setError('Token not found');
+
+        if (assetRes.status === "fulfilled") {
+          setAssetAllocations(assetRes.value.data || []);
+        }
+      } catch {
+        setError("Failed to load service requests");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  const handleassetNameChange = (e) => {
-    const selectedassetName = e.target.value.trim();
-    const selectedAsset = assetAllocations.find(asset => asset.assetName.toLowerCase() === selectedassetName.toLowerCase());
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentRequests = serviceRequests.slice(indexOfFirst, indexOfLast);
 
-    console.log("Selected Asset Name:", selectedassetName);
-    console.log("Available Assets:", assetAllocations);
-    console.log("Selected Asset:", selectedAsset);
-
-    if (selectedAsset) {
-      console.log("Asset ID Found:", selectedAsset.assetId);
-      setFormData({
-        ...formData,
-        assetName: selectedassetName,
-        assetId: selectedAsset.assetId
-      });
-    } else {
-      console.warn("No matching asset found for:", selectedassetName);
-      setFormData({
-        ...formData,
-        assetName: selectedassetName,
-        assetId: ''
-      });
-    }
+  const handleAssetChange = (e) => {
+    const name = e.target.value;
+    const asset = assetAllocations.find((a) => a.assetName === name);
+    setFormData({
+      ...formData,
+      assetName: name,
+      assetId: asset ? asset.assetId : "",
+    });
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting Service Request:", formData);
     if (!formData.assetId || !formData.issueType || !formData.serviceDescription) {
-      console.error("Form submission failed: Missing required fields");
       return;
     }
-
     try {
-      const token = Cookies.get('token');
-      if (!token) {
-        console.error("No token found");
-        return;
-      }
-      const response = await axios.post(
-        'http://localhost:7287/api/ServiceRequests',
-        { ...formData },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Service Request Submitted:", response.data);
-
-      setFormData({
-        serviceId: 0,
-        userId: '',
-        assetName: '',
-        assetId: '',
-        serviceRequestDate: new Date().toISOString().split('T')[0],
-        issueType: '',
-        serviceDescription: '',
-        serviceReqStatus: 'UnderReview',
-      });
-      if (!formData.assetId || !formData.issueType || !formData.serviceDescription) {
-        console.error("Form submission failed: Missing required fields");
-        return;
-      }
-      
+      await axiosInstance.post("/ServiceRequests", formData);
       setShowForm(false);
-      setSuccessMessage('Service request sent successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setSuccessMessage("Service request submitted successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
       window.location.reload();
-
-    } catch (error) {
-      console.error("Error submitting service request:", error.response ? error.response.data : error.message);
+    } catch (err) {
+      console.error(err);
     }
   };
 
-
-  // Calculate the index of the last item and the first item of the current page
-  const indexOfLastRequest = currentPage * itemsPerPage;
-  const indexOfFirstRequest = indexOfLastRequest - itemsPerPage;
-
-  // Slice the filteredRequests to get the requests for the current page
-  const currentRequests = serviceRequests.slice(indexOfFirstRequest, indexOfLastRequest);
-
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      <div className="flex items-center justify-center bg-white">
-        <div className="max-w-7xl w-full mx-auto py-20 px-6 bg-white shadow-lg rounded-lg">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl text-black font-bold text-center w-full">SERVICES</h1>
-          </div>
+    <div className="min-h-screen flex flex-col
+      bg-gray-50 dark:bg-slate-950 transition-colors">
 
-          {/* Display loading or error messages */}
+      <EmployeeHeader />
+
+      <main className="flex-grow max-w-7xl mx-auto px-6 py-16">
+
+        <h1 className="text-3xl font-extrabold text-center mb-10
+          text-gray-900 dark:text-slate-100 animate-fadeUp">
+          Service Requests
+        </h1>
+
+        <div className="bg-white dark:bg-slate-900
+          border border-gray-200 dark:border-slate-700
+          rounded-2xl shadow-lg p-6 animate-fadeUp">
+
           {loading ? (
-            <p>Loading service requests...</p>
+            <p className="text-center text-gray-600 dark:text-slate-300">
+              Loading...
+            </p>
           ) : error ? (
-            <p className="text-center text-gray-500">No Service Requests Sent.</p>
+            <p className="text-center text-gray-500">{error}</p>
           ) : (
             <>
-              {/* Table for Service Requests */}
-              <table className="w-full text-left table-auto border-collapse">
-                <thead>
-                  <tr className="text-lg font-medium text-gray-700 border-b">
-                    <th className="px-4 py-2">Service Id</th>
-                    <th className="px-4 py-2">Asset Id</th>
-                    <th className="px-4 py-2">Asset Name</th>
-                    <th className="px-4 py-2">Request Date</th>
-                    <th className="px-4 py-2">Issue Type</th>
-                    <th className="px-4 py-2">Description</th>
-                    <th className="px-4 py-2">Service Status</th>
+              <table className="w-full text-sm">
+                <thead className="bg-indigo-950 dark:bg-indigo-900 text-white">
+                  <tr>
+                    {["ID", "Asset ID", "Asset Name", "Date", "Issue", "Desc", "Status"]
+                      .map(h => (
+                        <th key={h} className="p-3 text-center">{h}</th>
+                      ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {currentRequests.map((request) => (
-                    <tr key={request.serviceId} className="text-lg border-b text-black" >
-                      <td className="px-4 py-2">{request.serviceId}</td>
-                      <td className="px-4 py-2">{request.assetId}</td>
-                      <td className="px-4 py-2">{request.assetName ? request.assetName : 'N/A'}</td>
-                      <td className="px-4 py-2">{new Date(request.serviceRequestDate).toLocaleDateString()}</td>
-                      {/* <td>{issueTypeMapping[request.issueType] || 'Unknown'}</td> */}
-                      <td>{issueTypeMapping[request.issueType] !== undefined ? issueTypeMapping[request.issueType] : 'Unknown'}</td>
-                      <td className="px-4 py-2">{request.serviceDescription}</td>
-                      <td className="px-4 py-2">
-                        {request.serviceReqStatus === 0 ? (
-                          <span className="text-blue-600 font-semibold"><FontAwesomeIcon icon={faCircleExclamation} /> Under Review</span>
-                        ) : request.serviceReqStatus === 1 ? (
-                          <span className="text-yellow-500 font-semibold"><FontAwesomeIcon icon={faThumbsUp} /> Approved</span>
-                        ) :
-                          request.serviceReqStatus === 2 ? (
-                            <span className="text-green-500 font-semibold"><FontAwesomeIcon icon={faCircleCheck} /> Completed</span>
-                          ) : (
-                            <span className="text-red-500 font-semibold"><FontAwesomeIcon icon={faXmark} /> Rejected</span>
-                          )}
+                  {currentRequests.map(r => (
+                    <tr key={r.serviceId}
+                      className="border-b border-gray-200
+                      dark:border-slate-700
+                      hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+
+                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
+                        {r.serviceId}
+                      </td>
+                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
+                        {r.assetId}
+                      </td>
+                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
+                        {r.assetName || "N/A"}
+                      </td>
+                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
+                        {new Date(r.serviceRequestDate).toLocaleDateString()}
+                      </td>
+                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
+                        {issueTypeMapping[r.issueType]}
+                      </td>
+                      <td className="p-2 text-gray-800 dark:text-slate-300">
+                        {r.serviceDescription}
+                      </td>
+                      <td className="p-2 text-center">
+                        {r.serviceReqStatus === "UnderReview" && (
+                          <span className="text-blue-600 dark:text-blue-400 font-semibold">
+                            <FontAwesomeIcon icon={faCircleExclamation} /> Under Review
+                          </span>
+                        )}
+                        {r.serviceReqStatus === "Approved" && (
+                          <span className="text-yellow-600 dark:text-yellow-400 font-semibold">
+                            <FontAwesomeIcon icon={faThumbsUp} /> Approved
+                          </span>
+                        )}
+                        {r.serviceReqStatus === "Rejected" && (
+                          <span className="text-red-600 dark:text-red-400 font-semibold">
+                            <FontAwesomeIcon icon={faXmark} /> Rejected
+                          </span>
+                        )}
+                        {r.serviceReqStatus === "Completed" && (
+                          <span className="text-green-600 dark:text-green-400 font-semibold">
+                            <FontAwesomeIcon icon={faCircleCheck} /> Completed
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
-              {/* Pagination */}
-              <div className="my-12" />
               <CustomPagination
                 currentPage={currentPage}
                 totalItems={serviceRequests.length}
                 itemsPerPage={itemsPerPage}
                 onPageChange={setCurrentPage}
               />
-
-              
             </>
           )}
-          {/* Service Guidelines and Button Layout */}
-          <div className="p-10 mt-8 text-black flex justify-between items-start">
-                <div className="mt-4 bg-gray-100 p-4 rounded-lg w-1/2 shadow-lg">
-                  <h2 className="text-lg font-bold">SERVICE GUIDELINES</h2>
-                  <ul className="mt-2 text-lg">
-                    <li className="flex justify-between items-center">
-                      <span>What issues can be reported</span>
-                      <FontAwesomeIcon icon={faCircleRight} className="text-red-500 text-sm mx-2" />
-                      <span>Malfunction, Repair, Installation</span>
-                    </li>
-                    <li className="flex justify-between items-center">
-                      <span>Expected turnaround time</span>
-                      <FontAwesomeIcon icon={faCircleRight} className="text-red-500 text-sm mx-2" />
-                      <span>Two Weeks from Request Date</span>
-                    </li>
-                  </ul>
-
-                </div>
-                {/* Button at the Right Side */}
-                <div className="mt-8 flex flex-col items-center w-1/2 ">
-                  <button className="bg-red-500 text-white py-2 px-6 rounded hover:bg-red-600"
-                    onClick={() => setShowForm(true)}>
-                    Raise a Service Request
-                  </button>
-                  {/* Overlapping Form for Asset Request */}
-                  {showForm && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                      <form onSubmit={handleFormSubmit} className="bg-white p-5 rounded shadow-lg text-center w-1/4 h-45">
-                        <div className="flex justify-between items-center mb-4">
-                          <div className="flex-grow text-center">
-                            <h3 className="text-lg text-indigo-950 font-bold">Service Request</h3>
-                          </div>
-                          {/* Close Button beside the heading */}
-                          <FontAwesomeIcon
-                            icon={faTimes}
-                            className="text-red-500 cursor-pointer ml-2" // Add margin for spacing
-                            onClick={() => setShowForm(false)} // Close the form
-                          />
-                        </div>
-
-                        <div className="flex flex-col space-y-4 mt-4">
-                          {/* User ID Field */}
-                          <div className="relative">
-                            <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">User ID</label>
-                            <input
-                              type="text"
-                              value={formData.userId}
-                              placeholder="User ID"
-                              readOnly
-                              className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                            />
-                          </div>
-
-
-                          {/* Asset Name Dropdown */}
-                          <div className="relative">
-                            <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Asset Name</label>
-                            <select
-                              value={formData.assetName}
-                              onChange={handleassetNameChange}
-                              className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                              required
-                            >
-                              <option value="" disabled>Select an Asset</option>
-                              {assetAllocations.map((asset) => (
-                                <option key={asset.assetId} value={asset.assetName} className="bg-indigo-950 text-slate-200 ">
-                                  {asset.assetName} {/* Assuming 'assetName' exists on each allocation */}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          {/* Issue Type Dropdown */}
-                          <div className="relative">
-                            <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Issue Type</label>
-                            <select
-                              value={formData.issueType}
-                              onChange={(e) => setFormData({ ...formData, issueType: parseInt(e.target.value) })} // Parse to integer
-                              className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                              required
-                            >
-                              <option value="" disabled>Select Issue Type</option>
-                              {Object.keys(issueTypeMapping).map((key) => (
-                                <option key={key} value={key} className="bg-indigo-950 text-slate-200 ">{issueTypeMapping[key]}</option>
-                              ))}
-                            </select>
-
-                          </div>
-
-                          {/* Request Date Field */}
-                          <div className="relative">
-                            <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Request Date</label>
-                            <input
-                              type="date"
-                              value={formData.serviceRequestDate}
-                              readOnly
-                              className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                            />
-                          </div>
-
-                          {/* Service Description Field */}
-                          <div className="relative">
-                            <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Description</label>
-                            <textarea
-                              value={formData.serviceDescription || ''}
-                              onChange={(e) => setFormData({ ...formData, serviceDescription: e.target.value })}
-                              placeholder="Describe the issue"
-                              className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                              rows="4"
-                            />
-                          </div>
-                          <button
-                            type="submit"
-                            className="bg-indigo-950 text-white px-4 py-2 rounded mt-4"
-                          >
-                            Submit Request
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  )}
-                </div>
-              </div>
-          {successMessage && (
-            <div className="fixed top-5 right-5 bg-green-500 text-white p-3 rounded shadow-lg">
-              {successMessage}
-            </div>
-          )}
         </div>
-      </div>
-    </div>
 
+        <div className="grid md:grid-cols-2 gap-8 mt-12 animate-fadeUp">
+          <div className="bg-gray-100 dark:bg-slate-800
+            border border-gray-200 dark:border-slate-700
+            p-6 rounded-xl shadow">
+            <h2 className="font-bold text-gray-900 dark:text-slate-100 mb-4">
+              Service Guidelines
+            </h2>
+            <ul className="text-gray-700 dark:text-slate-300 space-y-2">
+              <li className="flex justify-between">
+                Issues <span className="text-red-500">Malfunction / Repair / Install</span>
+              </li>
+              <li className="flex justify-between">
+                Time <span className="text-red-500">~ 2 Weeks</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="flex justify-center items-center">
+            <button
+              onClick={() => setShowForm(true)}
+              className="bg-red-600 hover:bg-red-700
+              text-white px-6 py-3 rounded-lg shadow">
+              Raise Service Request
+            </button>
+          </div>
+        </div>
+
+        {showForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-60
+            flex items-center justify-center z-50">
+            <form onSubmit={handleSubmit}
+              className="bg-white dark:bg-slate-900
+              border border-gray-200 dark:border-slate-700
+              p-6 rounded-xl w-full max-w-md animate-scaleIn">
+
+              <div className="flex justify-between mb-4">
+                <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+                  New Service Request
+                </h3>
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  className="cursor-pointer text-red-500"
+                  onClick={() => setShowForm(false)}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <select
+                  className="w-full p-3 rounded
+                  bg-white dark:bg-slate-800
+                  border border-gray-300 dark:border-slate-600
+                  text-gray-900 dark:text-slate-200"
+                  value={formData.assetName}
+                  onChange={handleAssetChange}
+                  required>
+                  <option value="">Select Asset</option>
+                  {assetAllocations.map(a => (
+                    <option key={a.assetId} value={a.assetName}>{a.assetName}</option>
+                  ))}
+                </select>
+
+                <select
+                  className="w-full p-3 rounded
+                  bg-white dark:bg-slate-800
+                  border border-gray-300 dark:border-slate-600
+                  text-gray-900 dark:text-slate-200"
+                  value={formData.issueType}
+                  onChange={e => setFormData({
+                    ...formData,
+                    issueType: Number(e.target.value)
+                  })}
+                  required>
+                  <option value="">Select Issue</option>
+                  {Object.entries(issueTypeMapping).map(([k, v]) => (
+                    <option key={k} value={k}>{v}</option>
+                  ))}
+                </select>
+
+                <textarea
+                  rows={4}
+                  className="w-full p-3 rounded
+                  bg-white dark:bg-slate-800
+                  border border-gray-300 dark:border-slate-600
+                  text-gray-900 dark:text-slate-200"
+                  placeholder="Describe the issue"
+                  value={formData.serviceDescription}
+                  onChange={e => setFormData({
+                    ...formData,
+                    serviceDescription: e.target.value
+                  })}
+                  required
+                />
+
+                <button
+                  type="submit"
+                  className="w-full bg-indigo-950 hover:bg-indigo-800
+                  text-white py-2 rounded">
+                  Submit Request
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="fixed top-5 right-5 bg-green-600
+            text-white px-4 py-2 rounded shadow-lg">
+            {successMessage}
+          </div>
+        )}
+      </main>
+    </div>
   );
 };
 
 export default ServiceRequest;
-
-
-
-
-
-

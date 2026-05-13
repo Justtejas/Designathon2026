@@ -1,79 +1,115 @@
-import Footer from "./Footer";
 import Header from "./Header";
-
+import Footer from "./Footer";
+import UseDarkMode from "../Utils/UseDarkMode";
 
 const MaventoryLandingPage = () => {
-    return (
-      <div className="bg-white min-h-screen ">
-        <Header/>
-        <main className="container mx-auto px-6 py-8">
-          <section className="mb-16">
-            <div className="flex flex-col md:flex-row items-center">
-              <div className="md:w-1/2 mb-8 md:mb-0">
-                <h1 className="flex flex-col text-4xl text-black font-bold mb-4">
-                  Simplify your <span className="text-blue-600">Asset Management</span>
-                </h1>
-                <p className="text-gray-600 mb-4">
-                  Streamline your company asset tracking, borrowing, and auditing processes with our comprehensive Asset Management System.
-                </p>
-              </div>
-              <div className="md:w-1/2 text-center">
-                <span className="sr-only">AdminDashboard</span>
-                <img 
-                  alt="AdminDashBoard" 
-                  src="../Images/Admin DashBoard.png" 
-                  className="h-auto w-full rounded-xl border" 
-                />
-              </div>
-            </div>
-          </section>
-  
-          <section className="mb-16">
-            <h2 className="text-2xl font-bold mb-4 text-blue-600">Features</h2>
-            <h3 className="text-2xl font-semibold mb-4 text-black">Everything you need to manage your assets</h3>
-            <p className="text-gray-600 mb-8">
-              Our comprehensive system provides tools for both employees and administrators to efficiently manage company assets.
+  return (
+    <div className="bg-white dark:bg-gray-950 min-h-screen transition-colors duration-300">
+
+      <Header />
+
+      <UseDarkMode />
+      <section className="px-5 pt-20 pb-24">
+        <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center gap-12">
+
+          <div className="text-center md:text-left md:w-1/2 animate-fadeUp">
+            <h1 className="text-4xl sm:text-5xl font-extrabold mb-6
+              text-gray-900 dark:text-white">
+              Simplify your <br />
+              <span className="text-blue-600">Asset Management</span>
+            </h1>
+
+            <p className="text-gray-600 dark:text-gray-300 text-lg mb-8">
+              Track, manage, and audit company assets with one powerful,
+              mobile‑friendly platform.
             </p>
-            <div className="flex flex-col md:flex-row items-center">
-              <div className="md:w-1/2 mb-4 md:mb-0">
-                <img 
-                  alt="AdminDashBoard" 
-                  src="../Images/Assets.png" 
-                  className="h-auto w-full rounded-xl border" 
-                />
-              </div>
-              <div className="md:w-1/2 px-3">
-                <h4 className="text-xl font-semibold mb-4 text-black">Asset</h4>
-                <p className="mb-4 text-black">Easily submit and track service requests for assets that require maintenance or repair.</p>
-                {/* <h4 className="text-xl font-semibold text-black">Asset Request</h4> */}
-                <p className="text-black">Better asset tracking leads to better business performance – when you keep your equipment in working order and know where it is, you prevent losses from damage or theft.</p>
-              </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <button className="px-6 py-3 rounded-lg bg-blue-600 text-white
+                hover:bg-blue-700 transition shadow">
+                Get Started
+              </button>
+
+              <button className="px-6 py-3 rounded-lg border
+                border-gray-300 dark:border-gray-700
+                text-gray-200 dark:text-gray-200
+                hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                Demo
+              </button>
             </div>
-          </section>
-  
-          <section className="mb-16">
-            <div className="flex flex-col md:flex-row items-center">
-              <div className="md:w-1/2 mb-8 md:mb-0">
-                <h3 className="text-2xl font-semibold mb-4  text-black">Get your entire team on the same page</h3>
-                <p className="text-gray-600">
-                  From the boardroom to the stockroom, our software benefits your entire organization. With unlimited users, your executives can easily view reports, your managers can see asset history, and your front-line workers can manage assets on the move.
-                </p>
-              </div>
-              <div className="md:w-1/2 text-center">
-                <span className="sr-only">EmployeeView</span>
-                <img 
-                  alt="AdminDashBoard" 
-                  src="../Images/Employee-AdminView.png" 
-                  className="h-auto w-full rounded-xl border" 
-                />
-              </div>
-            </div>
-          </section>
-        </main>
-        <Footer/>
-      </div>
-    );
-  };
-  
-  export default MaventoryLandingPage;
-  
+          </div>
+
+          <div className="md:w-1/2 animate-float">
+            <img
+              src="../Images/Admin DashBoard.png"
+              alt="Dashboard"
+              className="rounded-2xl shadow-lg
+              border dark:border-gray-800"
+            />
+          </div>
+
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section className="px-5 py-24 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-6xl mx-auto text-center mb-16 animate-fadeIn">
+          <p className="text-blue-600 font-semibold mb-2">FEATURES</p>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            Everything you need
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Designed for admins and employees with real‑time tracking,
+            requests, and reporting.
+          </p>
+        </div>
+
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+          <img
+            src="../Images/Assets.png"
+            alt="Assets"
+            className="rounded-xl shadow-md border
+            dark:border-gray-800 hover:scale-105 transition md:w-1/2"
+          />
+
+          <div className="md:w-1/2 animate-fadeUp">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              Smart Asset Control
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-3">
+              Track availability, maintenance, and lifecycle in one dashboard.
+            </p>
+            <p className="text-gray-600 dark:text-gray-300">
+              Reduce loss, prevent theft, and improve performance.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* TEAM */}
+      <section className="px-5 py-24">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+          <div className="md:w-1/2 animate-fadeUp">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              One platform for your entire team
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Executives, managers, and employees – everyone stays aligned.
+            </p>
+          </div>
+
+          <img
+            src="../Images/Employee-AdminView.png"
+            alt="Team"
+            className="rounded-xl shadow-md border
+            dark:border-gray-800 hover:scale-105 transition md:w-1/2"
+          />
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default MaventoryLandingPage;

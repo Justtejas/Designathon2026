@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faFilter, faEllipsisV, faTimes } from '@fortawesome/free-solid-svg-icons';
-import Header from './Header';
+import EmployeeHeader from '../EmployeeHeader';
 import axios from 'axios';
 import CustomPagination from '../../Utils/CustomPagination';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import UseDarkMode from '../../Utils/UseDarkMode';
 const Assets = () => {
   const [assetsData, setAssetsData] = useState([]);
   const [maxValue, setMaxValue] = useState(100000);
@@ -73,10 +74,10 @@ const Assets = () => {
       const response = await fetch(`http://localhost:7287/api/Assets/get-image/${assetId}`);
       if (response.ok) {
         const blob = await response.blob();
-        const imageUrl = URL.createObjectURL(blob); 
+        const imageUrl = URL.createObjectURL(blob);
         setassetImages((prevImages) => ({
           ...prevImages,
-          [assetId]: imageUrl, 
+          [assetId]: imageUrl,
         }));
       } else {
         console.error(`Failed to fetch image for asset ${assetId}`);
@@ -86,8 +87,8 @@ const Assets = () => {
         }));
       }
     } catch (error) {
-        console.error('Error fetching asset image:', error);
-        setassetImages((prevImages) => ({
+      console.error('Error fetching asset image:', error);
+      setassetImages((prevImages) => ({
         ...prevImages,
         [assetId]: defaultImage, // Set default image if there's an error
       }));
@@ -354,8 +355,9 @@ const Assets = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <EmployeeHeader />
       <div className="p-6 bg-white">
+        <UseDarkMode />
         <header className="mb-4">
           <div className="flex justify-center">
             <h1 className="text-2xl font-bold text-indigo-950">Assets</h1>
@@ -499,11 +501,11 @@ const Assets = () => {
                   {asset.assetStatus}
                 </span>
                 <div className="absolute bottom-2 right-6">
-                  <FontAwesomeIcon
-                    icon={faEllipsisV}
-                    className="text-indigo-950 cursor-pointer"
+                  <button
+                    className="text-indigo-100 cursor-pointer"
                     onClick={() => openPrompt(asset)} // Opens the prompt with the asset details
-                  />
+                  > More Details</button>
+
                 </div>
               </div>
             </div>
@@ -512,7 +514,6 @@ const Assets = () => {
           )}
         </div>
 
-        {/* Confirmation Prompt */}
         {showPrompt && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-black">
             <div className="bg-white p-5 rounded shadow-lg text-center">
@@ -541,7 +542,6 @@ const Assets = () => {
           onPageChange={setCurrentPage}
         />
 
-        {/* Overlapping Form for Asset Request */}
         {showForm && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <form onSubmit={handleFormSubmit} className="bg-white p-5 rounded shadow-lg text-center w-1/4 h-45">
@@ -550,7 +550,6 @@ const Assets = () => {
                 <div className="flex-grow text-center">
                   <h3 className="text-lg text-indigo-950 font-bold">Asset Request</h3>
                 </div>
-                {/* Close Button beside the heading */}
                 <FontAwesomeIcon
                   icon={faTimes}
                   className="text-red-500 cursor-pointer ml-2" // Add margin for spacing
@@ -560,7 +559,6 @@ const Assets = () => {
 
               <div className="flex flex-col space-y-4 mt-4">
 
-                {/* Asset ID Field */}
                 <div className="relative">
                   <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Asset ID</label>
                   <input
@@ -572,7 +570,6 @@ const Assets = () => {
                   />
                 </div>
 
-                {/* User ID Field */}
                 <div className="relative">
                   <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">User ID</label>
                   <input
@@ -584,7 +581,6 @@ const Assets = () => {
                   />
                 </div>
 
-                {/* Asset Name Field */}
                 <div className="relative">
                   <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Asset Name</label>
                   <input
@@ -596,7 +592,6 @@ const Assets = () => {
                   />
                 </div>
 
-                {/* Request Date Field */}
                 <div className="relative">
                   <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Request Date</label>
                   <input
@@ -607,7 +602,6 @@ const Assets = () => {
                   />
                 </div>
 
-                {/*Asset Type Field */}
                 <div className="relative">
                   <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Asset Type</label>
                   <input
@@ -618,7 +612,6 @@ const Assets = () => {
                   />
                 </div>
 
-                {/* Request Reason Field */}
                 <div className="relative">
                   <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Request Reason</label>
                   <textarea

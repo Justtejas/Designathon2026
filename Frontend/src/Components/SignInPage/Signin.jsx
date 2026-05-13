@@ -1,121 +1,156 @@
-/* eslint-disable no-unused-vars */
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ToastNotification, { showToast } from '../Utils/ToastNotification';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
-import Cookies from 'js-cookie';
-import CloseIcon from '@mui/icons-material/Close';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ToastNotification, { showToast } from "../Utils/ToastNotification";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import UseDarkMode from "../Utils/UseDarkMode";
 
 const SignInPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogoClick = (e) => {
     e.preventDefault();
-    navigate('/');
+    navigate("/");
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const loginData = {
-      userMail: email,
-      Password: password,
-    };
 
     try {
-      const response = await axios.post('http://localhost:7287/api/auth', loginData);
+      const response = await axios.post(
+        "http://localhost:7287/api/auth",
+        {
+          userMail: email,
+          Password: password,
+        }
+      );
 
       const { token } = response.data;
-      Cookies.set('token', token);
-      const decode = jwtDecode(token);
-      const userRole = decode.User_Type;
-      Cookies.set('role' , userRole);
-      console.log('Decoded Token:', decode); 
-      console.log('Navigating to:', userRole === 'Admin' ? '/admin/Dashboard' : '/dashboard');
+      Cookies.set("token", token);
+      const decoded = jwtDecode(token);
+      Cookies.set("role", decoded.User_Type);
+
+      showToast("Login Successful!", "success");
+
       setTimeout(() => {
-        if (userRole === 'Admin') {
-          navigate('/admin/Dashboard');
-        } else if(userRole === 'Employee') {
-          navigate('/dashboard');
-        }
-        else {
-          alert('Unknown role.');
-        }
-      }, 2000);
-
-      showToast('Login Successful!', 'success');
+        decoded.User_Type === "Admin"
+          ? navigate("/admin/Dashboard")
+          : navigate("/dashboard");
+      }, 1500);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Invalid credentials';
-      console.error('Error during login:', err);
-
-      showToast('Failed to Log In. Please try again.', 'error');
-      setError(errorMessage);
+      showToast("Failed to Log In. Please try again.", "error");
+      setError("Invalid credentials");
     }
   };
 
   return (
-    <div className="min-h-screen flex bg-white">
-      <div className="hidden lg:flex lg:w-1/2 h-400 bg-cover bg-center" style={{ backgroundImage: "url(https://cdn.mos.cms.futurecdn.net/5fz9SMYxWbv44jFVcD4vmd.jpg)" }}>
-      </div>
+    <div className="min-h-screen flex bg-white dark:bg-gray-950 transition-colors">
 
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 sm:px-6 lg:px-8 h-1/2">
-      <div className="flex items-start justify-start mt-4 mb-8">
+      <UseDarkMode />
+
+      <div
+        className="hidden lg:flex lg:w-1/2 bg-cover bg-center"
+        style={{
+          backgroundImage:
+            "url(https://cdn.mos.cms.futurecdn.net/5fz9SMYxWbv44jFVcD4vmd.jpg)",
+        }}
+      />
+
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-6">
+        <div className="mb-4 flex justify-center">
           <img
-            src="/Images/HEXA_HUB.png"
+            src="/Images/Maventory_light.png"
             alt="Maventory Logo"
-            className="h-20 w-20 mr-4" 
             onClick={handleLogoClick}
-            
+            className="h-20 w-20 cursor-pointer dark:hidden"
+          />
+
+          <img
+            src="/Images/maventory1.png"
+            alt="Maventory Logo Dark"
+            onClick={handleLogoClick}
+            className="h-24 w-32 cursor-pointer hidden dark:block"
           />
         </div>
-        <div className="w-full max-w-md mx-auto">
-          <h2 className="mt-6 text-center text-2xl font-extrabold text-indigo-950">
-            Welcome Back!
+
+        <div className="flex justify-center mb-8 text-6xl text-black dark:text-white">
+          Maventory
+        </div>
+
+        <div className="w-full max-w-md mx-auto bg-white dark:bg-gray-900
+          shadow-xl rounded-2xl px-8 py-10 animate-fadeUp">
+
+          <h2 className="text-center text-2xl font-extrabold
+            text-gray-900 dark:text-white mb-6">
+            Welcome Back 👋
           </h2>
 
-          <div className="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form className="space-y-4" onSubmit={handleLogin}>
+          <form className="space-y-4" onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full px-4 py-3 rounded-lg border
+              bg-white dark:bg-gray-800
+              text-gray-900 dark:text-white
+              border-gray-300 dark:border-gray-700
+              focus:ring-2 focus:ring-blue-500 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <div className="relative">
               <input
-                className="text-black bg-white w-full px-3 py-2 border border-gray-300 rounded-md"
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                className="w-full  p-4 rounded-lg border
+                bg-white dark:bg-gray-800
+                text-gray-900 dark:text-white
+                border-gray-300 dark:border-gray-700
+                focus:ring-2 focus:ring-blue-500 outline-none"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              <div className="relative">
-                <input
-                  className="text-black bg-white w-full px-3 py-2 border border-gray-300 rounded-md"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                  type="button"
-                  className="bg-transparent absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
-              <div>
-                <button
-                  type="submit"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-500 hover:bg-indigo-950 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
-                >
-                  Sign In
-                </button>
-              </div>
-            </form>
-            <ToastNotification />
-            <div className="mt-6 flex items-center justify-between text-sm">
-              <a href="/Privacy" className="font-medium text-indigo-950 hover:text-cyan-500">Privacy</a>
-              <a href="/Terms" className="font-medium text-indigo-950 hover:text-cyan-500">Terms</a>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-1 top-2 text-gray-500 bg-white dark:bg-gray-800"
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
             </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 rounded-lg font-semibold
+              bg-blue-600 hover:bg-blue-700
+              text-white transition shadow-md"
+            >
+              Sign In
+            </button>
+          </form>
+
+          <ToastNotification />
+
+          <div className="mt-6 flex justify-between text-sm">
+            <a
+              href="/Privacy"
+              className="text-gray-700 dark:text-gray-300
+              hover:text-blue-600"
+            >
+              Privacy
+            </a>
+            <a
+              href="/Terms"
+              className="text-gray-700 dark:text-gray-300
+              hover:text-blue-600"
+            >
+              Terms
+            </a>
           </div>
         </div>
       </div>

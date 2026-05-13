@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Header from './Header';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import CustomPagination from '../../Utils/CustomPagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faTimes, faPaperPlane, faThumbsUp, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import EmployeeHeader from '../EmployeeHeader';
 
 const ReturnRequest = () => {
     const [returnRequests, setReturnRequests] = useState([]);
@@ -62,12 +62,12 @@ const ReturnRequest = () => {
 
                         // Set return requests regardless of the allocation fetch
                         setReturnRequests(returnResponse.data || []);
-                        
+
                     } catch (error) {
                         // Handle error fetching return requests if necessary
                         console.error('Error fetching return requests:', error.response ? error.response.data : error.message);
                         setError('Error fetching return requests: ' + (error.response ? error.response.data : 'Unknown error'));
-                    } 
+                    }
                     try {
                         const assetResponse = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`, {
                             headers: {
@@ -163,7 +163,7 @@ const ReturnRequest = () => {
 
     return (
         <div className="min-h-screen bg-white text-black">
-            <Header />
+            <EmployeeHeader />
             <div className="flex items-center justify-center bg-white">
                 <div className="max-w-7xl w-full mx-auto py-20 px-6 bg-white shadow-lg rounded-lg">
                     <div className="flex justify-between items-center mb-6">
@@ -225,131 +225,131 @@ const ReturnRequest = () => {
                             />
 
 
-                            
+
                         </>
-                        
+
                     )}
                     {/* Terms and Conditions */}
                     <div className="p-10 mt-8  flex justify-between items-start">
-                                <div className="mt-4 bg-gray-100 p-4 rounded-lg w-1/2 shadow-lg">
-                                    <h2 className="text-lg font-bold">Terms and Conditions</h2>
-                                    <p className="mt-2 text-sm">
-                                        Employees must return assets in their original or acceptable Condition, as outlined in the asset management policy.
-                                        Any damages or missing components will incur charges and may affect future asset allocations.
-                                    </p>
-                                </div>
+                        <div className="mt-4 bg-gray-100 p-4 rounded-lg w-1/2 shadow-lg">
+                            <h2 className="text-lg font-bold">Terms and Conditions</h2>
+                            <p className="mt-2 text-sm">
+                                Employees must return assets in their original or acceptable Condition, as outlined in the asset management policy.
+                                Any damages or missing components will incur charges and may affect future asset allocations.
+                            </p>
+                        </div>
 
 
-                                {/* Button at the Bottom */}
-                                <div className="mt-8 flex flex-col items-center w-1/2 ">
-                                    <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600" onClick={() => setShowForm(true)}>
-                                        Raise a Return Request
-                                    </button>
-                                    {showForm && (
-                                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                            <form onSubmit={handleFormSubmit} className="bg-white p-5 rounded shadow-lg text-center w-1/4 h-45">
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <div className="flex-grow text-center">
-                                                        <h3 className="text-lg text-indigo-950 font-bold">Return Request</h3>
-                                                    </div>
-                                                    {/* Close Button beside the heading */}
-                                                    <FontAwesomeIcon
-                                                        icon={faTimes}
-                                                        className="text-red-500 cursor-pointer ml-2" // Add margin for spacing
-                                                        onClick={() => setShowForm(false)} // Close the form
-                                                    />
-                                                </div>
-
-                                                <div className="flex flex-col space-y-4 mt-4">
-
-
-
-                                                    {/* User ID Field */}
-                                                    <div className="relative">
-                                                        <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">User ID</label>
-                                                        <input
-                                                            type="text"
-                                                            value={formData.userId}
-                                                            placeholder="User ID"
-                                                            readOnly
-                                                            className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                        />
-                                                    </div>
-
-                                                    {/* Asset Name Dropdown */}
-                                                    <div className="relative">
-                                                        <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Asset Name</label>
-                                                        <select
-                                                            value={formData.assetName}
-                                                            onChange={handleassetNameChange}
-                                                            className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                            required
-                                                        >
-                                                            <option value="" disabled>Select an Asset</option>
-                                                            {assetAllocations.map((allocation) => (
-                                                                <option key={allocation.userId} value={allocation.assetName} className="bg-indigo-950 text-slate-200 ">
-                                                                    {allocation.assetName} {/* Assuming 'assetName' exists on each allocation */}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-
-                                                    {/* Asset Condition Dropdown */}
-                                                    <div className="relative">
-                                                        <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">
-                                                            Asset Condition
-                                                        </label>
-                                                        <select
-                                                            value={formData.Condition}
-                                                            onChange={(e) => setFormData({ ...formData, Condition: e.target.value })}
-                                                            className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                            required
-                                                        >
-                                                            <option value="" disabled>Select Asset Condition</option>
-                                                            {Object.keys(ConditionMapping).map((key) => (
-                                                                <option key={key} value={ConditionMapping[key]} className="bg-indigo-950 text-slate-200">
-                                                                    {ConditionMapping[key]}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-
-
-                                                    {/* Request Date Field */}
-                                                    <div className="relative">
-                                                        <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Request Date</label>
-                                                        <input
-                                                            type="date"
-                                                            value={formData.returnDate}
-                                                            readOnly
-                                                            className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                        />
-                                                    </div>
-
-                                                    {/* Service Description Field */}
-                                                    <div className="relative">
-                                                        <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Return Reason</label>
-                                                        <textarea
-                                                            value={formData.Reason}
-                                                            onChange={(e) => setFormData({ ...formData, Reason: e.target.value })}
-                                                            placeholder="Describe the Reason"
-                                                            className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                            rows="4"
-                                                        />
-                                                    </div>
-
-                                                    <button
-                                                        type="submit"
-                                                        className="bg-indigo-950 text-white px-4 py-2 rounded mt-4"
-                                                    >
-                                                        Submit Request
-                                                    </button>
-                                                </div>
-                                            </form>
+                        {/* Button at the Bottom */}
+                        <div className="mt-8 flex flex-col items-center w-1/2 ">
+                            <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600" onClick={() => setShowForm(true)}>
+                                Raise a Return Request
+                            </button>
+                            {showForm && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                    <form onSubmit={handleFormSubmit} className="bg-white p-5 rounded shadow-lg text-center w-1/4 h-45">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <div className="flex-grow text-center">
+                                                <h3 className="text-lg text-indigo-950 font-bold">Return Request</h3>
+                                            </div>
+                                            {/* Close Button beside the heading */}
+                                            <FontAwesomeIcon
+                                                icon={faTimes}
+                                                className="text-red-500 cursor-pointer ml-2" // Add margin for spacing
+                                                onClick={() => setShowForm(false)} // Close the form
+                                            />
                                         </div>
-                                    )}
+
+                                        <div className="flex flex-col space-y-4 mt-4">
+
+
+
+                                            {/* User ID Field */}
+                                            <div className="relative">
+                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">User ID</label>
+                                                <input
+                                                    type="text"
+                                                    value={formData.userId}
+                                                    placeholder="User ID"
+                                                    readOnly
+                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
+                                                />
+                                            </div>
+
+                                            {/* Asset Name Dropdown */}
+                                            <div className="relative">
+                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Asset Name</label>
+                                                <select
+                                                    value={formData.assetName}
+                                                    onChange={handleassetNameChange}
+                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
+                                                    required
+                                                >
+                                                    <option value="" disabled>Select an Asset</option>
+                                                    {assetAllocations.map((allocation) => (
+                                                        <option key={allocation.userId} value={allocation.assetName} className="bg-indigo-950 text-slate-200 ">
+                                                            {allocation.assetName} {/* Assuming 'assetName' exists on each allocation */}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Asset Condition Dropdown */}
+                                            <div className="relative">
+                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">
+                                                    Asset Condition
+                                                </label>
+                                                <select
+                                                    value={formData.Condition}
+                                                    onChange={(e) => setFormData({ ...formData, Condition: e.target.value })}
+                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
+                                                    required
+                                                >
+                                                    <option value="" disabled>Select Asset Condition</option>
+                                                    {Object.keys(ConditionMapping).map((key) => (
+                                                        <option key={key} value={ConditionMapping[key]} className="bg-indigo-950 text-slate-200">
+                                                            {ConditionMapping[key]}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+
+                                            {/* Request Date Field */}
+                                            <div className="relative">
+                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Request Date</label>
+                                                <input
+                                                    type="date"
+                                                    value={formData.returnDate}
+                                                    readOnly
+                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
+                                                />
+                                            </div>
+
+                                            {/* Service Description Field */}
+                                            <div className="relative">
+                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Return Reason</label>
+                                                <textarea
+                                                    value={formData.Reason}
+                                                    onChange={(e) => setFormData({ ...formData, Reason: e.target.value })}
+                                                    placeholder="Describe the Reason"
+                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
+                                                    rows="4"
+                                                />
+                                            </div>
+
+                                            <button
+                                                type="submit"
+                                                className="bg-indigo-950 text-white px-4 py-2 rounded mt-4"
+                                            >
+                                                Submit Request
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
-                            </div>
+                            )}
+                        </div>
+                    </div>
                     {successMessage && (
                         <div className="fixed top-5 right-5 bg-green-500 text-white p-3 rounded shadow-lg">
                             {successMessage}

@@ -1,12 +1,13 @@
-import React,{useState,useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun, faMoon,faUserCircle, faSignOutAlt, faBell,faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faSun, faMoon, faUserCircle, faSignOutAlt, faBell, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import UseDarkMode from '../../Utils/UseDarkMode';
 
 
 const Header = () => {
@@ -17,9 +18,9 @@ const Header = () => {
   const [isRequestDropdownOpen, setRequestDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const profileDropdownRef = useRef(null);
-  const RequestDropdownRef =useRef(null);
+  const RequestDropdownRef = useRef(null);
   const [isLogDropdownOpen, setLogDropdownOpen] = useState(false);
-  const logDropdownRef= useRef(null);
+  const logDropdownRef = useRef(null);
   const navigate = useNavigate();
   const [isDarkMode, setDarkMode] = useState(true);
   const [timeLeft, setTimeLeft] = useState(3600);
@@ -54,12 +55,12 @@ const Header = () => {
     };
   }, []);
 
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (RequestDropdownRef.current && !RequestDropdownRef.current.contains(event.target)) {
-          setRequestDropdownOpen(false);
-        }
-      };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (RequestDropdownRef.current && !RequestDropdownRef.current.contains(event.target)) {
+        setRequestDropdownOpen(false);
+      }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -82,8 +83,8 @@ const Header = () => {
 
 
 
-   // Toggle dropdown visibility
-   const toggleDropdown = () => {
+  // Toggle dropdown visibility
+  const toggleDropdown = () => {
     setDropdownOpen((prev) => {
       if (prev) {
         setProfileDropdownOpen(false); // Close profile dropdown if it's open
@@ -105,7 +106,7 @@ const Header = () => {
     });
   };
 
-  
+
   const toggleRequestDropdown = () => {
     setRequestDropdownOpen((prev) => {
       if (prev) {
@@ -117,7 +118,7 @@ const Header = () => {
     });
   };
 
-    
+
   const toggleLogDropdown = () => {
     setLogDropdownOpen((prev) => {
       if (prev) {
@@ -133,7 +134,7 @@ const Header = () => {
     setDarkMode((prev) => !prev);
     document.body.classList.toggle('dark-mode', !isDarkMode);
   };
-  
+
   useEffect(() => {
     // Check if the token exists and get its expiration
     const token = Cookies.get('token');
@@ -191,8 +192,9 @@ const Header = () => {
     <header className="flex justify-between items-center p-4 bg-white shadow-md">
       {/* Logo and Branding */}
       <div className="flex items-center space-x-4">
+        <UseDarkMode />
         <img
-          src="/Images/logo.png" 
+          src="/Images/logo.png"
           alt="Maventory Logo"
           className="h-16 w-16"  // Adjusted size for dashboard layout
         />
@@ -213,49 +215,49 @@ const Header = () => {
 
       {/* Action Icons */}
       <div className="flex items-center space-x-4 ">
-      
-      <FontAwesomeIcon icon={faPaperPlane} className="text-xl text-indigo-950 hover:text-indigo-700 cursor-pointer" title="Request" onClick={toggleRequestDropdown}/>
-        <FontAwesomeIcon icon={faBell} className="text-xl text-red-400 hover:text-red-500 cursor-pointer" title="Notifications" onClick={toggleDropdown}/>
-        <FontAwesomeIcon 
-          icon={isDarkMode ? faSun : faMoon} 
-          className={`text-xl cursor-pointer ${isDarkMode ? 'text-indigo-950' : 'text-indigo-950'} hover:text-indigo-700`} 
-          title="Toggle Theme" 
-          onClick={toggleDarkMode} 
+
+        <FontAwesomeIcon icon={faPaperPlane} className="text-xl text-indigo-950 hover:text-indigo-700 cursor-pointer" title="Request" onClick={toggleRequestDropdown} />
+        <FontAwesomeIcon icon={faBell} className="text-xl text-red-400 hover:text-red-500 cursor-pointer" title="Notifications" onClick={toggleDropdown} />
+        <FontAwesomeIcon
+          icon={isDarkMode ? faSun : faMoon}
+          className={`text-xl cursor-pointer ${isDarkMode ? 'text-indigo-950' : 'text-indigo-950'} hover:text-indigo-700`}
+          title="Toggle Theme"
+          onClick={toggleDarkMode}
         />
-        <FontAwesomeIcon icon={faUserCircle} className="text-xl text-red-400 hover:text-red-500 cursor-pointer" title="Profile" onClick={toggleProfileDropdown}/>
-        
-        <FontAwesomeIcon icon={faSignOutAlt} className="text-xl text-indigo-950 hover:text-indigo-700 cursor-pointer" title="Logout" onClick={toggleLogDropdown }/>
+        <FontAwesomeIcon icon={faUserCircle} className="text-xl text-red-400 hover:text-red-500 cursor-pointer" title="Profile" onClick={toggleProfileDropdown} />
+
+        <FontAwesomeIcon icon={faSignOutAlt} className="text-xl text-indigo-950 hover:text-indigo-700 cursor-pointer" title="Logout" onClick={toggleLogDropdown} />
         <div className="relative">
-        {isDropdownOpen && (
-          <div  ref={dropdownRef} className="absolute right-0 mt-5 w-48 bg-indigo-950 border rounded-lg shadow-lg z-10">
-            <ul className="py-2">
-              <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
-              <Link to="/Notification" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Notifications</Link>
-              </li>
-              <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
-              <Link to="/Notification" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Reminders</Link>
-              </li>
-             
-            </ul>
-          </div>
-        )}
-      </div>
-      <div className="relative">
-      {isProfileDropdownOpen && (
+          {isDropdownOpen && (
+            <div ref={dropdownRef} className="absolute right-0 mt-5 w-48 bg-indigo-950 border rounded-lg shadow-lg z-10">
+              <ul className="py-2">
+                <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
+                  <Link to="/Notification" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Notifications</Link>
+                </li>
+                <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
+                  <Link to="/Notification" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Reminders</Link>
+                </li>
+
+              </ul>
+            </div>
+          )}
+        </div>
+        <div className="relative">
+          {isProfileDropdownOpen && (
             <div ref={profileDropdownRef} className="absolute right-0 mt-5 w-48 bg-indigo-950 border rounded-lg shadow-lg z-10">
               <ul className="py-2">
-              <li className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer">
-              <Link to="/Profile" className="block text-slate-200 hover:text-indigo-950 w-full h-full">My Profile</Link>
-            </li>
                 <li className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer">
-              <Link to="/Asset" className="block text-slate-200 hover:text-indigo-950 w-full h-full">My Assets</Link>
-            </li>
-            <li className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer">
-              <Link to="/dashboard" className="block text-slate-200 hover:text-indigo-950 w-full h-full">DashBoard</Link>
-            </li>
+                  <Link to="/Profile" className="block text-slate-200 hover:text-indigo-950 w-full h-full">My Profile</Link>
+                </li>
+                <li className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer">
+                  <Link to="/Asset" className="block text-slate-200 hover:text-indigo-950 w-full h-full">My Assets</Link>
+                </li>
+                <li className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer">
+                  <Link to="/dashboard" className="block text-slate-200 hover:text-indigo-950 w-full h-full">DashBoard</Link>
+                </li>
 
-            <li className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer">
-                <Link to="/Settings" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Settings</Link>
+                <li className="px-4 py-2 text-slate-200 hover:bg-red-500 cursor-pointer">
+                  <Link to="/Settings" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Settings</Link>
                 </li>
               </ul>
             </div>
@@ -263,35 +265,35 @@ const Header = () => {
         </div>
 
         <div className="relative">
-      {isRequestDropdownOpen && (
+          {isRequestDropdownOpen && (
             <div ref={RequestDropdownRef} className="absolute right-0 mt-5 w-48 bg-indigo-950 border rounded-lg shadow-lg z-10">
               <ul className="py-2">
-              <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
-              <Link to="/Asset" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Asset Request</Link>
-            </li>
-               
+                <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
+                  <Link to="/Asset" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Asset Request</Link>
+                </li>
 
-            <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
-              <Link to="/ReturnRequest" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Return Request</Link>
-            </li>
+
+                <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
+                  <Link to="/ReturnRequest" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Return Request</Link>
+                </li>
               </ul>
             </div>
           )}
         </div>
         <div className="relative">
-      {isLogDropdownOpen && (
+          {isLogDropdownOpen && (
             <div ref={logDropdownRef} className="absolute right-0 mt-5 w-48 bg-indigo-950 border rounded-lg shadow-lg z-10" onClick={handleLogout}>
               <ul className="py-2">
-              <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
-              <Link to="/" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Logout</Link>
-            </li>
-            </ul>
+                <li className="px-4 py-2 hover:bg-red-500 cursor-pointer">
+                  <Link to="/" className="block text-slate-200 hover:text-indigo-950 w-full h-full">Logout</Link>
+                </li>
+              </ul>
             </div>
           )}
         </div>
-        </div>
-      
-     
+      </div>
+
+
     </header>
   );
 };

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import Header from './Header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { faEnvelope, faFolderTree, faIdCard, faLocationDot, faMobile, faUser,faLock,faUnlock } from '@fortawesome/free-solid-svg-icons';
-import { faBuilding } from '@fortawesome/free-solid-svg-icons/faBuilding';
+import { faEnvelope, faIdCard, faLocationDot, faMobile, faLock, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import ToastNotification, { showToast } from '../../Utils/ToastNotification';
+import EmployeeHeader from '../EmployeeHeader';
 
 const Profile = () => {
   const [isEditable, setIsEditable] = useState(false);
@@ -18,7 +17,7 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [isPasswordFormVisible, setIsPasswordFormVisible] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const [profileData, setProfileData] = useState(() => {
     // Load initial state from local storage if available
@@ -53,8 +52,8 @@ const [showNewPassword, setShowNewPassword] = useState(false);
 
     if (token) {
       try {
-        const decoded = jwtDecode(token); 
-      
+        const decoded = jwtDecode(token);
+
         setProfileData((prevData) => ({
           ...prevData,
           name: decoded.unique_name || prevData.name,
@@ -70,7 +69,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
     if (token) {
       const decode = jwtDecode(token);
       console.log('Decoded token payload:', decode);
-      
+
       // Extract the userId from the 'userId' field
       const userId = decode.userId;
 
@@ -117,7 +116,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
       const token = Cookies.get('token');
       if (token) {
         const decode = jwtDecode(token);
-        const userIdFromToken = decode.userId; 
+        const userIdFromToken = decode.userId;
         const userRole = decode.User_Type;
 
         // Prepare updated profile data, filtering out empty or undefined fields
@@ -130,15 +129,15 @@ const [showNewPassword, setShowNewPassword] = useState(false);
           designation: profileData.designation || '',
           branch: profileData.branch || '',
           phoneNumber: userPhone || '',  // Handle undefined phoneNumber
-          userMail: userEmail || '', 
-          user_Type: userRole  
+          userMail: userEmail || '',
+          user_Type: userRole
         };
 
         console.log('Data being sent:', updatedProfileData);
         try {
           const response = await axios.put(
-            `http://localhost:7287/api/users/${userIdFromToken}`, 
-            updatedProfileData, 
+            `http://localhost:7287/api/users/${userIdFromToken}`,
+            updatedProfileData,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -184,18 +183,18 @@ const [showNewPassword, setShowNewPassword] = useState(false);
       showToast('All fields Required!', 'warning');
       return;
     }
-  
+
     // Retrieve token from cookies and decode it
     const token = Cookies.get('token');
     if (!token) {
       alert("Authorization token not found. Please log in again.");
       return;
     }
-  
+
     const decode = jwtDecode(token);
     const userIdFromToken = decode.userId;  // Extract user ID from token
     const userRole = decode.User_Type;           // Extract user role from token
-  
+
     try {
       const response = await axios.put(
         `http://localhost:7287/api/users/${userIdFromToken}/password`,
@@ -210,7 +209,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
             Authorization: `Bearer ${token}`, // Passing the token in headers
           },
         }
-        
+
       );
 
       // Check for status 200 and display success message from the backend
@@ -223,11 +222,11 @@ const [showNewPassword, setShowNewPassword] = useState(false);
         showToast('Login Successful!', 'success');
       }
     } catch (error) {
-      
+
       console.error("Error updating password", error);
       showToast('Check password', 'warning');
     }
-  
+
     // Hide the password form after submission
     setIsPasswordFormVisible(false);
   };
@@ -244,12 +243,12 @@ const [showNewPassword, setShowNewPassword] = useState(false);
   const handleClosePasswordForm = () => {
     setIsPasswordFormVisible(false);
   };
-  
+
   return (
-    
+
     <div className="min-h-screen bg-white">
       <ToastNotification />
-      <Header />
+      <EmployeeHeader />
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <div className="p-5 font-bold">
           <h1 className="text-3xl text-indigo-950 font-bold">PROFILE</h1>
@@ -292,68 +291,68 @@ const [showNewPassword, setShowNewPassword] = useState(false);
             )}
           </div>
 
-  {/* Conditional rendering of the password modal */}
-{isPasswordFormVisible && (
-  
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white p-6 rounded-lg shadow-md relative w-96">
-      <h2 className="text-xl font-bold mb-4 text-indigo-950">Change Password</h2>
+          {/* Conditional rendering of the password modal */}
+          {isPasswordFormVisible && (
 
-      <div className="mb-4 relative">
-        <label className="block text-sm font-medium text-gray-700">
-          Current Password
-        </label>
-        <input
-          type={showCurrentPassword ? "text" : "password"}
-          className="mt-1 block w-full p-2 border border-gray-300 bg-slate-200 text-indigo-950 rounded-md"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          placeholder="Enter your current password"
-        />
-        <span 
-          className="absolute right-2 top-9 cursor-pointer text-indigo-950"
-          onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-        >
-          <FontAwesomeIcon icon={showCurrentPassword ? faUnlock : faLock} />
-        </span>
-      </div>
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white p-6 rounded-lg shadow-md relative w-96">
+                <h2 className="text-xl font-bold mb-4 text-indigo-950">Change Password</h2>
 
-      <div className="mb-4 relative">
-        <label className="block text-sm font-medium text-gray-700">
-          New Password
-        </label>
-        <input
-          type={showNewPassword ? "text" : "password"}
-          className="mt-1 block w-full p-2 border border-gray-300 bg-slate-200 text-indigo-950 rounded-md"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="Enter your new password"
-        />
-        <span 
-          className="absolute right-2 top-9 cursor-pointer text-indigo-950"
-          onClick={() => setShowNewPassword(!showNewPassword)}
-        >
-          <FontAwesomeIcon icon={showNewPassword ? faUnlock : faLock} />
-        </span>
-      </div>
+                <div className="mb-4 relative">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Current Password
+                  </label>
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    className="mt-1 block w-full p-2 border border-gray-300 bg-slate-200 text-indigo-950 rounded-md"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter your current password"
+                  />
+                  <span
+                    className="absolute right-2 top-9 cursor-pointer text-indigo-950"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  >
+                    <FontAwesomeIcon icon={showCurrentPassword ? faUnlock : faLock} />
+                  </span>
+                </div>
 
-      <div className="flex justify-between items-center">
-        <button
-          onClick={handlePasswordChange}
-          className="bg-indigo-950 hover:bg-indigo-800 text-white py-2 px-4 rounded-md"
-        >
-          Save Password
-        </button>
-        <button
-          onClick={handleClosePasswordForm}
-          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+                <div className="mb-4 relative">
+                  <label className="block text-sm font-medium text-gray-700">
+                    New Password
+                  </label>
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    className="mt-1 block w-full p-2 border border-gray-300 bg-slate-200 text-indigo-950 rounded-md"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter your new password"
+                  />
+                  <span
+                    className="absolute right-2 top-9 cursor-pointer text-indigo-950"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                  >
+                    <FontAwesomeIcon icon={showNewPassword ? faUnlock : faLock} />
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <button
+                    onClick={handlePasswordChange}
+                    className="bg-indigo-950 hover:bg-indigo-800 text-white py-2 px-4 rounded-md"
+                  >
+                    Save Password
+                  </button>
+                  <button
+                    onClick={handleClosePasswordForm}
+                    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -368,7 +367,7 @@ const [showNewPassword, setShowNewPassword] = useState(false);
                 <input
                   type="text"
                   name="name"
-                  value={profileData.name}
+                  value={profileData.userName}
                   onChange={handleInputChange}
                   disabled={!isEditable}
                   className={`mt-1 block w-full px-8 py-2 border ${isEditable ? 'border-gray-300' : 'border-transparent'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${isEditable ? 'bg-indigo-950 text-slate-300' : 'bg-gray-100 text-indigo-950 font-semibold'}`}
@@ -414,86 +413,9 @@ const [showNewPassword, setShowNewPassword] = useState(false);
               </div>
             </div>
 
-            {/* Gender */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Gender</label>
-              <div className="mt-1 relative flex items-center">
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className={`absolute left-3 h-3 w-3 ${isEditable ? 'text-slate-300' : 'text-indigo-950'}`}
-                />
-                <input
-                  type="text"
-                  name="gender"
-                  value={profileData.gender}
-                  onChange={handleInputChange}
-                  disabled={!isEditable}
-                  className={`mt-1 block w-full px-8 py-2 border ${isEditable ? 'border-gray-300' : 'border-transparent'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${isEditable ? 'bg-indigo-950 text-slate-300' : 'bg-gray-100 text-indigo-950 font-semibold'}`}
-                />
-              </div>
-            </div>
-
-            {/* Department */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Department</label>
-              <div className="mt-1 relative flex items-center">
-                <FontAwesomeIcon
-                  icon={faBuilding}
-                  className={`absolute left-3 h-3 w-3 ${isEditable ? 'text-slate-300' : 'text-indigo-950'}`}
-                />
-                <input
-                  type="text"
-                  name="dept"
-                  value={profileData.dept}
-                  onChange={handleInputChange}
-                  disabled={!isEditable}
-                  className={`mt-1 block w-full px-8 py-2 border ${isEditable ? 'border-gray-300' : 'border-transparent'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${isEditable ? 'bg-indigo-950 text-slate-300' : 'bg-gray-100 text-indigo-950 font-semibold'}`}
-                />
-              </div>
-            </div>
-
-            {/* designation */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">designation</label>
-              <div className="mt-1 relative flex items-center">
-                <FontAwesomeIcon
-                  icon={faFolderTree}
-                  className={`absolute left-3 h-3 w-3 ${isEditable ? 'text-slate-300' : 'text-indigo-950'}`}
-                />
-                <input
-                  type="text"
-                  name="designation"
-                  value={profileData.designation}
-                  onChange={handleInputChange}
-                  disabled={!isEditable}
-                  className={`mt-1 block w-full px-8 py-2 border ${isEditable ? 'border-gray-300' : 'border-transparent'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${isEditable ? 'bg-indigo-950 text-slate-300' : 'bg-gray-100 text-indigo-950 font-semibold'}`}
-                />
-              </div>
-            </div>
-            
-
-            {/* address */}
-            <div >
-              <label className="block text-sm font-medium text-gray-700">address</label>
-              <div className="mt-1 relative flex items-center">
-                <FontAwesomeIcon
-                  icon={faLocationDot}
-                  className={`absolute left-3 h-3 w-3 ${isEditable ? 'text-slate-300' : 'text-indigo-950'}`}
-                />
-                <input
-                  type="text"
-                  name="address"
-                  value={profileData.address}
-                  onChange={handleInputChange}
-                  disabled={!isEditable}
-                  className={`mt-1 block w-full px-8 py-2 border ${isEditable ? 'border-gray-300' : 'border-transparent'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${isEditable ? 'bg-indigo-950 text-slate-300' : 'bg-gray-100 text-indigo-950 font-semibold'}`}
-                />
-              </div>
-            </div>
-
             {/* branch */}
             <div >
-              <label className="block text-sm font-medium text-gray-700">branch</label>
+              <label className="block text-sm font-medium text-gray-700">Branch</label>
               <div className="mt-1 relative flex items-center">
                 <FontAwesomeIcon
                   icon={faLocationDot}

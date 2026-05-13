@@ -1,114 +1,138 @@
-import React, { useState } from 'react';
-import Header from './Header';
+import React, { useState } from "react";
+import EmployeeHeader from "../EmployeeHeader";
 
-const settings = () => {
-  const [language, setLanguage] = useState('');
-  const [theme, setTheme] = useState('');
+const Settings = () => {
+  const [language, setLanguage] = useState("");
+  const [theme, setTheme] = useState("");
   const [feedback, setFeedback] = useState(0);
-  const [comments, setComments] = useState('');
-
-  const handleLanguageChange = (e) => {
-    setLanguage(e.target.value);
-  };
-
-  const handleThemeChange = (e) => {
-    setTheme(e.target.value);
-  };
-
-  const handleFeedbackChange = (rating) => {
-    setFeedback(rating);
-  };
-
-  const handleCommentsChange = (e) => {
-    setComments(e.target.value);
-  };
+  const [comments, setComments] = useState("");
 
   const handleSubmit = () => {
     alert(`Feedback Submitted!
-           Language: ${language}
-           Theme: ${theme}
-           Rating: ${feedback}
-           Comments: ${comments}`);
+Language: ${language}
+Theme: ${theme}
+Rating: ${feedback}
+Comments: ${comments}`);
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-    <div className="flex flex-col items-center justify-center bg-gray-100 p-6">
-      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-indigo-950">SETTINGS</h2>
-        
-        <div className="mb-4">
-          <label className="block text-indigo-950  font-semibold mb-2">Preferred Language</label>
-          <select
-            value={language}
-            onChange={handleLanguageChange}
-            className="w-full p-2 border border-gray-300 text-indigo-950 bg-slate-200 rounded-lg">
-            <option value="" disabled>Select a language</option>
-            <option value="English">English</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-          </select>
-        </div>
-        
-        {/* Themes */}
-        <div className="mb-4">
-          <label className="block text-indigo-950 font-semibold mb-2">Themes</label>
-          <select
-            value={theme}
-            onChange={handleThemeChange}
-            className="w-full p-2 border border-gray-300 text-indigo-950 bg-slate-200 rounded-lg">
-            <option value="" disabled>Select a theme</option>
-            <option value="Light">Light</option>
-            <option value="Dark">Dark</option>
-            <option value="System Default">System Default</option>
-          </select>
-        </div>
-        
-        {/* Feedback */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-indigo-950 font-semibold mb-2">Feedback</label>
-          <div className="flex space-x-2 ">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                onClick={() => handleFeedbackChange(star)}
-                className={`text-2xl ${feedback >= star ? 'text-yellow-500' : 'text-indigo-950'} bg-slate-200`}>
-                ★
-              </button>
-            ))}
+    <div className="min-h-screen flex flex-col
+      bg-gray-50 dark:bg-slate-950 transition-colors">
+
+      <EmployeeHeader />
+
+      <main className="flex-grow flex flex-col items-center p-28">
+
+        <div className="w-full max-w-md
+          bg-white dark:bg-slate-900
+          border border-gray-200 dark:border-slate-700
+          rounded-2xl shadow-lg p-6 animate-fadeUp">
+
+          <h2 className="text-2xl font-extrabold text-center mb-6
+            text-indigo-950 dark:text-slate-100">
+            Settings
+          </h2>
+
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold
+              text-gray-800 dark:text-slate-300">
+              Preferred Language
+            </label>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="w-full p-2 rounded-lg
+              bg-slate-200 dark:bg-slate-800
+              border border-gray-300 dark:border-slate-600
+              text-gray-900 dark:text-slate-200
+              focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="" disabled>Select a language</option>
+              <option>English</option>
+              <option>Spanish</option>
+              <option>French</option>
+            </select>
           </div>
+
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold
+              text-gray-800 dark:text-slate-300">
+              Theme Preference
+            </label>
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="w-full p-2 rounded-lg
+              bg-slate-200 dark:bg-slate-800
+              border border-gray-300 dark:border-slate-600
+              text-gray-900 dark:text-slate-200
+              focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="" disabled>Select a theme</option>
+              <option>Light</option>
+              <option>Dark</option>
+              <option>System Default</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold
+              text-gray-800 dark:text-slate-300">
+              Feedback
+            </label>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setFeedback(star)}
+                  className={`text-xl transition
+                    ${feedback >= star
+                      ? "text-yellow-400 dark:bg-gray-700"
+                      : "text-slate-400 dark:text-slate-900 dark:bg-white"}`}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block mb-2 font-semibold
+              text-gray-800 dark:text-slate-300">
+              Comments
+            </label>
+            <textarea
+              value={comments}
+              onChange={(e) => setComments(e.target.value)}
+              rows={4}
+              placeholder="Leave your comments here..."
+              className="w-full p-2 rounded-lg
+              bg-slate-200 dark:bg-slate-800
+              border border-gray-300 dark:border-slate-600
+              text-gray-900 dark:text-slate-200
+              focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          <button
+            onClick={handleSubmit}
+            className="w-full bg-blue-600 hover:bg-blue-700
+            text-white py-2 rounded-lg transition shadow"
+          >
+            Submit Feedback
+          </button>
         </div>
-        
-        {/* Feedback Comments */}
-        <div className="mb-4">
-          <label className="block text-indigo-950 font-semibold mb-2">Comments</label>
-          <textarea
-            value={comments}
-            onChange={handleCommentsChange}
-            className="w-full p-2 border border-gray-300 bg-slate-200 rounded-lg"
-            placeholder="Leave your comments here..."></textarea>
+
+        <div className="mt-8 text-center animate-fadeUp">
+          <h3 className="text-xl font-bold
+            text-gray-900 dark:text-slate-100 mb-2">
+            FAQ
+          </h3>
         </div>
-        
-        {/* Submit Button */}
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">
-          Submit Feedback
-        </button>
-      </div>
-      
-      {/* FAQ Section */}
-      <div className="mt-6">
-        <h3 className="text-xl font-bold text-center mb-2">FAQ</h3>
-        <a href="https://www.financestrategists.com/wealth-management/asset-management" target="_blank" rel="noopener noreferrer"
-          className="text-indigo-950 hover:text-red-500">
-          https://www.financestrategists.com/wealth-management/asset-management
-        </a>
-      </div>
-    </div>
+
+      </main>
     </div>
   );
 };
 
-export default settings;
+export default Settings;
