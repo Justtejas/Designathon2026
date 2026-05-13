@@ -82,7 +82,7 @@ export default function AssetPage() {
                     assetsRequest.userName.toLowerCase().includes(searchLower) ||
                     assetsRequest.assetReqId.toString().includes(searchLower) ||
                     assetsRequest.assetName.toLowerCase().includes(searchLower)) &&
-                (selectedStatus ? assetsRequest.requestStatusName === selectedStatus : true) &&
+                (selectedStatus ? assetsRequest.requestStatus === selectedStatus : true) &&
                 dateMatch
             );
         });
@@ -99,7 +99,7 @@ export default function AssetPage() {
         console.log(`Selected value changed to: ${newValue}`);
         setSelectedValue(newValue);
         const selectedAsset = assetsRequest.find(req => req.assetReqId === newValue);
-        if (selectedAsset && (selectedAsset.requestStatusName === 'Allocated' || selectedAsset.requestStatusName === 'Rejected')) {
+        if (selectedAsset && (selectedAsset.requestStatus === 'Allocated' || selectedAsset.requestStatus === 'Rejected')) {
             console.log('Cannot edit this request as it is Allocated or Rejected.');
         }
     };
@@ -121,7 +121,7 @@ export default function AssetPage() {
                 assetsRequest.userName,
                 assetsRequest.assetName,
                 assetsRequest.assetReqDate,
-                assetsRequest.requestStatusName
+                assetsRequest.requestStatus
             ];
             tableRows.push(RequestData);
         });
@@ -319,10 +319,10 @@ export default function AssetPage() {
                                             <TableCell>{assetsRequest.assetName}</TableCell>
                                             <TableCell>{assetsRequest.assetReqDate}</TableCell>
                                             <TableCell sx={{
-                                                color: assetsRequest.requestStatusName === 'Allocated' ? '#0BDA51' :
-                                                    assetsRequest.requestStatusName === 'Pending' ? '#36A2EB' : '#D2042D',
+                                                color: assetsRequest.requestStatus === 'Allocated' ? '#0BDA51' :
+                                                    assetsRequest.requestStatus === 'Pending' ? '#36A2EB' : '#D2042D',
                                             }}>
-                                                {assetsRequest.requestStatusName}
+                                                {assetsRequest.requestStatus}
                                             </TableCell>
                                             <TableCell>
                                                 <Link to={`/admin/request/${assetsRequest.assetReqId}`}>

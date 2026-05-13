@@ -92,6 +92,7 @@ def get_user_id():
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
             payload = decode_token(token)
+            print(payload)
             if payload and "userId" in payload:
                 return int(payload["userId"])
         return None

@@ -69,9 +69,9 @@ namespace Hexa_Hub.Repository
 
         public async Task<List<AssetAllocation>> GetAllocationsByMonthAsync(string month)
         {
-            var monthname = DateTime.ParseExact(month, "MMMM", null).Month;
+            var month = DateTime.ParseExact(month, "MMMM", null).Month;
             return await _context.AssetAllocations
-                                 .Where(a => a.allocatedDate.Month == monthname)
+                                 .Where(a => a.allocatedDate.Month == month)
                                  .ToListAsync();
         }
 
@@ -84,9 +84,9 @@ namespace Hexa_Hub.Repository
 
         public async Task<List<AssetAllocation>> GetAllocationsByMonthAndYearAsync(string month, int year)
         {
-            var monthname = DateTime.ParseExact(month, "MMMM", null).Month;
+            var month = DateTime.ParseExact(month, "MMMM", null).Month;
             return await _context.AssetAllocations
-                                 .Where(a => a.allocatedDate.Month == monthname && a.allocatedDate.Year == year)
+                                 .Where(a => a.allocatedDate.Month == month && a.allocatedDate.Year == year)
                                  .ToListAsync();
         }
 

@@ -66,7 +66,7 @@ namespace Hexa_Hub.Controllers
             }
         }
 
-        // GET: api/AssetAllocation/filter-by-month?monthName=January
+        // GET: api/AssetAllocation/filter-by-month?month=January
         [HttpGet("filter-by-month")]
         public async Task<IActionResult> FilterAllocationsByMonth(string month)
         {

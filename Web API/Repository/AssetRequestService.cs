@@ -54,9 +54,9 @@ namespace Hexa_Hub.Repository
         {
             _log.LogInfo("Fetching Asset Requests by month");
 
-            var monthname = DateTime.ParseExact(month, "MMMM", null).Month;
+            var month = DateTime.ParseExact(month, "MMMM", null).Month;
             return await _context.AssetRequests
-                                 .Where(a => a.assetReqDate.Month == monthname)
+                                 .Where(a => a.assetReqDate.Month == month)
                                  .ToListAsync();
         }
 
@@ -73,9 +73,9 @@ namespace Hexa_Hub.Repository
         {
             _log.LogInfo("Fetching Asset Requests Month and Year");
 
-            var monthname = DateTime.ParseExact(month, "MMMM", null).Month;
+            var month = DateTime.ParseExact(month, "MMMM", null).Month;
             return await _context.AssetRequests
-                                 .Where(a => a.assetReqDate.Month == monthname && a.assetReqDate.Year == year)
+                                 .Where(a => a.assetReqDate.Month == month && a.assetReqDate.Year == year)
                                  .ToListAsync();
         }
 
@@ -295,9 +295,9 @@ namespace Hexa_Hub.Repository
                 throw new AssetRequestNotFoundException($"Asset request with ID {id} not found.");
             }
 
-            if (assetRequestDto.requestStatusName != existingRequest.requestStatus.ToString())
+            if (assetRequestDto.requestStatus != existingRequest.requestStatus.ToString())
             {
-                if (Enum.TryParse(assetRequestDto.requestStatusName, out requestStatus parsedStatus))
+                if (Enum.TryParse(assetRequestDto.requestStatus, out requestStatus parsedStatus))
                 {
                     existingRequest.requestStatus = parsedStatus;
 

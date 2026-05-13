@@ -59,98 +59,221 @@ export default function Dashboard() {
     const [assetRequestData, setAssetRequestData] = useState([]);
     const [assetAllocData, setAssetAllocData] = useState([]);
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         setLoading(true);
+    //         const token = Cookies.get('token');
+    //         if (token) {
+    //             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    //         } else {
+    //             console.error('No valid token found.');
+    //             setLoading(false);
+    //             return;
+    //         }
+
+    //         try {
+    //             const auditResponse = await axios.get('http://localhost:7287/api/Audits/All');
+    //             if (auditResponse.data && auditResponse.data) {
+    //                 setAuditTableData(auditResponse.data);
+    //             } else {
+    //                 console.error('Expected an array for Audits, but got:', auditResponse.data)
+    //             }
+
+    //             //Fetching Asset data
+    //             const assetResponse = await axios.get('http://localhost:7287/api/Assets');
+    //             if (assetResponse.data && assetResponse.data) {
+    //                 setTotalAssets(assetResponse.data.length);
+    //             } else {
+    //                 console.error('Expected an array for assets, but got:', assetResponse.data);
+    //             }
+    //             //Fetching Allcoated Assets data
+    //             const allocatedResponse = await axios.get('http://localhost:7287/api/Assets/Status?status=Allocated');
+    //             if (allocatedResponse.data && allocatedResponse.data) {
+    //                 setAllocatedAssets(allocatedResponse.data.length);
+    //             } else {
+    //                 console.error('Expected an array for allocated assets, but got:', allocatedResponse.data);
+    //             }
+
+    //             //Fetching Users data
+    //             const usersResponse = await axios.get('http://localhost:7287/api/users');
+    //             if (usersResponse.data && usersResponse.data) {
+    //                 setUsers(usersResponse.data);
+    //                 setTotalEmployees(usersResponse.data.length);
+    //             } else {
+    //                 console.error('Expected an array for users, but got:', usersResponse.data);
+    //             }
+
+    //             //Fetching MaintenaceLog data
+    //             const logResponse = await axios.get('http://localhost:7287/api/ServiceRequests/Status/UnderReview');
+    //             if (logResponse.data && logResponse.data) {
+    //                 setMaintenanceLog(logResponse.data.length);
+    //             } else {
+    //                 console.error('Expected an array for allocated asset, but got: ', logResponse.data);
+    //             }
+
+    //             //Fetching Service Requests data with status
+    //             const statuses = ['UnderReview', 'Approved', 'Completed'];
+    //             const serviceCounts = await Promise.all(
+    //                 statuses.map(status => axios.get(`http://localhost:7287/api/ServiceRequests/Status/${status}`))
+    //             );
+
+    //             const newServiceData = serviceCounts.map((response, index) => ({
+    //                 name: statuses[index],
+    //                 value: response.data ? response.data.length : 0
+    //             }));
+    //             setServiceData(newServiceData);
+
+    //             //Fetching Request and Allocation data filtered by month
+    //             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    //             const requestCounts = await Promise.all(
+    //                 months.map(async (month) => {
+    //                     try {
+    //                         const response = await axios.get(`http://localhost:7287/api/AssetRequests/filter-by-month?month=${month}`);
+    //                         const responseAlloc = await axios.get(`http://localhost:7287/api/AssetAllocations/filter-by-month?month=${month}`);
+    //                         return {
+    //                             name: month,
+    //                             AssetRequest: response.data ? response.data.length : 0,
+    //                             Allocated: responseAlloc.data ? responseAlloc.data.length : 0,
+    //                         };
+    //                     } catch (error) {
+    //                         console.error(`Error fetching data for month ${month}:`, error);
+    //                         return { name: month, requests: 0, requestsAlloc: 0 };
+    //                     }
+    //                 })
+    //             );
+    //             setAssetRequestData(requestCounts);
+    //             setAssetAllocData(requestCounts);
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error.response ? error.response.data : error.message);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);
+
     useEffect(() => {
+        const controller = new AbortController();
+    
         const fetchData = async () => {
             setLoading(true);
+    
             const token = Cookies.get('token');
-            if (token) {
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            } else {
+    
+            if (!token) {
                 console.error('No valid token found.');
                 setLoading(false);
                 return;
             }
-
+    
+            const api = axios.create({
+                baseURL: 'http://localhost:7287/api',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                signal: controller.signal
+            });
+    
+            const safeGet = async (url, fallback = []) => {
+                try {
+                    const response = await api.get(url);
+                    return Array.isArray(response.data) ? response.data : fallback;
+                } catch (error) {
+                    if (axios.isCancel(error)) {
+                        console.warn(`Request cancelled: ${url}`);
+                    } else {
+                        console.error(
+                            `Error fetching ${url}:`,
+                            error.response?.data || error.message
+                        );
+                    }
+    
+                    return fallback;
+                }
+            };
+    
             try {
-                const auditResponse = await axios.get('http://localhost:7287/api/Audits/All');
-                if (auditResponse.data && auditResponse.data) {
-                    setAuditTableData(auditResponse.data);
-                } else {
-                    console.error('Expected an array for Audits, but got:', auditResponse.data)
-                }
-
-                //Fetching Asset data
-                const assetResponse = await axios.get('http://localhost:7287/api/Assets');
-                if (assetResponse.data && assetResponse.data) {
-                    setTotalAssets(assetResponse.data.length);
-                } else {
-                    console.error('Expected an array for assets, but got:', assetResponse.data);
-                }
-                //Fetching Allcoated Assets data
-                const allocatedResponse = await axios.get('http://localhost:7287/api/Assets/Status?status=Allocated');
-                if (allocatedResponse.data && allocatedResponse.data) {
-                    setAllocatedAssets(allocatedResponse.data.length);
-                } else {
-                    console.error('Expected an array for allocated assets, but got:', allocatedResponse.data);
-                }
-
-                //Fetching Users data
-                const usersResponse = await axios.get('http://localhost:7287/api/users');
-                if (usersResponse.data && usersResponse.data) {
-                    setUsers(usersResponse.data);
-                    setTotalEmployees(usersResponse.data.length);
-                } else {
-                    console.error('Expected an array for users, but got:', usersResponse.data);
-                }
-
-                //Fetching MaintenaceLog data
-                const logResponse = await axios.get('http://localhost:7287/api/ServiceRequests/Status/UnderReview');
-                if (logResponse.data && logResponse.data) {
-                    setMaintenanceLog(logResponse.data.length);
-                } else {
-                    console.error('Expected an array for allocated asset, but got: ', logResponse.data);
-                }
-
-                //Fetching Service Requests data with status
+                const [
+                    audits,
+                    assets,
+                    allocatedAssets,
+                    users,
+                    maintenanceLogs
+                ] = await Promise.all([
+                    safeGet('/Audits/All'),
+                    safeGet('/Assets'),
+                    safeGet('/Assets/Status?status=Allocated'),
+                    safeGet('/users'),
+                    safeGet('/ServiceRequests/Status/UnderReview')
+                ]);
+    
+                setAuditTableData(audits);
+                setTotalAssets(assets.length);
+                setAllocatedAssets(allocatedAssets.length);
+                setUsers(users);
+                setTotalEmployees(users.length);
+                setMaintenanceLog(maintenanceLogs.length);
+    
                 const statuses = ['UnderReview', 'Approved', 'Completed'];
-                const serviceCounts = await Promise.all(
-                    statuses.map(status => axios.get(`http://localhost:7287/api/ServiceRequests/Status/${status}`))
-                );
-
-                const newServiceData = serviceCounts.map((response, index) => ({
-                    name: statuses[index],
-                    value: response.data ? response.data.length : 0
-                }));
-                setServiceData(newServiceData);
-
-                //Fetching Request and Allocation data filtered by month
-                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                const requestCounts = await Promise.all(
-                    months.map(async (month) => {
-                        try {
-                            const response = await axios.get(`http://localhost:7287/api/AssetRequests/filter-by-month?month=${month}`);
-                            const responseAlloc = await axios.get(`http://localhost:7287/api/AssetAllocations/filter-by-month?month=${month}`);
-                            return {
-                                name: month,
-                                AssetRequest: response.data ? response.data.length : 0,
-                                Allocated: responseAlloc.data ? responseAlloc.data.length : 0,
-                            };
-                        } catch (error) {
-                            console.error(`Error fetching data for month ${month}:`, error);
-                            return { name: month, requests: 0, requestsAlloc: 0 };
-                        }
+    
+                const serviceDataResult = await Promise.all(
+                    statuses.map(async (status) => {
+                        const data = await safeGet(`/ServiceRequests/Status/${status}`);
+    
+                        return {
+                            name: status,
+                            value: data.length
+                        };
                     })
                 );
-                setAssetRequestData(requestCounts);
-                setAssetAllocData(requestCounts);
+    
+                setServiceData(serviceDataResult);
+    
+                const months = [
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December'
+                ];
+    
+                const monthlyData = await Promise.all(
+                    months.map(async (month) => {
+                        const [requests, allocations] = await Promise.all([
+                            safeGet(`/AssetRequests/filter-by-month?month=${month}`),
+                            safeGet(`/AssetAllocations/filter-by-month?month=${month}`)
+                        ]);
+    
+                        return {
+                            name: month,
+                            AssetRequest: requests.length,
+                            Allocated: allocations.length
+                        };
+                    })
+                );
+    
+                setAssetRequestData(monthlyData);
+                setAssetAllocData(monthlyData);
             } catch (error) {
-                console.error('Error fetching data:', error.response ? error.response.data : error.message);
+                console.error('Unexpected error while fetching dashboard data:', error);
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchData();
+    
+        return () => {
+            controller.abort();
+        };
     }, []);
 
     const getColor = (index) => {

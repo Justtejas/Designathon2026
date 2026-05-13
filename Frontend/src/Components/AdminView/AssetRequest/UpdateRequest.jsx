@@ -50,7 +50,7 @@ const UpdateAssetRequest = () => {
                     categoryName: data.categoryName,
                     assetReqDate: new Date(data.assetReqDate).toISOString().split('T')[0],
                     assetReqReason: data.assetReqReason,
-                    requestStatus: data.requestStatus === 0 ? "Pending" : data.requestStatus === 1 ? "Allocated" : "Rejected", 
+                    requestStatus: data.requestStatus, 
                 });
             } catch (error) {
                 console.error('Error fetching asset request details:', error);
@@ -82,7 +82,7 @@ const UpdateAssetRequest = () => {
                 categoryName: assetRequest.categoryName,
                 assetReqDate: assetRequest.assetReqDate,
                 assetReqReason: assetRequest.assetReqReason,
-                requestStatus: assetRequest.requestStatus === "Pending" ? 0 : assetRequest.requestStatus === "Allocated" ? 1 : 2,
+                requestStatus: assetRequest.requestStatus,
             });
             setTimeout(() => {
                 showToast('Request Updated Successfully', 'success');

@@ -167,7 +167,7 @@ def put_asset_request(asset_req_id):
             logger.info("Asset Request not found")
             return jsonify({"error": "Request not found"}), 404
         current_status = existing_request.get("requestStatus", "Pending")
-        new_status = data.get("requestStatusName")
+        new_status = data.get("requestStatus")
         if current_status in ["Allocated", "Rejected"]:
             return jsonify({"error": f"The Request ID {asset_req_id} has already been Allocated/Rejected and cannot be updated."}), 400
         # Update status
@@ -225,21 +225,37 @@ def delete_asset_request(asset_req_id):
 @asset_requests_blueprint.route("/api/AssetRequests/filter-by-month", methods=["GET"])
 def filter_asset_requests_by_month():
     try:
-        month = request.args.get('monthName')
+        month = request.args.get("month", "").strip()
         if not month:
             return jsonify({"error": "Month name is required."}), 400
+
         month_num = parse_month_name(month)
         requests = list(asset_requests.find({
-            "assetReqDate": {
-                "$expr": {"$eq": [{"$month": {"$dateFromString": {"dateString": "$assetReqDate"}}}, month_num]}
+            "$expr": {
+                "$eq": [
+                    {
+                        "$month": {
+                            "$dateFromString": {
+                                "dateString": "$assetReqDate"
+                            }
+                        }
+                    },
+                    month_num
+                ]
             }
         }))
         if not requests:
-            return jsonify({"error": f"No requests found for the month of {month}."}), 404
+            return jsonify({
+                "error": f"No requests found for the month of {month}."
+            }), 404
+        for req in requests:
+            req["_id"] = str(req["_id"])
         return jsonify(requests), 200
-    except Exception as e:
-        logger.info(f"Error filtering by month: {str(e)}")
+    except ValueError:
         return jsonify({"error": "Invalid month name"}), 400
+    except Exception as e:
+        logger.exception(f"Error filtering by month: {str(e)}")
+        return jsonify({"error": "Failed to filter asset requests by month"}), 500
  
 @asset_requests_blueprint.route("/api/AssetRequests/filter-by-year", methods=["GET"])
 def filter_asset_requests_by_year():

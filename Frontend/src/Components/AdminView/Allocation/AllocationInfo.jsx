@@ -103,7 +103,7 @@ const AllocationInfo = () => {
                                 <InfoItem label="Asset Name" value={allocation.assetName} />
                                 <InfoItem label="Asset Id" value={allocation.assetId || 'N/A'} />
                                 <InfoItem label="Category" value={allocation.categoryName} />
-                                <InfoItem label="Sub Category" value={allocation.categoryName} />
+                                <InfoItem label="Sub Category" value={allocation.subCategoryName} />
                                 <InfoItem label="Request Date" value={new Date(allocation.assetReqDate).toLocaleDateString()} />
                                 <InfoItem label="Allocated Date" value={new Date(allocation.allocatedDate).toLocaleDateString()} />
                                 {/* <InfoItem label="Request Reason" value={allocation.assetReqReason} /> */}

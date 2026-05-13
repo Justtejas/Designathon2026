@@ -95,12 +95,12 @@ const RequestInfo = () => {
                                 <Box>
                                     <Typography variant="h4">{request.assetName}</Typography>
                                     <Chip
-                                        label={request.requestStatusName}
+                                        label={request.requestStatus}
                                         color="secondary"
                                         sx={{
                                             mt: 1,
-                                            backgroundColor: request.requestStatusName === 'Allocated' ? '#0BDA51' :
-                                            request.requestStatusName === 'Pending' ? '#36A2EB' : '#D2042D',
+                                            backgroundColor: request.requestStatus === 'Allocated' ? '#0BDA51' :
+                                            request.requestStatus === 'Pending' ? '#36A2EB' : '#D2042D',
                                             color: '#000000' ,
                                             fontWeight: 'bold'
                                         }}

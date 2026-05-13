@@ -184,7 +184,7 @@ namespace Hexa_Hub.Controllers
             return _context.AssetRequests.Any(e => e.assetReqId == id);
         }
 
-        // GET: api/AssetRequest/filter-by-month?monthName=January
+        // GET: api/AssetRequest/filter-by-month?month=January
         [HttpGet("filter-by-month")]
         public async Task<IActionResult> FilterAssetRequestByMonth(string month)
         {

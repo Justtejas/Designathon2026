@@ -35,7 +35,23 @@ const token = Cookies.get('token');
 if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
-
+const formatDateTime = (dateString) => {
+    if (!dateString) return "-";
+  
+    const normalizedDate = dateString.split(".")[0];
+    const date = new Date(normalizedDate);
+  
+    const formatted = date.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  
+    return formatted.replace("am", "AM").replace("pm", "PM");
+  };
 export default function AllocationPage() {
     const { darkMode } = useTheme();
     const itemsPerPage = 10;
@@ -305,7 +321,7 @@ export default function AllocationPage() {
                                             <TableCell>{allocation.assetReqId}</TableCell>
                                             <TableCell>{allocation.assetName}</TableCell>
                                             <TableCell>{allocation.userName}</TableCell>
-                                            <TableCell>{allocation.allocatedDate}</TableCell>
+                                            <TableCell>{formatDateTime(allocation.allocatedDate)}</TableCell>
                                             <TableCell>
                                                 <Link to={`/admin/allocation/${allocation.allocationId}`}>
                                                     <IconButton>

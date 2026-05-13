@@ -109,7 +109,7 @@ namespace AssetHubTests
             Assert.AreEqual(updatedRequest.requestStatus, result.requestStatus, "Request Status should be updated");
 
             assetRequestMock.Verify(repo => repo.UpdateAssetRequest(It.Is<int>(id => id == updateRequestDto.assetReqId),
-                It.Is<UpdateRequestClassDto>(a => a.requestStatusName == updateRequestDto.requestStatusName)), Times.Once);
+                It.Is<UpdateRequestClassDto>(a => a.requestStatus == updateRequestDto.requestStatus)), Times.Once);
         }
     }
 }

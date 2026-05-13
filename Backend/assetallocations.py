@@ -11,18 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# --- Auth helpers (expected from your auth module) ---
-try:
-    from auth import get_user_id, get_user_role
-except Exception:
-    # Fallbacks if not provided: use headers for local/testing
-    def get_user_id():
-        uid = request.headers.get("X-User-Id")
-        return int(uid) if uid and uid.isdigit() else None
-
-    def get_user_role():
-        return request.headers.get("X-User-Role", "User")
+from auth import get_user_id, get_user_role
 
 # --- MongoDB Client & Collection ---
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
@@ -32,7 +21,10 @@ client = MongoClient(MONGODB_URI)
 db = client['MaventoryDB']
 users = db['users']
 assets = db['Assets']
+categories = db['Categories']
+subcategories = db['SubCategories']
 allocations_col = db['AssetAllocations']
+asset_requests = db['AssetRequests']
 
 # --- Blueprint ---
 asset_allocations_bp = Blueprint("asset_allocations", __name__, url_prefix="/api/AssetAllocations")
@@ -80,31 +72,26 @@ def parse_iso_date(datestr):
 def current_year():
     return datetime.now().year
 
-def to_allocation_dto(doc):
-    # Mirrors AllocationDto
-    return {
-        "userId": doc.get("userId"),
-        "assetName": doc.get("assetName"),
-        "assetId": doc.get("assetId"),
-        "categoryName": doc.get("categoryName"),
-        "categoryId": doc.get("categoryId"),
-        "Value": doc.get("Value"),
-        "Model": doc.get("Model"),
-        "allocatedDate": serialize_dates(doc.get("allocatedDate")),
-    }
-
 def to_allocation_class_dto(doc):
     # Mirrors AllocationClassDto
     existing_user = users.find_one({"userId": doc.get('userId')})
     existing_asset = assets.find_one({"assetId": doc.get('assetId')})
+    existing_category = categories.find_one({"categoryId": existing_asset.get('categoryId')})
+    existing_subcategory = subcategories.find_one({"subCategoryId": existing_asset.get('subCategoryId')})
+    existing_request = asset_requests.find_one({"assetReqId": doc.get('assetReqId')})
     return {
         "allocationId": doc.get("allocationId"),
         "assetName": existing_asset.get("assetName"),
         "assetId": doc.get("assetId"),
         "userId": doc.get("userId"),
         "userName": existing_user.get("userName"),
+        "categoryName": existing_category.get('categoryName'),
+        "subCategoryName": existing_subcategory.get('subCategoryName'),
+        "assetReqDate": existing_request.get('assetReqDate'),
         "assetReqId": doc.get("assetReqId"),
         "allocatedDate": serialize_dates(doc.get("allocatedDate")),
+        "Value": existing_asset.get("Value"),
+        "Model": existing_asset.get("Model"),
     }
 
 def find_by_id_or_allocation_id(id_str):
@@ -138,7 +125,7 @@ def get_allocations_by_user_id(user_id):
         docs = list(allocations_col.find({"userId": user_id}))
         if not docs:
             return jsonify({"message": "Not Found"}), 404
-        dtos = [to_allocation_dto(d) for d in docs]
+        dtos = [to_allocation_class_dto(d) for d in docs]
         return jsonify(dtos), 200
     except Exception as e:
         logger.info(f"Error fetching allocations for user {user_id}: {e}")
@@ -152,14 +139,14 @@ def get_asset_allocations():
     try:
         uid = get_user_id()
         role = get_user_role()
-        if not uid:
-            return jsonify({"error": "Unauthorized"}), 401
 
         if role == "Admin":
             cursor = allocations_col.find({}).sort("allocatedDate", DESCENDING)
             docs = list(cursor)
             dtos = [to_allocation_class_dto(d) for d in docs]
             return jsonify(dtos), 200
+        elif not uid :
+            return jsonify({"error": "Unauthorized"}), 401
         else:
             docs = list(
                 allocations_col.find({"userId": uid})
@@ -281,13 +268,15 @@ def filter_by_date_range():
 def get_asset_allocation_by_id(id):
     try:
         uid = get_user_id()
-        if not uid:
+        role = get_user_role()
+
+        if role != "Admin" and not uid :
             return jsonify({"error": "Unauthorized"}), 401
 
         doc = find_by_id_or_allocation_id(id)
         if not doc:
             return jsonify({"error": "Not Found"}), 404
-
+        print(doc)
         dto = to_allocation_class_dto(doc)
         return jsonify(dto), 200
     except Exception as e:

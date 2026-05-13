@@ -16,7 +16,7 @@ namespace Hexa_Hub.DTO
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime assetReqDate { get; set; }
         public string assetReqReason { get; set; }
-        public string requestStatusName => requestStatus.ToString();
+        public string requestStatus => requestStatus.ToString();
         public requestStatus? requestStatus { get; set; }
     }
 
