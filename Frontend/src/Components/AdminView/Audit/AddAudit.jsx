@@ -73,11 +73,11 @@ const AddAudit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`http://localhost:7287/api/Audits`, formData);
+            const response = await axios.post(`http://localhost:7287/api/Audits`, formData);
+            showToast('Audit Added Successfully', 'success');
             setTimeout(() => {
-                showToast('Audit Added Successfully', 'success');
+                navigate('/admin/audit');
             }, 2000)
-            navigate('/admin/audit');
             setFormData({
                 assetId: '',
                 userId: '',
@@ -178,10 +178,10 @@ const AddAudit = () => {
                                             name="auditMessage"
                                             label="Audit Message"
                                             value={formData.auditMessage}
+                                            onChange={handleChange}
                                             variant="outlined"
                                             multiline
                                             rows={4}
-                                            InputProps={{ readOnly: true }}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>

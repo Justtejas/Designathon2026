@@ -96,10 +96,11 @@ const UpdateReturn = () => {
                 Condition: returnRequest.Condition,
                 returnStatus: returnRequest.returnStatus,
             });
+            showToast('Return Updated Successfully', 'success');
             setTimeout(() => {
-                showToast('Return Updated Successfully', 'success');
+                navigate('/admin/return');
             }, 2000)
-            navigate('/admin/return');
+            
         } catch (error) {
             console.error('Error updating return request details:', error.response?.data || error.message);
             showToast('Return Updated Failed', 'error');

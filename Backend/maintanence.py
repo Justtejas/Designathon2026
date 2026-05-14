@@ -43,12 +43,14 @@ def serialize_maintenance_class(doc):
     """Serialize MaintenanceClassDto with asset/user info"""
     if doc:
         doc['_id'] = str(doc['_id']) if doc.get('_id') else None
+        existing_user = users.find_one({"userId": doc.get('userId')})
+        existing_asset = assets.find_one({"assetId": doc.get('assetId')})
         return {
             "maintenanceId": doc.get('maintenanceId'),
             "assetId": doc.get('assetId'),
-            "assetName": doc.get('assetName'),
+            "assetName": existing_asset.get('assetName'),
             "userId": doc.get('userId'),
-            "userName": doc.get('userName'),
+            "userName": existing_user.get('userName'),
             "maintenanceDate": doc.get('maintenanceDate'),
             "Cost": doc.get('Cost'),
             "maintenanceDescription": doc.get('maintenanceDescription')

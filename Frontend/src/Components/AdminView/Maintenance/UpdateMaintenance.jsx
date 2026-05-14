@@ -81,10 +81,11 @@ const UpdateMaintenanceLog = () => {
     
         try {
             await axios.put(`http://localhost:7287/api/MaintenanceLogs/${id}`, dataToUpdate);
+            showToast('Maintenance Updated Successfully', 'success');
             setTimeout(() => {
-                showToast('Maintenance Updated Successfully', 'success');
+                navigate('/admin/maintenance'); 
             }, 2000);
-            navigate('/admin/maintenance'); 
+            
         } catch (error) {
             console.error('Error updating maintenance log details:', error.response?.data || error.message);
             showToast('Maintenance Update Failed', 'error');

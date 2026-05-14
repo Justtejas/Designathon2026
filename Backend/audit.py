@@ -78,6 +78,8 @@ def serialize_audit_doc(doc):
         }
         auditStatus = doc.get('auditStatus', 'Sent')
         display_status = status_map.get(auditStatus, auditStatus)
+        existing_user = users.find_one({"userId": doc.get('userId')})
+        existing_asset = assets.find_one({"assetId": doc.get('assetId')})
         return {
             "auditId": doc.get('auditId'),
             "assetId": doc.get('assetId'),
@@ -85,8 +87,8 @@ def serialize_audit_doc(doc):
             "auditDate": doc.get('auditDate'),
             "auditMessage": doc.get('auditMessage'),
             "auditStatus": display_status,
-            "assetName": doc.get('assetName'),
-            "userName": doc.get('userName')
+            "assetName": existing_asset.get('assetName'),
+            "userName": existing_user.get('userName')
         }
     return None
  
@@ -152,7 +154,7 @@ def get_all_audits():
         logger.info("Fetching all audits (Admin - top 5)")
         pipeline = [
             {"$lookup": {
-                "from": "Users",
+                "from": "users",
                 "localField": "userId",
                 "foreignField": "userId",
                 "as": "user"
@@ -195,7 +197,7 @@ def get_audit_by_id(audit_id):
         pipeline = [
             {"$match": {"auditId": audit_id}},
             {"$lookup": {
-                "from": "Users",
+                "from": "users",
                 "localField": "userId",
                 "foreignField": "userId",
                 "as": "user"
@@ -244,7 +246,7 @@ def get_audit(audit_id):
             pipeline = [{"$match": {"auditId": audit_id, "userId": user_id}}]
         pipeline += [
             {"$lookup": {
-                "from": "Users",
+                "from": "users",
                 "localField": "userId",
                 "foreignField": "userId",
                 "as": "user"
@@ -336,14 +338,14 @@ def post_audit():
         logger.info(f"Created audit with ID: {result.inserted_id}")
         # Notify employee
         employee = users.find_one({"userId": audit_doc["userId"]})
-        if employee:
-            send_email(
-                employee["userMail"],
-                "Audit Request",
-                f"Dear {employee['userName']},<br><br>You have been assigned an Audit Request {audit_doc['auditId']} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory"
-            )
-        else:
-            return jsonify({"error": "Employee not found"}), 404
+        # if employee:
+        #     send_email(
+        #         employee["userMail"],
+        #         "Audit Request",
+        #         f"Dear {employee['userName']},<br><br>You have been assigned an Audit Request {audit_doc['auditId']} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory"
+        #     )
+        # else:
+        #     return jsonify({"error": "Employee not found"}), 404
         audit_doc["_id"] = str(result.inserted_id)
         return jsonify(audit_doc), 201
     except Exception as e:
