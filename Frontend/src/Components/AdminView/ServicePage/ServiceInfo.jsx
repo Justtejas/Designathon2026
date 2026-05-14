@@ -85,12 +85,12 @@ const ServiceInfo = () => {
                                 <Box>
                                     <Typography variant="h4">{request.assetName}</Typography>
                                     <Chip
-                                        label={request.serviceReqStatusName}
+                                        label={request.serviceReqStatus}
                                         color="secondary"
                                         sx={{
                                             mt: 1,
-                                            backgroundColor: request.serviceReqStatusName === 'Approved' ? '#0BDA51' : request.serviceReqStatusName ==='Rejected' ? '#D2042D' :
-                                            request.serviceReqStatusName === 'UnderReview' ? '#36A2EB' : '#FF7518',
+                                            backgroundColor: request.serviceReqStatus === 'Approved' ? '#0BDA51' : request.serviceReqStatus ==='Rejected' ? '#D2042D' :
+                                            request.serviceReqStatus === 'UnderReview' ? '#36A2EB' : '#FF7518',
                                             color: '#000000' ,
                                             fontWeight: 'bold'
                                         }}
@@ -104,7 +104,7 @@ const ServiceInfo = () => {
                                 <InfoItem label="Asset Id" value={request.assetId || 'N/A'} />  
                                 <InfoItem label="Asset Name" value={request.assetName } />
                                 <InfoItem label="Service Date" value={request.serviceRequestDate} />
-                                <InfoItem label="Issue Type" value={request.issueTypeName} />
+                                <InfoItem label="Issue Type" value={request.issueType} />
                                 <InfoItem label="Description" value={request.serviceDescription} />
                             </Grid>
                         </CardContent>

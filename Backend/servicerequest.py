@@ -68,9 +68,10 @@ def get_service_requests():
         logger.info(f"Fetching service requests for user: {user_id}")
         if is_admin():
             # Admin sees all requests
+            print("admin")
             pipeline = [
                 {"$lookup": {
-                    "from": "Users",
+                    "from": "users",
                     "localField": "userId",
                     "foreignField": "userId",
                     "as": "user"
@@ -104,7 +105,7 @@ def get_service_requests():
             pipeline = [
                 {"$match": {"userId": user_id}},
                 {"$lookup": {
-                    "from": "Users",
+                    "from": "users",
                     "localField": "userId",
                     "foreignField": "userId",
                     "as": "user"
@@ -161,6 +162,7 @@ def put_service_request(service_id):
         if not existing_request:
             return jsonify({"error": f"Service request with ID {service_id} not found"}), 404
         new_status = data.get("serviceReqStatus")
+        print(new_status)
         valid_statuses = ["UnderReview", "Approved", "Completed", "Rejected"]
         if new_status not in valid_statuses:
             return jsonify({"error": "Invalid serviceReqStatus value"}), 400
@@ -284,7 +286,7 @@ def get_service_request_by_id(service_id):
         pipeline = [
             {"$match": {"serviceId": service_id}},
             {"$lookup": {
-                "from": "Users",
+                "from": "users",
                 "localField": "userId",
                 "foreignField": "userId",
                 "as": "user"

@@ -34,6 +34,11 @@ const UpdateServiceRequest = () => {
     });
     const [error, setError] = useState(null);
 
+    const issueTypeMapping = {
+        1: 'Malfunction',
+        2: 'Repair',
+        3: 'Installation',
+      };
     // Fetch service request details
     useEffect(() => {
         const fetchServiceRequestDetails = async () => {
@@ -48,9 +53,9 @@ const UpdateServiceRequest = () => {
                     userId: data.userId,
                     assetId: data.assetId,
                     serviceRequestDate: new Date(data.serviceRequestDate).toISOString().split('T')[0],
-                    issueType: data.issueTypeName,
+                    issueType: issueTypeMapping[data.issueType],
                     serviceDescription: data.serviceDescription,
-                    serviceReqStatus: data.serviceReqStatusName || 'UnderReview',
+                    serviceReqStatus: data.serviceReqStatus || 'UnderReview',
                 });
             } catch (error) {
                 console.error('Error fetching service request details:', error);
@@ -81,11 +86,7 @@ const UpdateServiceRequest = () => {
             serviceRequestDate: serviceRequest.serviceRequestDate,
             issueType: serviceRequest.issueType,
             serviceDescription: serviceRequest.serviceDescription,
-            serviceReqStatus:
-                serviceRequest.serviceReqStatus === 'UnderReview' ? 0 :
-                    serviceRequest.serviceReqStatus === 'Approved' ? 1 :
-                        serviceRequest.serviceReqStatus === 'Completed' ? 2 :
-                            serviceRequest.serviceReqStatus === 'Rejected' ? 3 : 'Undefined',
+            serviceReqStatus: serviceRequest.serviceReqStatus,
         };
 
         try {

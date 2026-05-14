@@ -82,7 +82,7 @@ export default function ReturnPage() {
                     returnRequest.assetId.toString().includes(searchLower) ||
                     returnRequest.returnId.toString().includes(searchLower) ||
                     returnRequest.assetName.toLowerCase().includes(searchLower)) &&
-                (selectedStatus ? returnRequest.returnStatusName === selectedStatus : true) &&
+                (selectedStatus ? returnRequest.returnStatus === selectedStatus : true) &&
                 dateMatch
             );
         });
@@ -114,7 +114,7 @@ export default function ReturnPage() {
                 returnRequest.assetName,
                 returnRequest.userName,
                 returnRequest.returnDate,
-                returnRequest.returnStatusName,
+                returnRequest.returnStatus,
             ];
             tableRows.push(RequestData);
         });
@@ -343,7 +343,7 @@ export default function ReturnPage() {
                                         <TableCell>{returnRequest.assetName}</TableCell>
                                         <TableCell>{returnRequest.userName}</TableCell>
                                         <TableCell>{returnRequest.returnDate}</TableCell>
-                                        <TableCell sx={{ color: returnRequest.returnStatusName === 'Sent' ? '#36A2EB' : returnRequest.returnStatusName === 'Approved' ? '#0BDA51' : returnRequest.returnStatusName === 'Returned' ? '#FF7518' : '#D2042D', fontWeight: 'bold' }}>{returnRequest.returnStatusName}</TableCell>
+                                        <TableCell sx={{ color: returnRequest.returnStatus === 'Sent' ? '#36A2EB' : returnRequest.returnStatus === 'Approved' ? '#0BDA51' : returnRequest.returnStatus === 'Returned' ? '#FF7518' : '#D2042D', fontWeight: 'bold' }}>{returnRequest.returnStatus}</TableCell>
                                         <TableCell>
                                             <Link to={`/admin/return/${returnRequest.returnId}`}>
                                                 <IconButton>

@@ -74,7 +74,7 @@ export default function MaintenancePage() {
                 (!maxDate || new Date(log.maintenanceDate) <= new Date(maxDate));
             return (
                 log.assetName.toLowerCase().includes(searchLower) &&
-                (selectedStatus ? log.serviceReqStatusName === selectedStatus : true) &&
+                (selectedStatus ? log.serviceReqStatus === selectedStatus : true) &&
                 dateMatch
             );
         });

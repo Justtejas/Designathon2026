@@ -86,11 +86,11 @@ const RequestInfo = () => {
                                 <Box>
                                     <Typography variant="h4">{returnRequest.assetName}</Typography>
                                     <Chip
-                                        label={returnRequest.returnStatusName}
+                                        label={returnRequest.returnStatus}
                                         color="secondary"
                                         sx={{
                                             mt: 1,
-                                            backgroundColor: returnRequest.returnStatusName === 'Sent' ? '#36A2EB' : returnRequest.returnStatusName === 'Approved' ? '#0BDA51' : returnRequest.returnStatusName === 'Returned' ? '#FF7518' : '#D2042D',
+                                            backgroundColor: returnRequest.returnStatus === 'Sent' ? '#36A2EB' : returnRequest.returnStatus === 'Approved' ? '#0BDA51' : returnRequest.returnStatus === 'Returned' ? '#FF7518' : '#D2042D',
                                             color: '#000000' ,
                                             fontWeight: 'bold'
                                         }}

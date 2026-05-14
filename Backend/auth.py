@@ -89,6 +89,7 @@ def decode_token(token):
 def get_user_id():
     try:
         auth_header = request.headers.get("Authorization")
+        #print(request.headers)
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
             payload = decode_token(token)

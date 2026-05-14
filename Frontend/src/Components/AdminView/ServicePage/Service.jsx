@@ -81,7 +81,7 @@ export default function ServicePage() {
                     request.userName.toLowerCase().includes(searchLower) ||
                     request.serviceId.toString().includes(searchLower) ||
                     request.assetName.toLowerCase().includes(searchLower)) &&
-                (selectedStatus ? request.serviceReqStatusName === selectedStatus : true) &&
+                (selectedStatus ? request.serviceReqStatus === selectedStatus : true) &&
                 dateMatch
             );
         });
@@ -97,7 +97,7 @@ export default function ServicePage() {
     const handleRadioBtn = (newValue) => {
         setSelectedValue(newValue);
         const selectedRequest = serviceRequest.find(req => req.serviceId === newValue);
-        if (selectedRequest && (selectedRequest.serviceReqStatusName === 'Completed')) {
+        if (selectedRequest && (selectedRequest.serviceReqStatus === 'Completed')) {
             console.log('Cannot edit this request as it is Completed.');
         }
     };
@@ -119,7 +119,7 @@ export default function ServicePage() {
                 Request.userName,
                 Request.assetName,
                 Request.serviceRequestDate,
-                Request.serviceReqStatusName
+                Request.serviceReqStatus
             ];
             tableRows.push(RequestData);
         });
@@ -347,10 +347,10 @@ export default function ServicePage() {
                                             <TableCell>{request.assetName}</TableCell>
                                             <TableCell>{new Date(request.serviceRequestDate).toLocaleDateString()}</TableCell>
                                             <TableCell sx={{
-                                                color: request.serviceReqStatusName === 'Approved' ? '#0BDA51' : request.serviceReqStatusName === 'Rejected' ? '#D2042D' :
-                                                    request.serviceReqStatusName === 'UnderReview' ? '#36A2EB' : '#FF7518',
+                                                color: request.serviceReqStatus === 'Approved' ? '#0BDA51' : request.serviceReqStatus === 'Rejected' ? '#D2042D' :
+                                                    request.serviceReqStatus === 'UnderReview' ? '#36A2EB' : '#FF7518',
                                             }}>
-                                                {request.serviceReqStatusName}
+                                                {request.serviceReqStatus}
                                             </TableCell>
                                             <TableCell>
                                                 <Link to={`/admin/service/${request.serviceId}`}>

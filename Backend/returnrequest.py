@@ -95,7 +95,7 @@ def get_all_return_requests():
         logger.info("Fetching all return requests")
         pipeline = [
             {"$lookup": {
-                "from": "Users",
+                "from": "users",
                 "localField": "userId",
                 "foreignField": "userId",
                 "as": "user"
@@ -162,7 +162,7 @@ def get_return_request_by_id(return_id):
         pipeline = [
             {"$match": {"returnId": return_id}},
             {"$lookup": {
-                "from": "Users",
+                "from": "users",
                 "localField": "userId",
                 "foreignField": "userId",
                 "as": "user"
@@ -218,7 +218,7 @@ def get_return_request_admin(return_id):
         pipeline = [
             {"$match": {"returnId": return_id}},
             {"$lookup": {
-                "from": "Users",
+                "from": "users",
                 "localField": "userId",
                 "foreignField": "userId",
                 "as": "user"

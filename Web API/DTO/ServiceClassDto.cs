@@ -17,10 +17,10 @@ namespace Hexa_Hub.DTO
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime serviceRequestDate { get; set; }
-        public string issueTypeName => issueType.ToString();
+        public string issueType => issueType.ToString();
         public issueType issueType { get; set; }
         public string serviceDescription { get; set; }
-        public string serviceReqStatusName => serviceReqStatus.ToString();
+        public string serviceReqStatus => serviceReqStatus.ToString();
         public serviceReqStatus serviceReqStatus { get; set; }
            
     }

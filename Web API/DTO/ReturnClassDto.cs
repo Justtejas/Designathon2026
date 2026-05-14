@@ -22,7 +22,7 @@ namespace Hexa_Hub.DTO
         public string Reason { get; set; }
         public string Condition { get; set; }
 
-        public string returnStatusName => returnStatus.ToString();
+        public string returnStatus => returnStatus.ToString();
         public ReturnReqStatus returnStatus { get; set; }
     }
 }

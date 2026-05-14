@@ -36,12 +36,6 @@ const UpdateReturn = () => {
     });
     const [error, setError] = useState(null);
 
-    const statusMap = {
-        0: 'Sent',
-        1: 'Approved',
-        2: 'Returned',
-        3: 'Rejected',
-    };
 
     const statusMapReverse = {
         'Sent': 0,
@@ -60,14 +54,14 @@ const UpdateReturn = () => {
                     returnId: data.returnId,
                     userId: data.userId, 
                     userName: data.userName, 
-            assetName: data.assetName,
+                    assetName: data.assetName,
                     assetId: data.assetId,
-                    categoryName: data.category ? data.categoryName : '',
+                    categoryName: data.categoryName,
                     categoryId: data.categoryId,
                     returnDate: new Date(data.returnDate).toISOString().split('T')[0],
                     Reason: data.Reason,
                     Condition: data.Condition,
-                    returnStatus: statusMap[data.returnStatus],
+                    returnStatus: data.returnStatus,
                 });
             } catch (error) {
                 console.error('Error fetching return request details:', error);
@@ -100,7 +94,7 @@ const UpdateReturn = () => {
                 returnDate: returnRequest.returnDate,
                 Reason: returnRequest.Reason,
                 Condition: returnRequest.Condition,
-                returnStatus: statusMapReverse[returnRequest.returnStatus],
+                returnStatus: returnRequest.returnStatus,
             });
             setTimeout(() => {
                 showToast('Return Updated Successfully', 'success');
