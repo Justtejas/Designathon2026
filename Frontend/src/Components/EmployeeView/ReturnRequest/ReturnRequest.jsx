@@ -199,11 +199,11 @@ const ReturnRequest = () => {
                                             <td className="px-4 py-2">{request.Reason}</td>
                                             <td className="px-4 py-2">{request.Condition}</td>
                                             <td className="px-4 py-2">
-                                                {request.returnStatus === 0 ? (
+                                                {request.returnStatus === "Sent" ? (
                                                     <span className="text-blue-600 font-semibold"><FontAwesomeIcon icon={faPaperPlane} /> Sent</span>
-                                                ) : request.returnStatus === 1 ? (
+                                                ) : request.returnStatus === "Approved" ? (
                                                     <span className="text-yellow-500 font-semibold"><FontAwesomeIcon icon={faThumbsUp} /> Approved</span>
-                                                ) : request.returnStatus === 2 ? (
+                                                ) : request.returnStatus === "Returned" ? (
                                                     <span className="text-green-500 font-semibold"><FontAwesomeIcon icon={faCircleCheck} /> Returned</span>
                                                 ) : (
                                                     <span className="text-red-600 font-semibold"><FontAwesomeIcon icon={faCircleXmark} /> Rejected</span>

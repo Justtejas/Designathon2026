@@ -293,15 +293,15 @@ def post_return_request():
             return jsonify({"error": "Employee access required"}), 403
         data = request.get_json()
         logger.info(f"Creating return request for user: {user_id}")
-        # Check if user has assets
         if not user_has_asset(user_id):
             return jsonify({"error": "User does not have an asset to return"}), 400
         returnId = get_next_sequence("Return")
+        existing_asset = assets.find_one({"assetId": data.get("assetId")})
         return_request_doc = {
             "returnId": returnId,
             "userId": user_id,
             "assetId": data.get("assetId"),
-            "categoryId": data.get("categoryId"),
+            "categoryId": existing_asset.get("categoryId"),
             "returnDate": data.get("returnDate"),
             "Reason": data.get("Reason"),
             "Condition": data.get("Condition"),
