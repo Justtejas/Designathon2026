@@ -189,7 +189,7 @@ const UpdateAsset = () => {
                                     <CloseIcon />
                                 </IconButton>
                             </Box>
-                            <Typography variant="h4" gutterBottom align="center" sx={{ mb: 4 }}>
+                            <Typography variant="h4" gutterBottom color="text.primary"align="center" sx={{ mb: 4 }}>
                                 Update Asset
                             </Typography>
                             <Typography variant="h6" sx={{ mb: 4 }}>Asset ID: {id}</Typography>

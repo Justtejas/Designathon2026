@@ -294,7 +294,7 @@ export default function Dashboard() {
                 }}
             >
                 <Toolbar />
-                <Typography variant="h5" gutterBottom sx={{ color: theme.palette.mode === 'dark' ? 'white' : 'black' }}>
+                <Typography variant="h5" gutterBottom color="text.primary"sx={{ color: theme.palette.mode === 'dark' ? 'white' : 'black' }}>
                     Asset Management
                 </Typography>
                 <Grid container spacing={3}>

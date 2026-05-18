@@ -119,7 +119,7 @@ const AddAudit = () => {
                                     <CloseIcon />
                                 </IconButton>
                             </Box>
-                            <Typography variant="h4" gutterBottom align="center" sx={{ mb: 4 }}>
+                            <Typography variant="h4" gutterBottom color="text.primary"align="center" sx={{ mb: 4 }}>
                                 Add Audit
                             </Typography>
                             <Box component="form" onSubmit={handleSubmit}>

@@ -44,7 +44,8 @@ def serialize_asset_request(doc):
             "categoryName": existing_category.get('categoryName'),
             "assetReqDate": doc.get('assetReqDate'),
             "assetReqReason": doc.get('assetReqReason'),
-            "requestStatus": doc.get('requestStatus', 'Pending')
+            "requestStatus": doc.get('requestStatus', 'Pending'),
+            "statusReason": doc.get('statusReason')
         }
     return None
  
@@ -141,6 +142,7 @@ def post_asset_request():
             "assetReqReason": data.get("assetReqReason"),
             "requestStatus": "Pending",
             "assetName": data.get("assetName"),
+            "statusReason": "Pending"
         }
         result = asset_requests.insert_one(asset_request_doc)
         logger.info(f"Added Asset Request with ID: {result.inserted_id}")
@@ -168,10 +170,12 @@ def put_asset_request(asset_req_id):
             return jsonify({"error": "Request not found"}), 404
         current_status = existing_request.get("requestStatus", "Pending")
         new_status = data.get("requestStatus")
+        new_reason = data.get("statusReason")
         if current_status in ["Allocated", "Rejected"]:
             return jsonify({"error": f"The Request ID {asset_req_id} has already been Allocated/Rejected and cannot be updated."}), 400
         # Update status
-        update_data = {"requestStatus": new_status}
+        update_data = {"requestStatus": new_status,
+                       "statusReason":new_reason}
         if new_status == "Allocated":
             # Handle allocation logic
             allocation_exists = asset_allocations.find_one({"assetReqId": asset_req_id})
@@ -188,7 +192,7 @@ def put_asset_request(asset_req_id):
                 # Update asset status
                 assets.update_one(
                     {"assetId": data.get("assetId")},
-                    {"$set": {"assetStatus": "Allocated"}}
+                    {"$set": update_data}
                 )
         result = asset_requests.update_one(
             {"assetReqId": asset_req_id},

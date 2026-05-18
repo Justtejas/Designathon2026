@@ -7,6 +7,7 @@ import usePagination from '../../Utils/usePagination';
 import RadioButton from '../../Utils/RadioButton';
 import { jwtToken } from '../../Utils/utils';
 import Cookies from 'js-cookie';
+import ToastNotification, { showToast } from '../../Utils/ToastNotification';
 import {
     Box,
     Table,
@@ -101,6 +102,7 @@ export default function AssetPage() {
         const selectedAsset = assetsRequest.find(req => req.assetReqId === newValue);
         if (selectedAsset && (selectedAsset.requestStatus === 'Allocated' || selectedAsset.requestStatus === 'Rejected')) {
             console.log('Cannot edit this request as it is Allocated or Rejected.');
+            showToast('Cannot edit this request as it is Allocated or Rejected', 'info');
         }
     };
 
@@ -190,7 +192,7 @@ export default function AssetPage() {
                 flexDirection: 'column',
                 minHeight: 'fit-content',
             }}
-        >
+        ><ToastNotification />
             <Box sx={{ display: 'flex', flex: 1 }}>
                 <Box
                     component="main"
@@ -201,10 +203,11 @@ export default function AssetPage() {
                         marginLeft: { sm: '240px' },
                     }}
                 >
-                    <Toolbar />
-                    <Typography variant="h4" gutterBottom>
-                        Asset Requests
-                    </Typography>
+                    <Toolbar />                  
+<Typography variant="h4" gutterBottom color="text.primary">
+  Asset Requests
+</Typography>
+
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                         <Autocomplete
                             freeSolo
@@ -229,6 +232,7 @@ export default function AssetPage() {
                                 />
                             )}
                         />
+                        
                         <Box>
                             <IconButton onClick={toggleFilterDrawer}>
                                 <FilterListIcon />
@@ -250,6 +254,7 @@ export default function AssetPage() {
                         anchor="right"
                         open={filterDrawerOpen}
                         onClose={toggleFilterDrawer}
+                        sx={{ zIndex: 1300 }}
                     >
                         <Box sx={{ width: 250, padding: 2, marginTop: '64px' }}>
                             <Typography variant="h6">Filters</Typography>
@@ -330,6 +335,12 @@ export default function AssetPage() {
                                                         <InfoIcon />
                                                     </IconButton>
                                                 </Link>
+                                                {assetsRequest.requestStatus === 'Pending' && (
+                                                <Link to={`/admin/request/update/${assetsRequest.assetReqId}`}>
+                                                    <IconButton>
+                                                    <EditIcon color="warning"/>
+                                                    </IconButton>
+                                                </Link>)}
                                             </TableCell>
                                         </TableRow>
                                     ))

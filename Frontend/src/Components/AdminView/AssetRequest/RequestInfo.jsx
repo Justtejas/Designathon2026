@@ -109,13 +109,15 @@ const RequestInfo = () => {
                             </Box>
                             <Grid container spacing={2}>
                                 <InfoItem label="Request ID" value={request.assetReqId} />
-                                <InfoItem label="User Id" value={request.userId || 'N/A'} />
                                 <InfoItem label="User Name" value={request.userName} />
                                 <InfoItem label="Asset Id" value={request.assetId || 'N/A'} />  
                                 <InfoItem label="Asset Name" value={request.assetName } />
                                 <InfoItem label="Category" value={request.categoryName} />
                                 <InfoItem label="Request Date" value={request.assetReqDate} />
                                 <InfoItem label="Request Reason" value={request.assetReqReason} />
+                                {request.requestStatus === 'Allocated' ?
+                                <InfoItem label="Reason for Approval" value={request.statusReason} />:
+                                <InfoItem label="Reason for Rejection" value={request.statusReason} />}
                             </Grid>
                         </CardContent>
                     </Card>

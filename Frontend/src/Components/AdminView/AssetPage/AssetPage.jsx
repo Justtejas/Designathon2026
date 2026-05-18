@@ -294,7 +294,7 @@ export default function AssetPage() {
                     }}
                 >
                     <Toolbar />
-                    <Typography variant="h4" gutterBottom>
+                    <Typography variant="h4" gutterBottom color="text.primary"color="text.primary">
                         Asset Management
                     </Typography>
                     {errorMessage && <Typography color="error">{errorMessage}</Typography>}

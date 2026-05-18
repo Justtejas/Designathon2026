@@ -247,7 +247,7 @@ export default function AuditPage() {
                     }}
                 >
                     <Toolbar />
-                    <Typography variant="h4" gutterBottom>
+                    <Typography variant="h4" gutterBottom color="text.primary">
                         Audits
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>

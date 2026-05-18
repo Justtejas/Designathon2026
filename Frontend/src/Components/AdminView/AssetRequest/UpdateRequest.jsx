@@ -34,6 +34,7 @@ const UpdateAssetRequest = () => {
         requestStatus: 'Pending',
     });
     const [error, setError] = useState(null);
+    const [newReason, setNewReason] = useState(false);
 
     useEffect(() => {
         const fetchAssetRequestDetails = async () => {
@@ -51,6 +52,7 @@ const UpdateAssetRequest = () => {
                     assetReqDate: new Date(data.assetReqDate).toISOString().split('T')[0],
                     assetReqReason: data.assetReqReason,
                     requestStatus: data.requestStatus, 
+                    statusReason:assetRequest.statusReason,
                 });
             } catch (error) {
                 console.error('Error fetching asset request details:', error);
@@ -63,6 +65,8 @@ const UpdateAssetRequest = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if (name == "requestStatus")
+            setNewReason(true);
         setAssetRequest((prevDetails) => ({
             ...prevDetails,
             [name]: value,
@@ -83,15 +87,20 @@ const UpdateAssetRequest = () => {
                 assetReqDate: assetRequest.assetReqDate,
                 assetReqReason: assetRequest.assetReqReason,
                 requestStatus: assetRequest.requestStatus,
+                statusReason:assetRequest.statusReason,
             });
+            showToast('Request Updated Successfully', 'success');
             setTimeout(() => {
-                showToast('Request Updated Successfully', 'success');
+                navigate('/admin/request');    
             }, 2000);
-            navigate('/admin/request');
+            
         } catch (error) {
             console.error('Error updating asset request details:', error.response?.data || error.message);
             showToast('Request Updated Failed', 'error');
-            setError('Failed to update asset request. Please check your input and try again.');
+            //setError('Failed to update asset request. Please check your input and try again.');
+            setTimeout(() => {
+                handleClose();
+            }, 2000);
         }
     };
 
@@ -123,7 +132,7 @@ const UpdateAssetRequest = () => {
                 >
                     <Toolbar />
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="h4">Update Asset Request</Typography>
+                        <Typography variant="h4" color="text.primary">Handle Asset Requests</Typography>
                         <IconButton onClick={handleClose} aria-label="close">
                             <CloseIcon />
                         </IconButton>
@@ -204,7 +213,16 @@ const UpdateAssetRequest = () => {
                                 Current Status: {assetRequest.requestStatus}
                             </Typography>
                         )}
-
+                        {(newReason ) && (
+                        <TextField
+                            label="Decision Reason"
+                            name="statusReason"
+                            value={assetRequest.statusReason}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                        />
+                        )}
                         <Button type="submit" variant="contained" color="primary">
                             Update Request
                         </Button>

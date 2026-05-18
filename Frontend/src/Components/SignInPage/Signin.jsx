@@ -52,7 +52,7 @@ const SignInPage = () => {
     <div className="min-h-screen flex bg-white dark:bg-gray-950 transition-colors">
 
       <UseDarkMode />
-
+      <ToastNotification />
       <div
         className="hidden lg:flex lg:w-1/2 bg-cover bg-center"
         style={{
@@ -133,8 +133,6 @@ const SignInPage = () => {
               Sign In
             </button>
           </form>
-
-          <ToastNotification />
 
           <div className="mt-6 flex justify-between text-sm">
             <a
