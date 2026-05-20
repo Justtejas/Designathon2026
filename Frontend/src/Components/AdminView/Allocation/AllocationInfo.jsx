@@ -92,7 +92,7 @@ const AllocationInfo = () => {
                                     sx={{ width: 120, height: 120, mr: 3 }}
                                 />
                                 <Box>
-                                    <Typography variant="h4">{allocation.assetName}</Typography>
+                                    <Typography variant="h4"  color="text.primary">{allocation.assetName}</Typography>
                                 </Box>
                             </Box>
                             <Grid container spacing={2}>

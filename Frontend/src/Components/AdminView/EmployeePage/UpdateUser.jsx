@@ -40,7 +40,7 @@ const UpdateUser = () => {
 
         const fetchUserTypes = () => {
             const mockUserTypes = [
-                { id: '0', name: 'Employee' },
+                { id: '0', name: 'Executive' },
                 { id: '1', name: 'Admin' }
             ];
             setUserTypes(mockUserTypes);
@@ -77,14 +77,14 @@ const UpdateUser = () => {
                 branch: userDetails.branch,
                 User_Type: userDetails.user_Type
             });
-            navigate('/admin/employee');
+            navigate('/admin/users');
         } catch (error) {
             console.error('Error updating user details:', error.response.data);
         }
     };
 
     const handleClose = () => {
-        navigate('/admin/employee');
+        navigate('/admin/users');
     };
 
     if (error) return <Typography color="error">{error}</Typography>;
@@ -112,7 +112,7 @@ const UpdateUser = () => {
                 >
                     <Toolbar />
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="h4">Update User Type</Typography>
+                        <Typography variant="h4"  color="text.primary">Update User Type</Typography>
                         <IconButton onClick={handleClose} aria-label="close">
                             <CloseIcon />
                         </IconButton>

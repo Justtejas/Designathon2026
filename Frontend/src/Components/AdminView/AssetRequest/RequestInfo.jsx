@@ -93,7 +93,7 @@ const RequestInfo = () => {
                                     sx={{ width: 120, height: 120, mr: 3 }}
                                 />
                                 <Box>
-                                    <Typography variant="h4">{request.assetName}</Typography>
+                                    <Typography variant="h4"  color="text.primary">{request.assetName}</Typography>
                                     <Chip
                                         label={request.requestStatus}
                                         color="secondary"
@@ -116,8 +116,8 @@ const RequestInfo = () => {
                                 <InfoItem label="Request Date" value={request.assetReqDate} />
                                 <InfoItem label="Request Reason" value={request.assetReqReason} />
                                 {request.requestStatus === 'Allocated' ?
-                                <InfoItem label="Reason for Approval" value={request.statusReason} />:
-                                <InfoItem label="Reason for Rejection" value={request.statusReason} />}
+                                <InfoItem label="Approval Reason" value={request.statusReason} />:
+                                <InfoItem label="Rejection Reason" value={request.statusReason} />}
                             </Grid>
                         </CardContent>
                     </Card>

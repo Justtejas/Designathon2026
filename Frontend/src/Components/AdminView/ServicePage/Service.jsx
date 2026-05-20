@@ -229,7 +229,7 @@ export default function ServicePage() {
                     }}
                 >
                     <Toolbar />
-                    <Typography variant="h4" gutterBottom>
+                    <Typography variant="h4" gutterBottom  color="text.primary">
                         Service Requests
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>

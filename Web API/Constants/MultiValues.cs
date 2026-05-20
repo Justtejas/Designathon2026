@@ -12,7 +12,7 @@ public class MultiValues
 
     public enum UserType
     {
-        Employee=0,
+        Executive=0,
         Admin=1
     }
 

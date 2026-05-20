@@ -93,7 +93,7 @@ const AssetInfo = () => {
                                     sx={{ width: 120, height: 120, mr: 3 }}
                                 />
                                 <Box>
-                                    <Typography variant="h4">{asset.assetName}</Typography>
+                                    <Typography variant="h4"  color="text.primary">{asset.assetName}</Typography>
                                     <Chip
                                         label={asset.assetStatus}
                                         color="secondary"

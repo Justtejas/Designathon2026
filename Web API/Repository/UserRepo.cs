@@ -35,7 +35,7 @@ namespace Hexa_Hub.Repository
                 userMail = dto.userMail,
                 phoneNumber = dto.phoneNumber,
                 branch = dto.branch,
-                User_Type = Models.MultiValues.UserType.Employee,
+                User_Type = Models.MultiValues.UserType.Executive,
                 Password = "Maventory@123"
             };
 

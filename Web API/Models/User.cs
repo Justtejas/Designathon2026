@@ -47,8 +47,8 @@ public class User
         ErrorMessage = "Password must contain Uppercase, alphanumeric and special characters")]
     public string Password { get; set; } = "Maventory@123";
 
-    [DefaultValue(UserType.Employee)]
-    public UserType? User_Type { get; set; } = UserType.Employee;
+    [DefaultValue(UserType.Executive)]
+    public UserType? User_Type { get; set; } = UserType.Executive;
 
     public byte[]? ProfileImage { get; set; }
 

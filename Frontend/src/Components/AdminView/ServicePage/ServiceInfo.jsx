@@ -83,7 +83,7 @@ const ServiceInfo = () => {
                                     sx={{ width: 120, height: 120, mr: 3 }}
                                 />
                                 <Box>
-                                    <Typography variant="h4">{request.assetName}</Typography>
+                                    <Typography variant="h4"  color="text.primary">{request.assetName}</Typography>
                                     <Chip
                                         label={request.serviceReqStatus}
                                         color="secondary"

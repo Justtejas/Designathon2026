@@ -122,7 +122,7 @@ const UpdateMaintenanceLog = () => {
                 >
                     <Toolbar />
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="h4">Update Maintenance Log</Typography>
+                        <Typography variant="h4"  color="text.primary">Update Maintenance Log</Typography>
                         <IconButton onClick={handleClose} aria-label="close">
                             <CloseIcon />
                         </IconButton>

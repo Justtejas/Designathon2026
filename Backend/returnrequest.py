@@ -289,8 +289,8 @@ def put_return_request(return_id):
 def post_return_request():
     try:
         user_id = get_user_id()
-        if get_user_role() != "Employee":
-            return jsonify({"error": "Employee access required"}), 403
+        if get_user_role() != "Executive":
+            return jsonify({"error": "Executive access required"}), 403
         data = request.get_json()
         logger.info(f"Creating return request for user: {user_id}")
         if not user_has_asset(user_id):
@@ -319,8 +319,8 @@ def post_return_request():
 def delete_return_request(return_id):
     try:
         user_id = get_user_id()
-        if get_user_role() != "Employee":
-            return jsonify({"error": "Employee access required"}), 403
+        if get_user_role() != "Executive":
+            return jsonify({"error": "Executive access required"}), 403
         logger.info(f"Deleting return request {return_id} for user {user_id}")
         # Check ownership
         request_doc = return_requests.find_one({"returnId": return_id, "userId": user_id})

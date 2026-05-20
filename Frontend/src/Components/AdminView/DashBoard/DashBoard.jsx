@@ -50,7 +50,7 @@ export default function Dashboard() {
     // const [mobileOpen, setMobileOpen] = useState(false);
     const [totalAssets, setTotalAssets] = useState(0);
     const [allocatedAssets, setAllocatedAssets] = useState(0);
-    const [totalEmployees, setTotalEmployees] = useState(0);
+    const [totalExecutives, setTotalExecutives] = useState(0);
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
     const [auditTableData, setAuditTableData] = useState([]);
@@ -98,7 +98,7 @@ export default function Dashboard() {
     //             const usersResponse = await axios.get('http://localhost:7287/api/users');
     //             if (usersResponse.data && usersResponse.data) {
     //                 setUsers(usersResponse.data);
-    //                 setTotalEmployees(usersResponse.data.length);
+    //                 setTotalExecutives(usersResponse.data.length);
     //             } else {
     //                 console.error('Expected an array for users, but got:', usersResponse.data);
     //             }
@@ -212,7 +212,7 @@ export default function Dashboard() {
                 setTotalAssets(assets.length);
                 setAllocatedAssets(allocatedAssets.length);
                 setUsers(users);
-                setTotalEmployees(users.length);
+                setTotalExecutives(users.length);
                 setMaintenanceLog(maintenanceLogs.length);
     
                 const statuses = ['UnderReview', 'Approved', 'Completed'];
@@ -298,7 +298,7 @@ export default function Dashboard() {
                     Asset Management
                 </Typography>
                 <Grid container spacing={3}>
-                    {[{ title: 'Total Assets', value: totalAssets }, { title: 'Assets in use', value: allocatedAssets }, { title: 'Maintenance requests', value: maintenanceLog }, { title: 'Total Employees', value: totalEmployees }].map((item, index) => (
+                    {[{ title: 'Total Assets', value: totalAssets }, { title: 'Assets in use', value: allocatedAssets }, { title: 'Maintenance requests', value: maintenanceLog }, { title: 'Total Executives', value: totalExecutives }].map((item, index) => (
                         <Grid item xs={12} sm={6} md={3} key={index}>
                             <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
                                 <Typography variant="subtitle1" gutterBottom>{item.title}</Typography>

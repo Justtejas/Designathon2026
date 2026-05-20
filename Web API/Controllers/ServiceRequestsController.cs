@@ -244,7 +244,7 @@ namespace Hexa_Hub.Controllers
         // POST: api/ServiceRequests
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Executive")]
         public async Task<ActionResult<ServiceRequest>> PostServiceRequest(ServiceRequestDto serviceRequestDto)
         {
             var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.userIdentifier)?.Value);
@@ -277,7 +277,7 @@ namespace Hexa_Hub.Controllers
 
         // DELETE: api/ServiceRequests/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Executive")]
         public async Task<IActionResult> DeleteServiceRequest(int id)
         {
             try

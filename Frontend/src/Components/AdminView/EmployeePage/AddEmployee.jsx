@@ -24,7 +24,7 @@ const AddEmployee = () => {
         userMail: '',
         phoneNumber: '',
         branch: '',
-        Role: "Employee",
+        Role: "Executive",
     });
     const navigate = useNavigate();
 
@@ -34,7 +34,7 @@ const AddEmployee = () => {
     };
     
     const handleClose = () => {
-        navigate('/admin/employee');
+        navigate('/admin/users');
     };
 
     const handleSubmit = async (e) => {
@@ -48,8 +48,8 @@ const AddEmployee = () => {
 
         try {
             await axios.post('http://localhost:7287/api/users', dataToSend);
-            showToast('Employee added successfully!', 'success');
-            navigate('/admin/employee');
+            showToast('Executive added successfully!', 'success');
+            navigate('/admin/users');
             setFormData({
                 userName: '',
                 userMail: '',
@@ -57,8 +57,8 @@ const AddEmployee = () => {
                 branch: '',
             });
         } catch (error) {
-            console.error("Error adding employee:", error);
-            showToast('Employee Addition Failed', 'error');
+            console.error("Error adding executive:", error);
+            showToast('Executive Addition Failed', 'error');
         }
     };
 
@@ -94,7 +94,7 @@ const AddEmployee = () => {
                                 </IconButton>
                             </Box>
                             <Typography variant="h4" gutterBottom color="text.primary"align="center" sx={{ mb: 4 }}>
-                                Add Employee
+                                Add Executive
                             </Typography>
                             
                             <Box component="form" onSubmit={handleSubmit}>
@@ -154,7 +154,7 @@ const AddEmployee = () => {
                                             fullWidth
                                             sx={{ mt: 2 }}
                                         >
-                                            Add Employee
+                                            Add Executive
                                         </Button>
                                     </Grid>
                                 </Grid>

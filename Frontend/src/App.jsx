@@ -5,13 +5,13 @@ import SignInPage from './Components/SignInPage/Signin';
 import Privacy from './Components/PrivacyTerms/Privacy';
 import Terms from './Components/PrivacyTerms/Terms';
 import Dashboard from './Components/AdminView/DashBoard/DashBoard';
-import EmpDashboard from './Components/EmployeeView/EmpDashboard/EmpDashboard';
-import ServiceRequest from './Components/EmployeeView/ServicePage/ServiceRequest';
-import ReturnRequest from './Components/EmployeeView/ReturnRequest/ReturnRequest';
-import EAssetPage from './Components/EmployeeView/EAssetPage/EAssetPage';
-import Notification from './Components/EmployeeView/Notification/Notification';
-import Profile from './Components/EmployeeView/Profile/Profile';
-import Settings from './Components/EmployeeView/SettingsPage/SettingsPage';
+import EmpDashboard from './Components/ExecutiveView/EmpDashboard/EmpDashboard';
+import ServiceRequest from './Components/ExecutiveView/ServicePage/ServiceRequest';
+import ReturnRequest from './Components/ExecutiveView/ReturnRequest/ReturnRequest';
+import EAssetPage from './Components/ExecutiveView/EAssetPage/EAssetPage';
+import Notification from './Components/ExecutiveView/Notification/Notification';
+import Profile from './Components/ExecutiveView/Profile/Profile';
+import Settings from './Components/ExecutiveView/SettingsPage/SettingsPage';
 import { ThemeProvider } from './Components/ThemeContext';
 import EmpLink from './Components/AdminView/EmployeePage/EmpLink';
 import AssetLink from './Components/AdminView/AssetPage/AssetLink';
@@ -68,7 +68,7 @@ function App() {
 
             <Route path="admin" element={<AdminLayout mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />}>
               <Route path="Dashboard" element={<AdminRoute><Dashboard /></AdminRoute>} />
-              <Route path="employee/*" element={<AdminRoute><EmpLink /></AdminRoute>} />
+              <Route path="users/*" element={<AdminRoute><EmpLink /></AdminRoute>} />
               <Route path="asset/*" element={<AdminRoute><AssetLink /></AdminRoute>} />
               <Route path="request/*" element={<AdminRoute><RequestLink /></AdminRoute>} />
               <Route path="allocation/*" element={<AdminRoute><AllocationLink /></AdminRoute>} />

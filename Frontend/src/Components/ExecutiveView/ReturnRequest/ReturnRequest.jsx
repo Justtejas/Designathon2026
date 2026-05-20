@@ -234,7 +234,7 @@ const ReturnRequest = () => {
                         <div className="mt-4 bg-gray-100 p-4 rounded-lg w-1/2 shadow-lg">
                             <h2 className="text-lg font-bold">Terms and Conditions</h2>
                             <p className="mt-2 text-sm">
-                                Employees must return assets in their original or acceptable Condition, as outlined in the asset management policy.
+                                Executives must return assets in their original or acceptable Condition, as outlined in the asset management policy.
                                 Any damages or missing components will incur charges and may affect future asset allocations.
                             </p>
                         </div>

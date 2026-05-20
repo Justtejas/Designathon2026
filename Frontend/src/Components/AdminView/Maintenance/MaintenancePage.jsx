@@ -229,7 +229,7 @@ export default function MaintenancePage() {
                     }}
                 >
                     <Toolbar />
-                    <Typography variant="h4" gutterBottom>
+                    <Typography variant="h4" gutterBottom  color="text.primary">
                         Maintenance Logs
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>

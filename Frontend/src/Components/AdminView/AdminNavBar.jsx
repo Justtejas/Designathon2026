@@ -27,7 +27,7 @@ const drawerWidth = 240;
 
 const navItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin/Dashboard' },
-    { text: 'Employee', icon: <EmployeeIcon />, path: '/admin/employee' },
+    { text: 'Employee', icon: <EmployeeIcon />, path: '/admin/users' },
     { text: 'Assets', icon: <AssetsIcon />, path: '/admin/asset' },
     { text: 'Request', icon: <RequestIcon />, path: '/admin/request' },
     { text: 'Allocation', icon: <AllocationIcon />, path: '/admin/allocation' },

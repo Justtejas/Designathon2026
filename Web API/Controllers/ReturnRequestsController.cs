@@ -435,7 +435,7 @@ namespace Hexa_Hub.Controllers
 
         // POST: api/ReturnRequests
         [HttpPost]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Executive")]
         public async Task<ActionResult<ReturnRequest>> PostReturnRequest(ReturnRequestDto returnRequestDto)
         {
             var loggedInuserId = int.Parse(User.FindFirst(ClaimTypes.userIdentifier)?.Value);
@@ -457,7 +457,7 @@ namespace Hexa_Hub.Controllers
 
         // DELETE: api/ReturnRequests/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Executive")]
         public async Task<IActionResult> DeleteReturnRequest(int id)
         {
             try

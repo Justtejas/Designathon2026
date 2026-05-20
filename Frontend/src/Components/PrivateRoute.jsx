@@ -6,12 +6,12 @@ import Cookies from 'js-cookie';
 const EmployeeRoute = ({ children }) => {
     const { isAuthenticated, role } = isAuth();
     useEffect(() => {
-        if (!isAuthenticated || role !== 'Employee') {
+        if (!isAuthenticated || role !== 'Executive') {
             Cookies.remove('token');
             Cookies.remove('role');
         }
     }, [isAuthenticated, role]);
-    return isAuthenticated && role === 'Employee' ? children : <Navigate to="/signin" />;
+    return isAuthenticated && role === 'Executive' ? children : <Navigate to="/signin" />;
 };
 
 const AdminRoute = ({ children }) => {

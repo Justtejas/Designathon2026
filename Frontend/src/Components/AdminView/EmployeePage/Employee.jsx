@@ -42,7 +42,7 @@ export default function Employee() {
     const itemsPerPage = 10;
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedValue, setSelectedValue] = useState(null);
-    const [employees, setEmployees] = useState([]);
+    const [users, setusers] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
 
@@ -54,32 +54,33 @@ export default function Employee() {
                 return;
             }
             try {
-                const response = await axios.get('http://localhost:7287/api/users/role?role=Employee');
+                const response = await axios.get('http://localhost:7287/api/users');
                 console.log(response)
-                setEmployees(response.data || []);
+                setusers(response.data || []);
                 console.log(response.data)
             } catch (error) {
-                console.error("Error fetching employees:", error);
+                console.error("Error fetching users:", error);
             }
         };
 
         fetchData();
     }, []);
 
-    const filteredEmployees = useMemo(() => {
-        return employees.filter(employee => {
+    const filteredusers = useMemo(() => {
+        return users.filter(user => {
             const searchLower = searchTerm.toLowerCase();
             return (
-                (employee.userName?.toLowerCase().includes(searchLower) || "") ||
-                (employee.userId?.toString().includes(searchLower) || "") ||
-                (employee.branch?.toLowerCase().includes(searchLower) || "") ||
-                (employee.dept?.toLowerCase().includes(searchLower) || "") ||
-                (employee.designation?.toLowerCase().includes(searchLower) || "")
+                (user.userName?.toLowerCase().includes(searchLower) || "") ||
+                (user.userId?.toString().includes(searchLower) || "") ||
+                (user.branch?.toLowerCase().includes(searchLower) || "") ||
+                (user.dept?.toLowerCase().includes(searchLower) || "") ||
+                (user.designation?.toLowerCase().includes(searchLower) || "")
+                (user.User_Type?.toLowerCase().includes(searchLower) || "")
             );
         });
-    }, [employees, searchTerm]);
+    }, [users, searchTerm]);
 
-    const { currentItems, paginate, pageCount, currentPage, setCurrentPage } = usePagination(itemsPerPage, filteredEmployees);
+    const { currentItems, paginate, pageCount, currentPage, setCurrentPage } = usePagination(itemsPerPage, filteredusers);
 
     const handleDeleteConfirmation = (id) => {
         setDeleteId(id);
@@ -90,12 +91,12 @@ export default function Employee() {
         if (deleteId) {
             try {
                 await axios.delete(`http://localhost:7287/api/users/${deleteId}`);
-                setEmployees(employees.filter(employee => employee.userId !== deleteId));
+                setusers(users.filter(user => user.userId !== deleteId));
                 setOpenDialog(false);
                 setDeleteId(null);
-                showToast('Employee deleted successfully!', 'success');
+                showToast('user deleted successfully!', 'success');
             } catch (error) {
-                console.error("Error deleting employee:", error);
+                console.error("Error deleting user:", error);
             }
         }
     };
@@ -120,18 +121,19 @@ export default function Employee() {
         const tableColumn = ["userId", "Name", "Email", "Department", "designation", "Phone Number", "address", "branch"];
         const tableRows = [];
 
-        filteredEmployees.forEach(employee => {
-            const employeeData = [
-                employee.userId,
-                employee.userName,
-                employee.userMail,
-                employee.dept,
-                employee.designation,
-                employee.phoneNumber,
-                employee.address,
-                employee.branch
+        filteredusers.forEach(user => {
+            const userData = [
+                user.userId,
+                user.userName,
+                user.userMail,
+                user.dept,
+                user.designation,
+                user.phoneNumber,
+                user.address,
+                user.branch,
+                user.User_Type
             ];
-            tableRows.push(employeeData);
+            tableRows.push(userData);
         });
 
         let img;
@@ -226,14 +228,14 @@ export default function Employee() {
                     }}
                 >
                     <Toolbar />
-                    <Typography variant="h4" gutterBottom>
-                        Employee Management
+                    <Typography variant="h4" gutterBottom  color="text.primary">
+                        User Management
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                         <Autocomplete
                             freeSolo
                             disableClearable
-                            options={employees.map((option) => option.userName)}
+                            options={users.map((option) => option.userName)}
                             onInputChange={handleSearch}
                             renderInput={(params) => (
                                 <TextField
@@ -254,7 +256,7 @@ export default function Employee() {
                             )}
                         />
                         <Box>
-                            <Link to={'/admin/employee/add'}>
+                            <Link to={'/admin/users/add'}>
                                 <IconButton>
                                     <AddIcon />
                                 </IconButton>
@@ -277,37 +279,39 @@ export default function Employee() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell></TableCell>
-                                    <TableCell>userId</TableCell>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>Email</TableCell>
-                                    <TableCell>Department</TableCell>
-                                    <TableCell>designation</TableCell>
-                                    <TableCell>Phone Number</TableCell>
-                                    <TableCell>address</TableCell>
-                                    <TableCell>branch</TableCell>
+                                    <TableCell><b>User ID</b></TableCell>
+                                    <TableCell><b>Name</b></TableCell>
+                                    <TableCell><b>Role</b></TableCell>
+                                    <TableCell><b>Email</b></TableCell>
+                                    <TableCell><b>Department</b></TableCell>
+                                    <TableCell><b>Designation</b></TableCell>
+                                    <TableCell><b>Phone Number</b></TableCell>
+                                    <TableCell><b>Address</b></TableCell>
+                                    <TableCell><b>Branch</b></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {currentItems.length > 0 ? (
-                                    currentItems.map((employee) => (
-                                        <TableRow key={employee.userId}>
+                                    currentItems.map((user) => (
+                                        <TableRow key={user.userId}>
                                             <TableCell>
                                                 <RadioButton
                                                     selectedValue={selectedValue}
                                                     onChange={handleRadioBtn}
-                                                    value={employee.userId}
+                                                    value={user.userId}
                                                 />
                                             </TableCell>
-                                            <TableCell>{employee.userId}</TableCell>
-                                            <TableCell>{employee.userName}</TableCell>
-                                            <TableCell>{employee.userMail}</TableCell>
-                                            <TableCell>{employee.dept}</TableCell>
-                                            <TableCell>{employee.designation}</TableCell>
-                                            <TableCell>{employee.phoneNumber}</TableCell>
-                                            <TableCell>{employee.address}</TableCell>
-                                            <TableCell>{employee.branch}</TableCell>
+                                            <TableCell>{user.userId}</TableCell>
+                                            <TableCell>{user.userName}</TableCell>
+                                            <TableCell>{user.User_Type}</TableCell>
+                                            <TableCell>{user.userMail}</TableCell>
+                                            <TableCell>{user.dept}</TableCell>
+                                            <TableCell>{user.designation}</TableCell>
+                                            <TableCell>{user.phoneNumber}</TableCell>
+                                            <TableCell>{user.address}</TableCell>
+                                            <TableCell>{user.branch}</TableCell>
                                             <TableCell>
-                                                <Link to={`${employee.userId}`}>
+                                                <Link to={`${user.userId}`}>
                                                     <IconButton>
                                                         <InfoIcon />
                                                     </IconButton>
@@ -317,7 +321,7 @@ export default function Employee() {
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={10} align="center">No employees found</TableCell>
+                                        <TableCell colSpan={10} align="center">No users found</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -332,7 +336,7 @@ export default function Employee() {
                 onClose={() => setOpenDialog(false)}
                 onConfirm={handleDelete}
                 title="Confirm Deletion"
-                message="Are you sure you want to delete this employee?"
+                message="Are you sure you want to delete this user?"
             />
         </Box>
     );

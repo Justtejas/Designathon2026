@@ -67,7 +67,7 @@ const UserDetails = () => {
     }, [id, navigate]);
 
     const handleClose = () => {
-        navigate('/admin/employee');
+        navigate('/admin/users');
     };
 
     if (loading) return <CircularProgress />;
@@ -101,9 +101,9 @@ const UserDetails = () => {
                                     sx={{ width: 120, height: 120, mr: 3 }}
                                 />
                                 <Box>
-                                    <Typography variant="h4">{user.userName}</Typography>
+                                    <Typography variant="h4"  color="text.primary">{user.userName}</Typography>
                                     <Chip
-                                        label="Employee"
+                                        label="Executive"
                                         color="secondary"
                                         sx={{ mt: 1 }}
                                     />

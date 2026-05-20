@@ -229,7 +229,7 @@ export default function ReturnPage() {
                     }}
                 >
                     <Toolbar />
-                    <Typography variant="h4" gutterBottom>
+                    <Typography variant="h4" gutterBottom color="text.primary">
                         Return Requests
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -350,6 +350,13 @@ export default function ReturnPage() {
                                                     <InfoIcon />
                                                 </IconButton>
                                             </Link>
+                                            {returnRequest.returnStatus === 'Sent'  && (
+                                <Link to={`/admin/return/update/${selectedValue}`}>
+                                    <IconButton>
+                                        <EditIcon />
+                                    </IconButton>
+                                </Link>
+                            )}
                                         </TableCell>
                                     </TableRow>
                                 ))

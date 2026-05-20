@@ -214,8 +214,8 @@ def put_service_request(service_id):
 def post_service_request():
     try:
         user_id = get_user_id()
-        if get_user_role() != "Employee":
-            return jsonify({"error": "Employee access required"}), 403
+        if get_user_role() != "Executive":
+            return jsonify({"error": "Executive access required"}), 403
         data = request.get_json()
         logger.info(f"Creating service request for user: {user_id}")
         # Validate asset exists
@@ -243,8 +243,8 @@ def post_service_request():
 def delete_service_request(service_id):
     try:
         user_id = get_user_id()
-        if get_user_role() != "Employee":
-            return jsonify({"error": "Employee access required"}), 403
+        if get_user_role() != "Executive":
+            return jsonify({"error": "Executive access required"}), 403
         logger.info(f"Deleting service request {service_id} for user {user_id}")
         # Get request details
         request_doc = service_requests.find_one({"serviceId": service_id})

@@ -108,7 +108,7 @@ namespace Hexa_Hub.Controllers
         // PUT: api/Audits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Executive")]
         public async Task<IActionResult> PutAudit(int id, [FromBody] AuditsDto auditDto)
         {
             if (!ModelState.IsValid)
@@ -198,18 +198,18 @@ namespace Hexa_Hub.Controllers
             }
             var audit = await _auditRepo.AddAduit(auditDto);
             await _auditRepo.Save();
-            var employee = await _userRepo.GetuserId(audit.userId);
-            if (employee != null)
+            var executive = await _userRepo.GetuserId(audit.userId);
+            if (executive != null)
             {
                 await _notificationService.SendAudit(
-                    employee.userMail,
-                    employee.userName,
+                    executive.userMail,
+                    executive.userName,
                     audit.auditId
                 );
             }
             else
             {
-                return NotFound("Employee not found.");
+                return NotFound("Executive not found.");
             }
             return CreatedAtAction("GetAudit", new { id = audit.auditId }, audit);
         }

@@ -193,7 +193,7 @@ namespace Hexa_Hub.Repository
         //        throw new AssetNotFoundException("Asset not found.");
         //    }
 
-        //    // Check if the user exists (employee to whom the asset is being allocated)
+        //    // Check if the user exists (executive to whom the asset is being allocated)
         //    var user = await _context.Users.FindAsync(allocationDto.userId);
         //    if (user == null)
         //    {
@@ -226,12 +226,12 @@ namespace Hexa_Hub.Repository
         //    string fromEmail = admin.userMail;  // Admin's email
         //    string fromName = admin.userName;    // Admin's name
 
-        //    // Employee details
-        //    string toEmail = user.userMail;     // Employee's email
+        //    // Executive details
+        //    string toEmail = user.userMail;     // Executive's email
         //    string subject = "Asset Allocation Notification";
         //    string message = $"Dear {user.userName},<br>Your asset {asset.assetName} has been allocated successfully on {assetAllocation.allocatedDate}.";
 
-        //    // Send email notification from Admin to Employee
+        //    // Send email notification from Admin to Executive
         //    await _email.SendEmailAsync(fromEmail, fromName, toEmail, subject, message);
 
         //    return assetAllocation;

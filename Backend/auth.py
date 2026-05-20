@@ -39,7 +39,7 @@ def get_user_role():
             token = auth_header.split(" ")[1]
             payload = decode_token(token)
             if payload and "User_Type" in payload:
-                return payload["User_Type"]  # Returns "Admin", "Employee", etc.
+                return payload["User_Type"]  # Returns "Admin", "Executive", etc.
         return None  # Default if no token or invalid
     except Exception as e:
         logger.info(f"Error getting user role: {str(e)}")
@@ -148,7 +148,7 @@ def login():
             "userId": user["userId"],
             "userName": user["userName"],
             "userMail": user["userMail"],
-            "User_Type": user.get("User_Type", "Employee"),
+            "User_Type": user.get("User_Type", "Executive"),
             "expires_in": JWT_EXPIRY_HOURS * 3600
         })
  
@@ -170,7 +170,8 @@ def get_users():
             user_doc = dict(user)
             user_doc.pop("Password", None)  # Remove password
             user_doc['_id'] = str(user_doc.get('_id'))
-            serialized_users.append(user_doc)
+            if user_doc['User_Type']!="Admin":
+                serialized_users.append(user_doc)
         return jsonify(serialized_users), 200
     except Exception as e:
         logger.info(f"Error fetching users: {str(e)}")

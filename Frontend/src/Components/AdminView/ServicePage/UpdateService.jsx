@@ -130,7 +130,7 @@ const UpdateServiceRequest = () => {
                 >
                     <Toolbar />
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="h4">Update Service Request</Typography>
+                        <Typography variant="h4"  color="text.primary">Update Service Request</Typography>
                         <IconButton onClick={handleClose} aria-label="close">
                             <CloseIcon />
                         </IconButton>

@@ -114,7 +114,7 @@ namespace Hexa_Hub.Controllers
         // POST: api/AssetRequests
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Executive")]
         public async Task<ActionResult<AssetRequest>> PostAssetRequest(AssetRequestDto assetRequestDto)
         {
             _log.LogInfo("Adding Asset Requests Process Started");
@@ -145,7 +145,7 @@ namespace Hexa_Hub.Controllers
 
         // DELETE: api/AssetRequests/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Executive")]
         public async Task<IActionResult> DeleteAssetRequest(int id)
         {
 

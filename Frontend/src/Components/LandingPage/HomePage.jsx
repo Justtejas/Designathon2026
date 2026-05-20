@@ -59,7 +59,7 @@ const MaventoryLandingPage = () => {
             Everything you need
           </h2>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Designed for admins and employees with real‑time tracking,
+            Designed for admins and executives with real‑time tracking,
             requests, and reporting.
           </p>
         </div>
@@ -94,12 +94,12 @@ const MaventoryLandingPage = () => {
               One platform for your entire team
             </h2>
             <p className="text-gray-600 dark:text-gray-300">
-              Executives, managers, and employees – everyone stays aligned.
+              Executives, managers, and executives – everyone stays aligned.
             </p>
           </div>
 
           <img
-            src="../Images/Employee-AdminView.png"
+            src="../Images/Executive-AdminView.png"
             alt="Team"
             className="rounded-xl shadow-md border
             dark:border-gray-800 hover:scale-105 transition md:w-1/2"

@@ -136,7 +136,7 @@ def get_audits():
             # Admin sees all audits
             audits_list = list(audits.find({}).sort("auditDate", -1))
         else:
-            # Employee sees only their audits
+            # Executive sees only their audits
             audits_list = list(audits.find({"userId": user_id}).sort("auditDate", -1))
         if not audits_list:
             return jsonify({"error": "id not Found"}), 404
@@ -242,7 +242,7 @@ def get_audit(audit_id):
             # Admin can see any audit
             pipeline = [{"$match": {"auditId": audit_id}}]
         else:
-            # Employee can only see their own audits
+            # Executive can only see their own audits
             pipeline = [{"$match": {"auditId": audit_id, "userId": user_id}}]
         pipeline += [
             {"$lookup": {
@@ -274,8 +274,8 @@ def get_audit(audit_id):
 def put_audit(audit_id):
     try:
         user_id = get_user_id()
-        if get_user_role() != "Employee":
-            return jsonify({"error": "Employee access required"}), 403
+        if get_user_role() != "Executive":
+            return jsonify({"error": "Executive access required"}), 403
         data = request.get_json()
         logger.info(f"Updating audit {audit_id}")
         if data.get("auditId") != audit_id:
@@ -336,16 +336,16 @@ def post_audit():
         }
         result = audits.insert_one(audit_doc)
         logger.info(f"Created audit with ID: {result.inserted_id}")
-        # Notify employee
-        employee = users.find_one({"userId": audit_doc["userId"]})
-        # if employee:
+        # Notify executive
+        executive = users.find_one({"userId": audit_doc["userId"]})
+        # if executive:
         #     send_email(
-        #         employee["userMail"],
+        #         executive["userMail"],
         #         "Audit Request",
-        #         f"Dear {employee['userName']},<br><br>You have been assigned an Audit Request {audit_doc['auditId']} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory"
+        #         f"Dear {executive['userName']},<br><br>You have been assigned an Audit Request {audit_doc['auditId']} which needs to be completed ASAP.<br><br>Best regards,<br>Maventory"
         #     )
         # else:
-        #     return jsonify({"error": "Employee not found"}), 404
+        #     return jsonify({"error": "Executive not found"}), 404
         audit_doc["_id"] = str(result.inserted_id)
         return jsonify(audit_doc), 201
     except Exception as e:

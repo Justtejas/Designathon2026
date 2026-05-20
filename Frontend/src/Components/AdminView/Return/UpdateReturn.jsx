@@ -146,7 +146,7 @@ const UpdateReturn = () => {
                 >
                     <Toolbar />
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="h4">Update Return Request</Typography>
+                        <Typography variant="h4" color="text.primary">Update Return Request</Typography>
                         <IconButton onClick={handleClose} aria-label="close">
                             <CloseIcon />
                         </IconButton>
