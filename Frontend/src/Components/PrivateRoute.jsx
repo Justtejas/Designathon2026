@@ -14,6 +14,17 @@ const EmployeeRoute = ({ children }) => {
     return isAuthenticated && role === 'Executive' ? children : <Navigate to="/signin" />;
 };
 
+const ManagerRoute = ({ children }) => {
+    const { isAuthenticated, role } = isAuth();
+    useEffect(() => {
+        if (!isAuthenticated || role !== 'Manager') {
+            Cookies.remove('token');
+            Cookies.remove('role');
+        }
+    }, [isAuthenticated, role]);
+    return isAuthenticated && role === 'Manager' ? children : <Navigate to="/signin" />;
+};
+
 const AdminRoute = ({ children }) => {
     const { isAuthenticated, role } = isAuth();
     useEffect(() => {
@@ -24,4 +35,4 @@ const AdminRoute = ({ children }) => {
     }, [isAuthenticated, role]);
     return isAuthenticated && role === 'Admin' ? children : <Navigate to="/signin" />;
 }
-export { EmployeeRoute, AdminRoute };
+export { EmployeeRoute, AdminRoute, ManagerRoute };

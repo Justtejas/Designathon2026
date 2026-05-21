@@ -4,11 +4,8 @@ import { Link } from 'react-router-dom';
 import { useTheme } from '../../ThemeContext';
 import PaginationRounded from '../../Utils/Pagination';
 import usePagination from '../../Utils/usePagination';
-import RadioButton from '../../Utils/RadioButton';
 import { jwtToken } from '../../Utils/utils';
-import ConfirmationDialog from '../../Utils/Dialog';
 import Cookies from 'js-cookie';
-import AddIcon from '@mui/icons-material/Add';
 import {
     Box,
     Table,
@@ -23,29 +20,46 @@ import {
     Autocomplete,
     TextField,
     IconButton,
+    Drawer,
     Button,
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import SearchIcon from '@mui/icons-material/Search';
-import DeleteIcon from '@mui/icons-material/Delete';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import ToastNotification, { showToast } from '../../Utils/ToastNotification';
+
 
 const token = Cookies.get('token');
 if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
-
-export default function Employee() {
+const formatDateTime = (dateString) => {
+    if (!dateString) return "-";
+  
+    const normalizedDate = dateString.split(".")[0];
+    const date = new Date(normalizedDate);
+  
+    const formatted = date.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  
+    return formatted.replace("am", "AM").replace("pm", "PM");
+  };
+export default function AllocationPage() {
     const { darkMode } = useTheme();
     const itemsPerPage = 10;
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedValue, setSelectedValue] = useState(null);
-    const [users, setusers] = useState([]);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [deleteId, setDeleteId] = useState(null);
+    const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+    const [allocation, setAllocation] = useState([]);
+    const [minDate, setMinDate] = useState('');
+    const [maxDate, setMaxDate] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,62 +69,43 @@ export default function Employee() {
                 return;
             }
             try {
-                const response = await axios.get('http://localhost:7287/api/users');
-                console.log(response)
-                setusers(response.data || []);
-                console.log(response.data)
+                const response = await axios.get('http://localhost:7287/api/AssetAllocations');
+                console.log('Fetched Assets Response:', JSON.stringify(response.data));
+                setAllocation(response.data || []);
             } catch (error) {
-                console.error("Error fetching users:", error);
+                console.error('Error fetching assets:', error);
             }
         };
 
         fetchData();
     }, []);
 
-    const filteredusers = useMemo(() => {
-        return users.filter(user => {
+    const filteredRequests = useMemo(() => {
+        return allocation.filter((allocation) => {
             const searchLower = searchTerm.toLowerCase();
+            const dateMatch = (!minDate || new Date(allocation.assetReqDate) >= new Date(minDate)) &&
+                (!maxDate || new Date(allocation.assetReqDate) <= new Date(maxDate));
             return (
-                (user.userName?.toLowerCase().includes(searchLower) || "") ||
-                (user.userId?.toString().includes(searchLower) || "") ||
-                (user.branch?.toLowerCase().includes(searchLower) || "") ||
-                (user.dept?.toLowerCase().includes(searchLower) || "") ||
-                (user.designation?.toLowerCase().includes(searchLower) || "")
-                (user.User_Type?.toLowerCase().includes(searchLower) || "")
+                (
+                    allocation.userName.toLowerCase().includes(searchLower) ||
+                    allocation.assetReqId.toString().includes(searchLower) ||
+                    allocation.allocationId.toString().includes(searchLower) ||
+                    allocation.assetName.toLowerCase().includes(searchLower)) &&
+                dateMatch
             );
         });
-    }, [users, searchTerm]);
+    }, [allocation, searchTerm, minDate, maxDate]);
 
-    const { currentItems, paginate, pageCount, currentPage, setCurrentPage } = usePagination(itemsPerPage, filteredusers);
-
-    const handleDeleteConfirmation = (id) => {
-        setDeleteId(id);
-        setOpenDialog(true);
-    };
-
-    const handleDelete = async () => {
-        if (deleteId) {
-            try {
-                await axios.delete(`http://localhost:7287/api/users/${deleteId}`);
-                setusers(users.filter(user => user.userId !== deleteId));
-                setOpenDialog(false);
-                setDeleteId(null);
-                showToast('user deleted successfully!', 'success');
-            } catch (error) {
-                console.error("Error deleting user:", error);
-            }
-        }
-    };
+    const { currentItems, setCurrentPage, currentPage, pageCount } = usePagination(itemsPerPage, filteredRequests);
 
     const handleSearch = (event, newValue) => {
         setSearchTerm(newValue);
         setCurrentPage(1);
     };
 
-    const handleRadioBtn = (newValue) => {
-        setSelectedValue(newValue);
+    const toggleFilterDrawer = () => {
+        setFilterDrawerOpen(!filterDrawerOpen);
     };
-
     const logo = "/Images/logo.png";
     const generatePDF = async () => {
         const doc = new jsPDF({
@@ -119,24 +114,19 @@ export default function Employee() {
             format: 'a4'
         });
 
-        const tableColumn = ["userId", "Name", "Email", "Department", "Designation", "Phone Number", "Address", "Branch"];
+        const tableColumn = ["Allocation ID", "Request ID", "Asset Name", "userName", "Allocated Date"];
         const tableRows = [];
 
-        filteredusers.forEach(user => {
-            const userData = [
-                user.userId,
-                user.userName,
-                user.userMail,
-                user.dept,
-                user.designation,
-                user.phoneNumber,
-                user.address,
-                user.branch,
-                user.User_Type
+        filteredRequests.forEach(allocation => {
+            const allocData = [
+                allocation.allocationId,
+                allocation.assetReqId,
+                allocation.assetName,
+                allocation.userName,
+                allocation.allocatedDate
             ];
-            tableRows.push(userData);
+            tableRows.push(allocData);
         });
-
         let img;
         try {
             img = await loadImage(logo);
@@ -144,7 +134,6 @@ export default function Employee() {
             console.error("Error loading the logo image:", error);
             return;
         }
-
         const companyInfo = {
             address: "No.4, West Mada Church Street, Royapuram, Chennai, Tamil Nadu, 600013",
             phoneNumber: "Phone: 044 3355 3355  Email: hexawarehub@gmail.com",
@@ -153,7 +142,7 @@ export default function Employee() {
         doc.autoTable({
             head: [tableColumn],
             body: tableRows,
-            startY: 80,
+            startY: 100,
             theme: 'grid',
             styles: { fontSize: 8, cellPadding: 5 },
             columnStyles: { 0: { cellWidth: 'auto' }, 1: { cellWidth: 'auto' } },
@@ -169,7 +158,11 @@ export default function Employee() {
                     doc.addImage(img, 'PNG', pageWidth - 135, 7, 30, 30);
                     doc.setFontSize(18);
                     doc.text("Maventory", pageWidth - 100, 27);
-                    doc.text("Employee List", 40, 65);
+                    doc.setFontSize(20);
+                    doc.text("Allocation List", 40, 60);
+                    doc.setFontSize(10);
+                    let filterText = `Filters: Date Range: ${minDate ? new Date(minDate).toLocaleDateString() : 'N/A'} - ${maxDate ? new Date(maxDate).toLocaleDateString() : 'N/A'}`;
+                    doc.text(filterText, 40, 80);
                     doc.setDrawColor(153, 0, 0);
                     doc.setLineWidth(2);
                     doc.line(0, pageHeight - 50, pageWidth, pageHeight - 50);
@@ -191,9 +184,9 @@ export default function Employee() {
                 }
             },
         });
+        doc.save("allocation_List.pdf");
+    }
 
-        doc.save("employee_list.pdf");
-    };
     const loadImage = (url) => {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -209,6 +202,13 @@ export default function Employee() {
         });
     };
 
+    const clearFilters = () => {
+        setMinDate('');
+        setMaxDate('');
+        setSearchTerm('');
+        setCurrentPage(1);
+    };
+
     return (
         <Box
             sx={{
@@ -218,7 +218,6 @@ export default function Employee() {
                 minHeight: 'fit-content',
             }}
         >
-            <ToastNotification/>
             <Box sx={{ display: 'flex', flex: 1 }}>
                 <Box
                     component="main"
@@ -230,20 +229,20 @@ export default function Employee() {
                     }}
                 >
                     <Toolbar />
-                    <Typography variant="h4" gutterBottom  color="text.primary">
-                        User Management
+                    <Typography variant="h4" gutterBottom color="text.primary">
+                        Allocation
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                         <Autocomplete
                             freeSolo
                             disableClearable
-                            options={users.map((option) => option.userName)}
+                            options={allocation.map((option) => option.assetName)}
                             onInputChange={handleSearch}
                             renderInput={(params) => (
                                 <TextField
-                                    placeholder='by Name, Id, branch, dept, designation'
+                                    placeholder="by Name, ID"
                                     {...params}
-                                    label="Search "
+                                    label="Search"
                                     InputProps={{
                                         ...params.InputProps,
                                         type: 'search',
@@ -257,63 +256,74 @@ export default function Employee() {
                                 />
                             )}
                         />
-                        <Box>
-                            <Link to={'/admin/users/add'}>
-                                <IconButton>
-                                    <AddIcon />
-                                </IconButton>
-                            </Link>
 
-                            {selectedValue != null && (
-                                <>
-                                    <IconButton onClick={() => handleDeleteConfirmation(selectedValue)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </>
-                            )}
-                            <IconButton onClick={generatePDF} >
+                        <Box>
+                            <IconButton onClick={toggleFilterDrawer}>
+                                <FilterListIcon />
+                            </IconButton>
+                            <IconButton onClick={generatePDF}>
                                 <PictureAsPdfIcon />
                             </IconButton>
                         </Box>
                     </Box>
+
+                    <Drawer
+                        anchor="right"
+                        open={filterDrawerOpen}
+                        onClose={toggleFilterDrawer}
+                    >
+                        <Box sx={{ width: 250, padding: 2, marginTop: '64px' }}>
+                            <Typography variant="h6">Filters</Typography>
+
+                            <Box sx={{ mb: 2 }}>
+                                <Typography gutterBottom>Request Date</Typography>
+                                <TextField
+                                    label="Min Date"
+                                    type="date"
+                                    value={minDate}
+                                    onChange={(e) => setMinDate(e.target.value)}
+                                    sx={{ width: '100%', mb: 1 }}
+                                />
+                                <TextField
+                                    label="Max Date"
+                                    type="date"
+                                    value={maxDate}
+                                    onChange={(e) => setMaxDate(e.target.value)}
+                                    sx={{ width: '100%' }}
+                                />
+                            </Box>
+
+                            <Button variant="outlined" onClick={clearFilters}>
+                                Clear Filters
+                            </Button>
+                        </Box>
+                    </Drawer>
                     <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="employee table">
+                        <Table sx={{ minWidth: 650 }} aria-label="asset table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell></TableCell>
-                                    <TableCell><b>User ID</b></TableCell>
-                                    <TableCell><b>Name</b></TableCell>
-                                    <TableCell><b>Role</b></TableCell>
-                                    <TableCell><b>Email</b></TableCell>
-                                    <TableCell><b>Department</b></TableCell>
-                                    <TableCell><b>Designation</b></TableCell>
-                                    <TableCell><b>Phone Number</b></TableCell>
-                                    <TableCell><b>Address</b></TableCell>
-                                    <TableCell><b>Branch</b></TableCell>
+                                    <TableCell>Allocation ID</TableCell>
+                                    <TableCell>Request ID</TableCell>
+                                    <TableCell>Asset Name</TableCell>
+                                    <TableCell>User Name</TableCell>
+                                    <TableCell>Allocated Date</TableCell>
+                                    <TableCell></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {currentItems.length > 0 ? (
-                                    currentItems.map((user) => (
-                                        <TableRow key={user.userId}>
+                                    currentItems.map((allocation) => (
+                                        <TableRow key={allocation.allocationId}>
                                             <TableCell>
-                                                <RadioButton
-                                                    selectedValue={selectedValue}
-                                                    onChange={handleRadioBtn}
-                                                    value={user.userId}
-                                                />
                                             </TableCell>
-                                            <TableCell>{user.userId}</TableCell>
-                                            <TableCell>{user.userName}</TableCell>
-                                            <TableCell>{user.User_Type}</TableCell>
-                                            <TableCell>{user.userMail}</TableCell>
-                                            <TableCell>{user.dept}</TableCell>
-                                            <TableCell>{user.designation}</TableCell>
-                                            <TableCell>{user.phoneNumber}</TableCell>
-                                            <TableCell>{user.address}</TableCell>
-                                            <TableCell>{user.branch}</TableCell>
+                                            <TableCell>{allocation.allocationId}</TableCell>
+                                            <TableCell>{allocation.assetReqId}</TableCell>
+                                            <TableCell>{allocation.assetName}</TableCell>
+                                            <TableCell>{allocation.userName}</TableCell>
+                                            <TableCell>{formatDateTime(allocation.allocatedDate)}</TableCell>
                                             <TableCell>
-                                                <Link to={`${user.userId}`}>
+                                                <Link to={`/manager/allocation/${allocation.allocationId}`}>
                                                     <IconButton>
                                                         <InfoIcon />
                                                     </IconButton>
@@ -323,23 +333,15 @@ export default function Employee() {
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={10} align="center">No users found</TableCell>
+                                        <TableCell colSpan={10} align="center">No Allocations found</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
                         </Table>
                     </TableContainer>
-
                     <PaginationRounded count={pageCount} page={currentPage} onChange={(_, page) => setCurrentPage(page)} />
                 </Box>
             </Box>
-            <ConfirmationDialog
-                open={openDialog}
-                onClose={() => setOpenDialog(false)}
-                onConfirm={handleDelete}
-                title="Confirm Deletion"
-                message="Are you sure you want to delete this user?"
-            />
         </Box>
     );
 }

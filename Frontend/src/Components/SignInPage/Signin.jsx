@@ -40,7 +40,7 @@ const SignInPage = () => {
       setTimeout(() => {
         decoded.User_Type === "Admin"
           ? navigate("/admin/Dashboard")
-          : navigate("/dashboard");
+          : decoded.User_Type === "Executive"?navigate("/dashboard"):navigate("/manager/Dashboard");
       }, 1500);
     } catch (err) {
       showToast("Failed to Log In. Please try again.", "error");

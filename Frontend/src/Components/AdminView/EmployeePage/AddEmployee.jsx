@@ -12,10 +12,16 @@ import {
     Typography,
     Container,
     Paper,
-    Grid,
     IconButton,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from '@mui/material';
 import ToastNotification, { showToast } from '../../Utils/ToastNotification';
+
+import Grid from '@mui/material/Grid2';
+
 
 const AddEmployee = () => {
     const { darkMode } = useTheme();
@@ -62,6 +68,9 @@ const AddEmployee = () => {
         }
     };
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailError =
+      formData.userMail !== '' && !emailRegex.test(formData.userMail);
     return (
         <Box
             sx={{
@@ -94,12 +103,12 @@ const AddEmployee = () => {
                                 </IconButton>
                             </Box>
                             <Typography variant="h4" gutterBottom color="text.primary"align="center" sx={{ mb: 4 }}>
-                                Add Executive
+                                Add Employee
                             </Typography>
                             
                             <Box component="form" onSubmit={handleSubmit}>
                                 <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item size={{ xs: 12, sm: 6 }}>
                                         <TextField
                                             fullWidth
                                             name="userName"
@@ -110,19 +119,36 @@ const AddEmployee = () => {
                                             variant="outlined"
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            fullWidth
-                                            name="userMail"
-                                            label="User Email"
-                                            type="email"
-                                            value={formData.userMail}
-                                            onChange={handleChange}
-                                            required
-                                            variant="outlined"
-                                        />
+<Grid item size={{ xs: 12, sm: 6 }}>
+  <TextField
+    fullWidth
+    name="userMail"
+    label="User Email"
+    type="email"
+    value={formData.userMail}
+    onChange={handleChange}
+    required
+    variant="outlined"
+    error={emailError}
+    helperText={emailError ? 'Please enter a valid email address' : ''}
+  />
+</Grid>
+                                    <Grid item size={{ xs: 12, sm: 6 }}>
+                                    <FormControl fullWidth variant="outlined">
+                                            <InputLabel>Category</InputLabel>
+                                            <Select
+                                                name="Role"
+                                                value={formData.Role}
+                                                onChange={handleChange}
+                                                label="Role"
+                                                required
+                                            >
+                                                <MenuItem key="Executive" value="Executive">Executive</MenuItem>
+                                                <MenuItem key="Manager" value="Manager">Manager</MenuItem>
+                                            </Select>
+                                        </FormControl>
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item size={{ xs: 12, sm: 6 }}>
                                         <TextField
                                             fullWidth
                                             name="phoneNumber"
@@ -134,7 +160,7 @@ const AddEmployee = () => {
                                             variant="outlined"
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item size={{ xs: 12, sm: 6 }}>
                                         <TextField
                                             fullWidth
                                             name="branch"
@@ -145,7 +171,7 @@ const AddEmployee = () => {
                                             variant="outlined"
                                         />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid item size={{ xs: 12 }}>
                                         <Button 
                                             type="submit" 
                                             variant="contained" 
@@ -154,7 +180,7 @@ const AddEmployee = () => {
                                             fullWidth
                                             sx={{ mt: 2 }}
                                         >
-                                            Add Executive
+                                            Add Employee
                                         </Button>
                                     </Grid>
                                 </Grid>

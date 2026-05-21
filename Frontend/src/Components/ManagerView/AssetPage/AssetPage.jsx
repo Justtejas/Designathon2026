@@ -329,14 +329,14 @@ export default function AssetPage() {
                             <IconButton onClick={generatePDF}>
                                 <PictureAsPdfIcon />
                             </IconButton>
-                            <Link to={'/admin/asset/add'}>
+                            <Link to={'/manager/asset/add'}>
                                 <IconButton>
                                     <AddIcon />
                                 </IconButton>
                             </Link>
                             {selectedValue != null && (
                                 <>
-                                    <Link to={`/admin/asset/update/${selectedValue}`}>
+                                    <Link to={`/manager/asset/update/${selectedValue}`}>
                                         <IconButton>
                                             <EditIcon />
                                         </IconButton>
@@ -468,7 +468,7 @@ export default function AssetPage() {
                                                 {asset.assetStatus}
                                             </TableCell>
                                             <TableCell>
-                                                <Link to={`/admin/asset/${asset.assetId}`}>
+                                                <Link to={`/manager/asset/${asset.assetId}`}>
                                                     <IconButton>
                                                         <InfoIcon />
                                                     </IconButton>
