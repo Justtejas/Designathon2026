@@ -1,607 +1,477 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faExclamationCircle, faCommentDots, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
-import Header from './Header';
-import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
-
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../../Utils/api";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import EmployeeHeader from "../EmployeeHeader";
+import Footer from "../../LandingPage/Footer";
+import {
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  Button,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  CircularProgress,
+  Toolbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Card,
+  CardContent,
+  Chip,
+  Tabs,
+  Tab,
+} from "@mui/material";
+import {
+  CheckCircle as CheckIcon,
+  CalendarMonth as CalendarIcon,
+  Assignment as AuditIcon,
+  Inventory as AssetIcon,
+  Build as ServiceIcon,
+  Replay as ReturnIcon,
+  ExpandMore as ExpandIcon,
+  ExpandLess as CollapseIcon,
+} from "@mui/icons-material";
 
 const Notifications = () => {
-    
-    const [notificationStatus, setNotificationStatus] = useState('active'); // Manage notification visibility
-    const [showSuccessPrompt, setShowSuccessPrompt] = useState(false);
-    const [auditStatus, setauditStatus] = useState('');
-    const [showTrackDetails, setShowTrackDetails] = useState(false);
-    const [assetAllocations, setAssetAllocations] = useState([]); // Store asset allocations
-    const [isLoading, setIsLoading] = useState(true); // For loading state
-    const [assetImages, setassetImages] = useState({});
-    const [assetRequest, setAssetRequest] = useState(null);
-    const [serviceRequest, setServiceRequest] = useState(null);
-    const [returnRequest, setReturnRequest] = useState(null);
-    const [selectedRequest, setSelectedRequest] = useState(null);
-    const [auditRequests, setAuditRequests] = useState([]);
-    const [userId, setuserId] = useState(null);
-    const [userName, setuserName] = useState(null);
-    const [assetName, setassetName] = useState('');
-    const [selectedauditId, setSelectedauditId] = useState(null);
-    const [selectedassetId, setSelectedassetId] = useState(null);
-    const [auditMessage, setauditMessage] = useState('');
-    const [nextauditDate, setNextauditDate] = useState(new Date('2024-04-11'));
-    const [showAuditUpdateSuccess, setShowAuditUpdateSuccess] = useState(false);
-    const defaultImage = "Images/AssetDefault.jpg";
+  const [notificationStatus, setNotificationStatus] = useState("inactive");
+  const [showSuccessPrompt, setShowSuccessPrompt] = useState(false);
+  const [showTrackDetails, setShowTrackDetails] = useState(false);
+  const [assetAllocations, setAssetAllocations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [assetImages, setAssetImages] = useState({});
+  const [assetRequest, setAssetRequest] = useState([]);
+  const [serviceRequest, setServiceRequest] = useState([]);
+  const [returnRequest, setReturnRequest] = useState([]);
+  const [selectedRequest, setSelectedRequest] = useState("asset");
+  const [auditRequests, setAuditRequests] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState(null);
+  const [selectedAssetId, setSelectedAssetId] = useState(null);
+  const [selectedauditId, setSelectedauditId] = useState(null);
+  const [auditMessage, setAuditMessage] = useState("");
+  const [auditStatus, setAuditStatus] = useState("");
+  const [assetName, setAssetName] = useState("");
+  const [nextauditDate, setNextauditDate] = useState(new Date());
+  const [showAuditUpdateSuccess, setShowAuditUpdateSuccess] = useState(false);
+  const [expandedAssetId, setExpandedAssetId] = useState(null);
 
-    const toggleAssetDetails = (assetId) => {
-        setSelectedassetId(selectedassetId === assetId ? null : assetId); // Toggle details for the clicked asset
+  const defaultImage = "Images/AssetDefault.jpg";
+
+  const statusConfig = {
+    0: { color: "#f59e0b", bg: "#fef3c7", label: "Pending" },
+    1: { color: "#10b981", bg: "#d1fae5", label: "Approved" },
+    2: { color: "#ef4444", bg: "#fee2e2", label: "Rejected" },
+    UnderReview: { color: "#3b82f6", bg: "#dbeafe", label: "Under Review" },
+    Approved: { color: "#f59e0b", bg: "#fef3c7", label: "Approved" },
+    Completed: { color: "#10b981", bg: "#d1fae5", label: "Completed" },
+    Rejected: { color: "#ef4444", bg: "#fee2e2", label: "Rejected" },
+    Sent: { color: "#3b82f6", bg: "#dbeafe", label: "Sent" },
+    Allocated: { color: "#10b981", bg: "#d1fae5", label: "Allocated" },
+    Returned: { color: "#8b5cf6", bg: "#ede9fe", label: "Returned" },
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchAssetImage = async (assetId) => {
+    try {
+      const response = await fetch(`http://localhost:7287/api/Assets/get-image/${assetId}`);
+      if (response.ok) {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      }
+    } catch (error) {
+      console.error("Error fetching image:", error);
+    }
+    return defaultImage;
+  };
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const token = Cookies.get("token");
+      if (!token) return;
+
+      const decoded = jwtDecode(token);
+      const userId = decoded.userId;
+      setUserId(userId);
+      setUserName(decoded.unique_name);
+
+      const [allocationRes, auditRes, assetReqRes, serviceReqRes, returnReqRes] = await Promise.all([
+        axiosInstance.get(`/AssetAllocations/user/${userId}`),
+        axiosInstance.get(`/Audits?userId=${userId}`),
+        axiosInstance.get("/AssetRequests"),
+        axiosInstance.get("/ServiceRequests"),
+        axiosInstance.get("/ReturnRequests"),
+      ]);
+
+      const allocations = allocationRes?.data || [];
+      const today = new Date();
+      const fiveDaysAgo = new Date();
+      fiveDaysAgo.setDate(today.getDate() - 5);
+
+      const filteredAllocations = allocations.filter((a) => {
+        const allocationDate = new Date(a.allocatedDate);
+        return allocationDate >= fiveDaysAgo && allocationDate <= today;
+      });
+
+      setAssetAllocations(filteredAllocations);
+
+      const images = {};
+      for (const allocation of filteredAllocations) {
+        images[allocation.assetId] = await fetchAssetImage(allocation.assetId);
+      }
+      setAssetImages(images);
+
+      const audits = auditRes?.data || [];
+      const filteredAudits = audits.filter((a) => {
+        const auditDate = new Date(a.auditDate);
+        return a.auditStatus === "Sent" && auditDate >= fiveDaysAgo && auditDate <= today;
+      });
+
+      if (filteredAudits.length > 0) {
+        setAuditRequests(filteredAudits);
+        setNotificationStatus("active");
+      }
+
+      setAssetRequest(assetReqRes?.data || []);
+      setServiceRequest(serviceReqRes?.data || []);
+      setReturnRequest(returnReqRes?.data || []);
+
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleAssetDetails = (assetId) => {
+    setExpandedAssetId(expandedAssetId === assetId ? null : assetId);
+  };
+
+  const acceptAuditRequest = async (auditId, assetId) => {
+    setSelectedauditId(auditId);
+    setSelectedAssetId(assetId);
+    setNotificationStatus("completed");
+    setShowSuccessPrompt(true);
+    setAuditMessage("");
+    setAuditStatus("");
+
+    try {
+      const assetResponse = await axiosInstance.get(`/Assets/${assetId}`);
+      if (assetResponse.status === 200) {
+        setAssetName(assetResponse.data.assetName);
+      }
+    } catch (error) {
+      console.error("Error fetching asset details:", error);
+    }
+  };
+
+  const updateAudit = async () => {
+    try {
+      const auditUpdateData = {
+        auditId: selectedauditId,
+        assetId: selectedAssetId,
+        userId: userId,
+        auditDate: new Date().toISOString(),
+        auditMessage: auditMessage,
+        auditStatus: auditStatus,
+        assetName: assetName,
+        userName: userName,
       };
 
-    // Function to handle the audit completion
-    const handleAccept = () => {
-        const currentDate = new Date();
-        const newNextauditDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
-        setNextauditDate(newNextauditDate);
-    };
+      await axiosInstance.put(`/Audits/${selectedauditId}`, auditUpdateData);
+      setShowSuccessPrompt(false);
+      setNotificationStatus("inactive");
+      setShowAuditUpdateSuccess(true);
 
-    useEffect(() => {
-        const token = Cookies.get('token');
-        if (token) {
-            const decode = jwtDecode(token);
-            setuserId(decode.userId); 
-            
-            const fetchAuditRequests = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:7287/api/Audits?userId=${decode.userId}`);
-                    const requests = response.data;
+      setTimeout(() => {
+        setShowAuditUpdateSuccess(false);
+      }, 3000);
 
-                    const today = new Date();
-                    const fiveDaysAgo = new Date();
-                    fiveDaysAgo.setDate(today.getDate() - 5);
+      fetchData();
+    } catch (error) {
+      console.error("Error updating audit:", error);
+    }
+  };
 
-                    const filteredRequests = requests.filter(request => {
-                        const requestDate = new Date(request.auditDate); 
-                        return request.auditStatus === "Sent" && requestDate >= fiveDaysAgo && requestDate <= today;
-                    });
+  const getStatusStyle = (status) => {
+    return statusConfig[status] || statusConfig[0];
+  };
 
-                    if (filteredRequests && filteredRequests.length > 0) {
-                        setAuditRequests(filteredRequests);
-                        setNotificationStatus('active');
-                    } else {
-                        setNotificationStatus('inactive');
-                    }
-                } catch (error) {
-                    console.error('Error fetching audit requests:', error);
-                }
-            };
+  const totalAllocations = assetAllocations.length;
+  const pendingRequests = assetRequest.filter((r) => r.requestStatus === 0).length;
+  const activeAudits = auditRequests.length;
 
-            fetchAuditRequests();
-        }
-    }, []);
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f8fafc' }}>
+      <EmployeeHeader />
+      <Toolbar sx={{ height: 80 }} />
 
-    const acceptAuditRequest = async (auditId, assetId) => {
-        setSelectedauditId(auditId); // Set the ID of the audit to be updated
-        setSelectedassetId(assetId);
-        setNotificationStatus('completed'); // Show the audit update section
-        setauditMessage('');
-        setShowSuccessPrompt(true);
+      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 2 }}>
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#1e2a55', mb: 1 }}>
+            🔔 Notifications
+          </Typography>
+          <Typography variant="body1" sx={{ color: '#6b7280' }}>
+            View your allocations, audits, and request status
+          </Typography>
+        </Box>
 
+        {showAuditUpdateSuccess && (
+          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: '#d1fae5', borderRadius: 2, borderLeft: '4px solid #10b981' }}>
+            <Typography sx={{ color: '#065f46', fontWeight: 600 }}>✅ Audit status updated successfully!</Typography>
+          </Paper>
+        )}
 
-        try {
-            const assetResponse = await axios.get(`http://localhost:7287/api/Assets/${assetId}`);
-            if (assetResponse.status === 200) {
-                const assetData = assetResponse.data;
-                setassetName(assetData.assetName); // Set the asset name here
-            }
-        } catch (error) {
-            console.error('Error fetching asset details:', error);
-        }
-    };
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={6} md={3}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 3, bgcolor: '#1e2a55', color: 'white' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800 }}>{totalAllocations}</Typography>
+              <Typography variant="body2">New Allocations</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={6} md={3}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 3, bgcolor: '#fef3c7' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#f59e0b' }}>{pendingRequests}</Typography>
+              <Typography variant="body2" sx={{ color: '#f59e0b' }}>Pending Requests</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={6} md={3}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 3, bgcolor: '#fee2e2' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#ef4444' }}>{activeAudits}</Typography>
+              <Typography variant="body2" sx={{ color: '#ef4444' }}>Active Audits</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={6} md={3}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 3, bgcolor: '#dbeafe' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#3b82f6' }}>{assetRequest.length + serviceRequest.length + returnRequest.length}</Typography>
+              <Typography variant="body2" sx={{ color: '#3b82f6' }}>Total Requests</Typography>
+            </Paper>
+          </Grid>
+        </Grid>
 
-    const toggleTrackDetails = () => {
-        setShowTrackDetails((prev) => !prev);
-    };
+        <Paper elevation={0} sx={{ borderRadius: 3, overflow: 'hidden', mb: 4 }}>
+          <Box sx={{ p: 3, bgcolor: '#1e2a55', borderRadius: '12px 12px 0 0' }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: 'white' }}>📦 Recent Asset Allocations</Typography>
+          </Box>
 
-    useEffect(() => {
-        const token = Cookies.get('token');
-        if (token) {
-            const decode = jwtDecode(token);
-            const userId = decode.userId;
-            const userName = decode.unique_name;
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 8 }}>
+              <CircularProgress sx={{ color: '#1e2a55' }} />
+            </Box>
+          ) : assetAllocations.length === 0 ? (
+            <Box sx={{ p: 4, textAlign: 'center' }}>
+              <Typography color="text.secondary">No recent asset allocations found.</Typography>
+            </Box>
+          ) : (
+            <Box sx={{ p: 2 }}>
+              {assetAllocations.map((allocation) => (
+                <Card key={allocation.assetId} elevation={0} sx={{ mb: 2, borderRadius: 2, border: '1px solid #e5e7eb', transition: 'all 0.3s', '&:hover': { boxShadow: 2 } }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <CheckIcon sx={{ color: '#10b981' }} />
+                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                        <Box component="span" sx={{ color: '#ef4444', fontWeight: 700 }}>ADMIN</Box> has allocated an asset to you
+                      </Typography>
+                    </Box>
+                    <Button onClick={() => toggleAssetDetails(allocation.assetId)} endIcon={expandedAssetId === allocation.assetId ? <CollapseIcon /> : <ExpandIcon />} sx={{ color: '#1e2a55' }}>
+                      {expandedAssetId === allocation.assetId ? 'Hide Details' : 'View Details'}
+                    </Button>
+                  </Box>
 
-            const fetchAssetAllocations = async () => {
-                try {
-                    const response = await fetch(`http://localhost:7287/api/AssetAllocations/user/${userId}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                          // Get today's date and the date five days ago
-                          const today = new Date();
-                          const fiveDaysAgo = new Date();
-                          fiveDaysAgo.setDate(today.getDate() - 5);
+                  {expandedAssetId === allocation.assetId && (
+                    <CardContent sx={{ borderTop: '1px solid #e5e7eb', mt: 1 }}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} md={8}>
+                          <Typography variant="body1"><strong>Asset Name:</strong> {allocation.assetName}</Typography>
+                          <Typography variant="body1"><strong>Model:</strong> {allocation.Model}</Typography>
+                          <Typography variant="body1"><strong>Allocation Date:</strong> {new Date(allocation.allocatedDate).toLocaleDateString()}</Typography>
+                          <Typography variant="body1"><strong>Category:</strong> {allocation.categoryName}</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                          <Box component="img" src={assetImages[allocation.assetId] || defaultImage} alt={allocation.assetName} sx={{ width: '100%', height: '100px', objectFit: 'cover', borderRadius: 2 }} />
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  )}
+                </Card>
+              ))}
+            </Box>
+          )}
+        </Paper>
 
-                            // Filter allocations from the last five days
-                        const filteredAllocations = (data || []).filter(allocation => {
-                            const allocationDate = new Date(allocation.allocatedDate); 
-                            console.log("Allocation Date:", allocationDate);// Replace with the actual date field
-                            return allocationDate >= fiveDaysAgo && allocationDate <= today;
-                        });
+        <Paper elevation={0} sx={{ borderRadius: 3, overflow: 'hidden', mb: 4 }}>
+          <Box sx={{ p: 3, bgcolor: '#1e2a55', borderRadius: '12px 12px 0 0' }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: 'white' }}>📋 Audit Requests</Typography>
+          </Box>
 
-                        console.log("Filtered Allocations:", filteredAllocations);
-                        setAssetAllocations(filteredAllocations);
+          <Box sx={{ p: 3 }}>
+            {notificationStatus === "active" ? (
+              auditRequests.map((request) => (
+                <Card key={request.auditId} elevation={0} sx={{ mb: 2, borderRadius: 2, border: '1px solid #e5e7eb', transition: 'all 0.3s', '&:hover': { boxShadow: 2 } }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <AuditIcon sx={{ color: '#6b7280' }} />
+                      <Typography>
+                        <Box component="span" sx={{ color: '#ef4444', fontWeight: 700 }}>ADMIN</Box> has sent you an audit request
+                      </Typography>
+                    </Box>
+                    <Button onClick={() => acceptAuditRequest(request.auditId, request.assetId)} variant="contained" sx={{ bgcolor: '#10b981', '&:hover': { bgcolor: '#059669' } }}>
+                      Accept
+                    </Button>
+                  </Box>
+                </Card>
+              ))
+            ) : notificationStatus === "completed" && showSuccessPrompt ? (
+              <Card elevation={0} sx={{ borderRadius: 2, bgcolor: '#f8fafc' }}>
+                                <CardContent>
+                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Update Audit Status</Typography>
+                  <Typography variant="body1" sx={{ mb: 1 }}>Asset ID: <Box component="span" sx={{ fontWeight: 700, color: '#f59e0b' }}>{selectedAssetId}</Box></Typography>
+                  <Typography variant="body1" sx={{ mb: 2 }}>Asset Name: <Box component="span" sx={{ fontWeight: 700, color: '#f59e0b' }}>{assetName}</Box></Typography>
+                  
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel>Update Status</InputLabel>
+                    <Select value={auditStatus} onChange={(e) => setAuditStatus(e.target.value)} label="Update Status">
+                      <MenuItem value="Completed">Completed</MenuItem>
+                      <MenuItem value="InProgress">In Progress</MenuItem>
+                    </Select>
+                  </FormControl>
 
-                        // Fetch images for filtered allocations
-                        filteredAllocations.forEach((allocation) => {
-                            fetchassetImage(allocation.assetId);
-                        });
-                    } else {
-                        console.error('Failed to fetch asset allocations');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-            const fetchassetImage = async (assetId) => {
-                try {
-                    const response = await fetch(`http://localhost:7287/api/Assets/get-image/${assetId}`);
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        const imageUrl = URL.createObjectURL(blob); // Convert blob to URL
-                        setassetImages((prevImages) => ({
-                            ...prevImages,
-                            [assetId]: imageUrl, // Store the image URL by assetId
-                        }));
-                    } else {
-                        console.error(`Failed to fetch image for asset ${assetId}`);
-                        setassetImages((prevImages) => ({
-                            ...prevImages,
-                            [assetId]: defaultImage, // Set default image if fetching fails
-                        }));
-                    }
-                } catch (error) {
-                    console.error('Error fetching asset image:', error);
-                    setassetImages((prevImages) => ({
-                        ...prevImages,
-                        [assetId]: defaultImage, // Set default image if there's an error
-                    }));
-                }
-            };
+                  <TextField fullWidth multiline rows={4} label="Audit Message" value={auditMessage} onChange={(e) => setAuditMessage(e.target.value)} placeholder="Enter audit message..." sx={{ mb: 2 }} />
 
-            fetchAssetAllocations();
-        }
-    }, []);
-    const fetchRequests = async () => {
-        try {
-            const token = Cookies.get('token'); // Get token from cookies
-            let userId;
-    
-            if (token) {
-                const decode = jwtDecode(token); // Decode the token
-                userId = decode.userId; // Extract the user ID
-            } else {
-                console.error('No token found');
-                return; // Exit if no token is found
-            }
-    
-            // Create an array to hold the promises for the API requests
-            const requests = [
-                axios.get('http://localhost:7287/api/AssetRequests', {
-                    headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
-                }).then(res => {
-                    setAssetRequest(res.data);
-                    console.log('Asset Requests:', res.data);
-                }).catch(error => {
-                    console.error('Error fetching asset requests:', error.response ? error.response.data : error.message);
-                    setAssetRequest([]); // Set to empty if there's an error
-                }),
-                
-                axios.get('http://localhost:7287/api/ServiceRequests', {
-                    headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
-                }).then(res => {
-                    setServiceRequest(res.data);
-                    console.log('Service Requests:', res.data);
-                }).catch(error => {
-                    console.error('Error fetching service requests:', error.response ? error.response.data : error.message);
-                    setServiceRequest([]); // Set to empty if there's an error
-                }),
-                
-                axios.get('http://localhost:7287/api/ReturnRequests', {
-                    headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
-                }).then(res => {
-                    setReturnRequest(res.data);
-                    console.log('Return Requests:', res.data);
-                }).catch(error => {
-                    console.error('Error fetching return requests:', error.response ? error.response.data : error.message);
-                    setReturnRequest([]); // Set to empty if there's an error
-                }),
-            ];
-    
-            // Wait for all requests to complete
-            await Promise.all(requests);
-            
-        } catch (error) {
-            console.error('Unexpected error fetching requests:', error.response ? error.response.data : error.message);
-        }
-    };
-    
-    // const fetchRequests = async () => {
-    //     try {
-    //         const token = Cookies.get('token'); // Get token from cookies
-    //         let userId;
+                  <Button onClick={updateAudit} variant="contained" sx={{ bgcolor: '#10b981', '&:hover': { bgcolor: '#059669' } }}>
+                    Update Audit
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <Box sx={{ p: 4, textAlign: 'center', bgcolor: '#f8fafc', borderRadius: 2 }}>
+                <Typography color="text.secondary">No recent audit request found</Typography>
+              </Box>
+            )}
+          </Box>
+        </Paper>
 
-    //         if (token) {
-    //             const decode = jwtDecode(token); // Decode the token
-    //             userId = decode.userId; // Extract the user ID
-    //         } else {
-    //             console.error('No token found');
-    //             return; // Exit if no token is found
-    //         }
+        {/* Request Tracking */}
+        <Paper elevation={0} sx={{ borderRadius: 3, overflow: 'hidden', mb: 4 }}>
+          <Box sx={{ p: 3, bgcolor: '#1e2a55', borderRadius: '12px 12px 0 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: 'white' }}>📊 Request Tracking</Typography>
+            <Button onClick={() => setShowTrackDetails(!showTrackDetails)} sx={{ color: 'white' }}>
+              {showTrackDetails ? 'Hide' : 'Show'}
+            </Button>
+          </Box>
 
-    //         // Make API requests using the userId with Authorization header
-    //         const [assetRes, serviceRes, returnRes] = await Promise.all([
-    //             axios.get('http://localhost:7287/api/AssetRequests', {
-    //                 headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
-    //             }), // Asset requests
-    //             axios.get('http://localhost:7287/api/ServiceRequests', {
-    //                 headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
-    //             }), // Service requests
-    //             axios.get('http://localhost:7287/api/ReturnRequests', {
-    //                 headers: { Authorization: `Bearer ${token}` }, // Add Authorization header
-    //             }), // Return requests
-    //         ]);
+          {showTrackDetails && (
+            <Box sx={{ p: 3 }}>
+              <Tabs value={selectedRequest} onChange={(e, newValue) => setSelectedRequest(newValue)} sx={{ mb: 3 }}>
+                <Tab value="asset" label="Asset Request" icon={<AssetIcon />} />
+                <Tab value="service" label="Service Request" icon={<ServiceIcon />} />
+                <Tab value="return" label="Return Request" icon={<ReturnIcon />} />
+              </Tabs>
 
-    //         // Handle the responses
-    //         setAssetRequest(assetRes.data);
-    //         setServiceRequest(serviceRes.data);
-    //         setReturnRequest(returnRes.data);
+              {selectedRequest === "asset" && (
+                <Box>
+                  {assetRequest.length === 0 ? (
+                    <Typography color="text.secondary">No asset requests found</Typography>
+                  ) : (
+                    assetRequest.map((req) => {
+                      const statusStyle = getStatusStyle(req.requestStatus);
+                      return (
+                        <Card key={req.assetReqId} elevation={0} sx={{ mb: 2, borderRadius: 2, border: '1px solid #e5e7eb' }}>
+                          <CardContent>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} md={6}>
+                                <Typography variant="body1"><strong>Request Date:</strong> {new Date(req.assetReqDate).toLocaleDateString()}</Typography>
+                                <Typography variant="body1"><strong>Asset Name:</strong> {req.assetName || 'N/A'}</Typography>
+                              </Grid>
+                              <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Chip label={statusStyle.label} size="small" sx={{ bgcolor: statusStyle.bg, color: statusStyle.color, fontWeight: 600 }} />
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      );
+                    })
+                  )}
+                </Box>
+              )}
 
-    //         console.log('Asset Requests:', assetRes.data);
-    //         console.log('Service Requests:', serviceRes.data);
-    //         console.log('Return Requests:', returnRes.data);
+              {selectedRequest === "service" && (
+                <Box>
+                  {serviceRequest.length === 0 ? (
+                    <Typography color="text.secondary">No service requests found</Typography>
+                  ) : (
+                    serviceRequest.map((req) => {
+                      const statusStyle = getStatusStyle(req.serviceReqStatus);
+                      return (
+                        <Card key={req.serviceId} elevation={0} sx={{ mb: 2, borderRadius: 2, border: '1px solid #e5e7eb' }}>
+                          <CardContent>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} md={6}>
+                                <Typography variant="body1"><strong>Request Date:</strong> {new Date(req.serviceRequestDate).toLocaleDateString()}</Typography>
+                                <Typography variant="body1"><strong>Description:</strong> {req.serviceDescription || 'N/A'}</Typography>
+                              </Grid>
+                              <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Chip label={statusStyle.label} size="small" sx={{ bgcolor: statusStyle.bg, color: statusStyle.color, fontWeight: 600 }} />
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      );
+                    })
+                  )}
+                </Box>
+              )}
 
-    //     } catch (error) {
-    //         console.error('Error fetching requests:', error.response ? error.response.data : error.message);
-    //     }
-    // };
+              {selectedRequest === "return" && (
+                <Box>
+                  {returnRequest.length === 0 ? (
+                    <Typography color="text.secondary">No return requests found</Typography>
+                  ) : (
+                    returnRequest.map((req) => {
+                      const statusStyle = getStatusStyle(req.returnStatus);
+                      return (
+                        <Card key={req.returnId} elevation={0} sx={{ mb: 2, borderRadius: 2, border: '1px solid #e5e7eb' }}>
+                          <CardContent>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} md={6}>
+                                <Typography variant="body1"><strong>Request Date:</strong> {new Date(req.returnDate).toLocaleDateString()}</Typography>
+                                <Typography variant="body1"><strong>Asset Name:</strong> {req.assetName || 'N/A'}</Typography>
+                              </Grid>
+                              <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Chip label={statusStyle.label} size="small" sx={{ bgcolor: statusStyle.bg, color: statusStyle.color, fontWeight: 600 }} />
+                              </Grid>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      );
+                    })
+                  )}
+                </Box>
+              )}
+            </Box>
+          )}
+        </Paper>
 
-    useEffect(() => {
-        fetchRequests(); // Call the fetchRequests function on component mount
-    }, []);
+        {/* Reminder */}
+        <Paper elevation={0} sx={{ p: 3, borderRadius: 3, bgcolor: '#1e2a55', display: 'flex', alignItems: 'center', gap: 2 }}>
+          <CalendarIcon sx={{ color: '#ef4444', fontSize: 32 }} />
+          <Typography variant="body1" sx={{ color: 'white', fontWeight: 500 }}>
+            Reminder: Your next audit is scheduled for <Box component="span" sx={{ fontWeight: 700, color: '#ef4444' }}>{nextauditDate.toLocaleDateString()}</Box>
+          </Typography>
+        </Paper>
+      </Box>
 
-    const updateAudit = async () => {
-        try {
-            const assetResponse = await axios.get(`http://localhost:7287/api/Assets/${selectedassetId}`);
-            const assetData = assetResponse.data;
-            setassetName(assetData.assetName);
-
-            if (assetResponse.status !== 200) {
-                throw new Error('Failed to fetch asset details');
-            }
-
-            const auditUpdateData = {
-                auditId: selectedauditId,
-                assetId: selectedassetId,
-                userId: userId,
-                auditDate: new Date().toISOString(),
-                auditMessage: auditMessage,
-                auditStatus: auditStatus,
-                assetName: assetData.assetName,
-                userName: userName
-            };
-
-            console.log("Audit update data:", auditUpdateData); 
-
-            await axios.put(`http://localhost:7287/api/Audits/${selectedauditId}`, auditUpdateData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    accept: '*/*'
-                }
-            });
-
-            setShowSuccessPrompt(false); 
-            setNotificationStatus('inactive'); 
-
-            if (assetResponse.status === 200) {
-                setShowAuditUpdateSuccess(true); 
-                setTimeout(() => {
-                  setShowAuditUpdateSuccess(false);
-                }, 3000);
-              }
-
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('Error updating audit request:', error.response?.data);
-            } else {
-                console.error('Unexpected error:', error);
-            }
-        }
-    };
-  
-    return (
-        <div className="min-h-screen bg-white">
-            <Header />
-            <div className="flex flex-col items-center p-8 bg-gray-100 h-screen">
-                {showSuccessPrompt && (
-                    <div className="bg-green-500 text-white p-4 rounded-lg mb-4">
-                        Audit status updated successfully!
-                    </div>
-                )}
-
-                <div className="text-2xl font-bold mb-4 text-indigo-950">NOTIFICATIONS</div>
-
-                <div className="p-4 w-full max-w-2xl space-y-4">
-                    {/* Asset Allocation Notifications */}
-                    {isLoading ? (
-                        <div>Loading asset allocations...</div>
-                    ) : assetAllocations.length > 0 ? (
-                        assetAllocations.map((allocation) => (
-                            <div key={allocation.assetId} className="flex flex-col p-6 bg-indigo-950 text-white rounded-lg shadow-lg">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-2">
-                                        <FontAwesomeIcon icon={faCheckCircle} className="text-green-500" />
-                                        <span>
-                                            <span className="font-semibold text-red-500">ADMIN</span> has allocated an asset to you
-                                        </span>
-                                    </div>
-                                    <div
-                                        onClick={() => toggleAssetDetails(allocation.assetId)}
-                                        className="text-red-500 hover:underline cursor-pointer"
-                                    >
-                                        {selectedassetId === allocation.assetId ? 'Hide Details' : 'View Details'}
-                                    </div>
-                                </div>
-
-                                {selectedassetId === allocation.assetId && (
-                                    <div className="mt-4 p-4 bg-indigo-950 text-white rounded-lg shadow-lg flex">
-                                        <div className="flex-1">
-                                            <p><strong>Asset Name:</strong> {allocation.assetName}</p>
-                                            <p><strong>Model:</strong> {allocation.Model}</p>
-                                            <p><strong>Allocation Date:</strong> {new Date(allocation.allocatedDate).toLocaleDateString()}</p>
-                                            <p><strong>Category:</strong> {allocation.categoryName}</p>
-                                        </div>
-                                        {assetImages[allocation.assetId] ? (
-                                            <img
-                                                src={assetImages[allocation.assetId] || defaultImage}
-                                                alt={`Asset ${allocation.assetId}`}
-                                                style={{ width: '100px', height: '100px' }}
-                                            />
-                                        ) : (
-                                            <div>Loading image...</div>
-                                        )}
-
-                                    </div>
-                                )}
-                            </div>
-                        ))
-                    ) : (
-                        <div className="text-slate-200">No recent asset allocations found.</div>
-                    )}
-
-                    <div>
-                        {notificationStatus === 'active' ? (
-                            auditRequests.map(request => (
-                                <div key={request.auditId} className="flex flex-col p-6 bg-indigo-950 text-white rounded-lg shadow-lg">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-2">
-                                            <FontAwesomeIcon icon={faCommentDots} className="text-slate-300" />
-                                            <span>
-                                                <span className="font-semibold text-red-500">ADMIN</span> has sent you an audit request
-                                            </span>
-                                        </div>
-                                        <div className="flex space-x-4">
-                                            <div
-                                                onClick={() => acceptAuditRequest(request.auditId, request.assetId)}
-                                                className="text-green-500 hover:underline cursor-pointer"
-                                            >
-                                                Accept
-                                            </div>
-                                          
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        ) : notificationStatus === 'completed' && showSuccessPrompt ? (
-                            <div className="mt-4 p-4 items-center bg-indigo-950 text-slate-200 rounded-lg shadow-lg">
-                                <p><strong>Update Audit Status</strong></p>
-                                <p>Asset ID: <span className="font-semibold text-yellow-400">{selectedassetId}</span></p>
-                                <p>Asset Name: <span className="font-semibold text-yellow-400">{assetName}</span></p>
-                                <select
-                                    value={auditStatus}
-                                    onChange={(e) => setauditStatus(e.target.value)}
-                                    className="border border-gray-300 bg-slate-200 text-indigo-950 rounded p-2 mb-2"
-                                >
-                                    <option value="" disabled >Update Status</option>
-                                    <option value="Completed">Completed</option>
-
-                                    <option value="InProgress">InProgress</option>
-                                </select>
-                                <textarea
-                                    value={auditMessage}
-                                    onChange={(e) => setauditMessage(e.target.value)}
-                                    placeholder="Enter audit message..."
-                                    className="border border-gray-300 bg-slate-200 text-indigo-950 rounded p-2 w-full h-24"
-                                />
-                                <button
-                                    onClick={updateAudit}
-                                    className="mt-2 bg-green-500 text-white rounded p-2"
-                                >
-                                    Update Audit
-                                </button>
-                                {showAuditUpdateSuccess && (
-        <div className="mt-4 p-4 items-center bg-green-500 text-white rounded-lg shadow-lg">
-          <p>Audit updated successfully!</p>
-        </div>
-      )}
-                            </div>
-                        ) : (
-                            <div className="p-6 bg-gray-200 text-gray-700 rounded-lg shadow-lg">
-                                No recent audit request found
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Under Review Notification */}
-                    <div className="flex flex-col p-6 bg-indigo-950 text-white rounded-lg shadow-lg">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                                <FontAwesomeIcon icon={faExclamationCircle} className="text-blue-500" />
-                                <span>
-                                    <span className="font-semibold text-red-500">Request</span> Tracking
-                                </span>
-                            </div>
-                            <div className="flex space-x-4">
-                                <div
-                                    onClick={() => setShowTrackDetails(!showTrackDetails)}
-                                    className="text-red-500 hover:underline cursor-pointer"
-                                >
-                                    Track Status
-                                </div>
-                            </div>
-                        </div>
-
-                        {showTrackDetails && (
-                            <div className="mt-4 p-4 bg-indigo-950 text-white rounded-lg shadow-lg">
-                                {/* Links to select request type */}
-                                <div className="flex space-x-4 mb-4">
-                                    <div
-                                        onClick={() => setSelectedRequest('asset')}
-                                        className={`cursor-pointer  ${selectedRequest === 'asset' ? 'text-red-500' : 'text-blue-400'
-                                            }`}
-                                    >
-                                        Asset Request Status
-                                    </div>
-                                    <div
-                                        onClick={() => setSelectedRequest('service')}
-                                        className={`cursor-pointer  ${selectedRequest === 'service' ? 'text-red-500' : 'text-blue-400'
-                                            }`}
-                                    >
-                                        Service Request Status
-                                    </div>
-                                    <div
-                                        onClick={() => setSelectedRequest('return')}
-                                        className={`cursor-pointer  ${selectedRequest === 'return' ? 'text-red-500' : 'text-blue-400'
-                                            }`}
-                                    >
-                                        Return Request Status
-                                    </div>
-                                </div>
-
-                                {/* Conditionally render Asset Request details */}
-                                {selectedRequest === 'asset' && assetRequest.length > 0 && (
-                                    <div>
-
-                                        {assetRequest.map((req) => (
-                                            <div key={req.assetReqId} className="mb-4">
-                                                <p>
-                                                    <strong>Asset Request Sent On:</strong>{' '}
-                                                    {new Date(req.assetReqDate).toLocaleDateString() || 'N/A'}
-                                                </p>
-                                                <p>
-                                                    <strong>Asset Status:</strong>{' '}
-                                                    {(() => {
-                                                        switch (req.requestStatus) {
-                                                            case 0:
-                                                                return 'Pending';
-                                                            case 1:
-                                                                return 'Allocated';
-                                                            case 2:
-                                                                return 'Rejected';
-                                                            default:
-                                                                return 'Unknown Status';
-                                                        }
-                                                    })()}
-                                                </p>
-                                                <p>
-                                                    <strong>Asset Name:</strong> {req.assetName || 'N/A'}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {/* Conditionally render Service Request details */}
-                                {selectedRequest === 'service' && serviceRequest.length > 0 && (
-                                    <div>
-
-                                        {serviceRequest.map((req) => (
-                                            <div key={req.serviceId} className="mb-4">
-                                                <p>
-                                                    <strong>Service Request Date:</strong>{' '}
-                                                    {new Date(req.serviceRequestDate).toLocaleDateString() || 'N/A'}
-                                                </p>
-                                                <p>
-                                                    <strong>Service Status:</strong> {' '}
-                                                    {(() => {
-                                                        switch (req.serviceReqStatus) {
-                                                            case 0:
-                                                                return 'UnderReview';
-                                                            case 1:
-                                                                return 'Approved';
-                                                            case 2:
-                                                                return 'Completed';
-                                                            case 3:
-                                                                return 'Rejected';
-                                                            default:
-                                                                return 'Unknown Status';
-                                                        }
-                                                    })()}
-                                                </p>
-                                                <p>
-                                                    <strong>Service Description:</strong>{' '}
-                                                    {req.serviceDescription || 'N/A'}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {/* Conditionally render Return Request details */}
-                                {selectedRequest === 'return' && returnRequest.length > 0 && (
-                                    <div>
-
-                                        {returnRequest.map((req) => (
-                                            <div key={req.returnId} className="mb-4">
-                                                <p>
-                                                    <strong>Return Request Date:</strong>{' '}
-                                                    {new Date(req.returnDate).toLocaleDateString() || 'N/A'}
-                                                </p>
-                                                <p>
-                                                    <strong>Return Status:</strong>{' '}
-                                                    {(() => {
-                                                        switch (req.returnStatus) {
-                                                            case 0:
-                                                                return 'Sent';
-                                                            case 1:
-                                                                return 'Approved';
-                                                            case 2:
-                                                                return 'Returned';
-                                                            case 3:
-                                                                return 'Rejected';
-                                                            default:
-                                                                return 'Unknown Status';
-                                                        }
-                                                    })()}
-                                                </p>
-                                                <p>
-                                                    <strong>Asset Name:</strong> {req.assetName || 'N/A'}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="flex justify-center items-center bg-white text-indigo-950 p-4 rounded-lg mt-8 shadow-lg">
-                    <FontAwesomeIcon icon={faCalendarAlt} className="text-red-500 mr-2" />
-                    <span className="text-lg font-medium">
-                        Reminder: Your next audit is scheduled for <strong>{nextauditDate.toLocaleDateString()}</strong>
-                    </span>
-                </div>
-            </div>
-        </div>
-    );
+      <Footer />
+    </Box>
+  );
 };
 
 export default Notifications;

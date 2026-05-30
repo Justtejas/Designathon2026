@@ -47,15 +47,33 @@ const AdminLayout = ({ mobileOpen, handleDrawerToggle }) => (
     </Box>
   </>
 );
-const ManagerLayout = ({ mobileOpen, handleDrawerToggle }) => (
-  <>
-    <ManagerHeader handleDrawerToggle={handleDrawerToggle} />
-    <ManagerNavbar mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
-    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-      <Outlet />
+// REPLACE YOUR OLD MANAGERLAYOUT WITH THIS:
+const ManagerLayout = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const drawerWidth = collapsed ? 80 : 260;
+
+  return (
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <ManagerHeader handleDrawerToggle={() => setCollapsed(!collapsed)} />
+      <ManagerNavbar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
+      
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          marginLeft: { sm: `calc(100% -${drawerWidth}px)` },
+          transition: 'margin-left 0.24s ease',
+          mt: '80px',
+          bgcolor: 'background.default'
+        }}
+      >
+        <Outlet />
+      </Box>
     </Box>
-  </>
-);
+  );
+};
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -83,7 +101,7 @@ function App() {
             <Route path="Profile" element={<EmployeeRoute><Profile /></EmployeeRoute>} />
             <Route path="Settings" element={<EmployeeRoute><Settings /></EmployeeRoute>} />
 
-            <Route path="manager" element={<ManagerLayout mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />}>
+            <Route path="manager" element={<ManagerLayout />}>
               <Route path="Dashboard" element={<ManagerRoute><ManagerDashboard /></ManagerRoute>} />
               <Route path="asset/*" element={<ManagerRoute><ManagerAsset /></ManagerRoute>} />
               <Route path="request/*" element={<ManagerRoute><ManagerRequest /></ManagerRoute>} />

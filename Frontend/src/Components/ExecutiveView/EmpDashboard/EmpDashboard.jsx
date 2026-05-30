@@ -10,12 +10,32 @@ import {
     Filler,
     Tooltip,
     Legend,
-
 } from "chart.js";
 import { jwtToken } from "../../Utils/utils";
 import axiosInstance from "../../Utils/api";
 import moment from "moment";
 import Footer from "../../LandingPage/Footer";
+import {
+    Box,
+    Typography,
+    Paper,
+    Grid,
+    CircularProgress,
+    Chip,
+    Toolbar,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
+} from "@mui/material";
+import {
+    Inventory as AssetsIcon,
+    Assignment as RequestIcon,
+    AssignmentReturn as ReturnIcon,
+    Build as BuildIcon
+} from "@mui/icons-material";
 
 ChartJS.register(
     CategoryScale,
@@ -27,42 +47,69 @@ ChartJS.register(
     Legend,
 );
 
-const CircularGauge = ({ value = 0, label }) => {
-    const percentage = Math.min(value * 10, 100);
-
-    return (
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6
-      flex flex-col items-center transition hover:-translate-y-1">
-            <div className="relative w-28 h-28">
-                <svg viewBox="0 0 36 36" className="-rotate-90">
-                    <path
-                        d="M18 2.0845
-              a 15.9155 15.9155 0 0 1 0 31.831
-              a 15.9155 15.9155 0 0 1 0 -31.831"
-                        fill="none"
-                        stroke="#E5E7EB"
-                        strokeWidth="3.5"
-                    />
-                    <path
-                        d="M18 2.0845
-              a 15.9155 15.9155 0 0 1 0 31.831
-              a 15.9155 15.9155 0 0 1 0 -31.831"
-                        fill="none"
-                        stroke="#F87060"
-                        strokeWidth="3.5"
-                        strokeDasharray={`${percentage},100`}
-                        strokeLinecap="round"
-                    />
-                </svg>
-                <span className="absolute inset-0 flex items-center justify-center
-          text-xl font-bold text-indigo-900 dark:text-white">
+const StatCard = ({ icon, value, label, color, bgColor, delay }) => (
+    <Paper
+        elevation={0}
+        sx={{
+            p: 3,
+            borderRadius: 3,
+            background: `linear-gradient(135deg, ${bgColor} 0%, ${bgColor}cc 100%)`,
+            animation: `fadeInUp 0.5s ${delay} ease-out`,
+            transition: 'all 0.3s',
+            '&:hover': { transform: 'translateY(-5px)', boxShadow: 3 },
+            '@keyframes fadeInUp': {
+                '0%': { opacity: 0, transform: 'translateY(20px)' },
+                '100%': { opacity: 1, transform: 'translateY(0)' }
+            }
+        }}
+    >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'rgba(255,255,255,0.25)' }}>
+                {React.cloneElement(icon, { sx: { fontSize: 28, color: 'white' } })}
+            </Box>
+            <Box>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: 'white', lineHeight: 1.2 }}>
                     {value}
-                </span>
-            </div>
-            <p className="mt-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                {label}
-            </p>
-        </div>
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)', fontWeight: 500 }}>
+                    {label}
+                </Typography>
+            </Box>
+        </Box>
+    </Paper>
+);
+
+const AnimatedGauge = ({ value = 0, label, color, delay }) => {
+    const percentage = Math.min(value * 10, 100);
+    
+    return (
+        <Paper
+            elevation={0}
+            sx={{
+                p: 3,
+                borderRadius: 3,
+                border: `2px solid ${color}30`,
+                animation: `fadeInUp 0.5s ${delay} ease-out`,
+                transition: 'all 0.3s',
+                '&:hover': { transform: 'translateY(-5px)', boxShadow: 3 }
+            }}
+        >
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Box sx={{ position: 'relative', width: 110, height: 110 }}>
+                    <svg viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
+                            fill="none" stroke="#e5e7eb" strokeWidth="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
+                            fill="none" stroke={color} strokeWidth="3" 
+                            strokeDasharray={`${percentage},100`} strokeLinecap="round" />
+                    </svg>
+                    <Box sx={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Typography variant="h5" sx={{ fontWeight: 800, color: color }}>{value}</Typography>
+                    </Box>
+                </Box>
+                <Typography variant="subtitle1" sx={{ mt: 1.5, fontWeight: 600, color: '#374151' }}>{label}</Typography>
+            </Box>
+        </Paper>
     );
 };
 
@@ -82,8 +129,9 @@ const EmpDashboard = () => {
             if (Array.isArray(res?.data)) return res.data;
             if (Array.isArray(res?.data?.data)) return res.data.data;
         }
-        return []; // rejected or unexpected shape
+        return [];
     };
+
     useEffect(() => {
         const decoded = jwtToken();
         if (!decoded?.userId) return;
@@ -101,13 +149,7 @@ const EmpDashboard = () => {
                     axiosInstance.get(`/ReturnRequests`),
                 ]);
 
-                const [
-                    assetAllocRes,
-                    assetReqRes,
-                    serviceReqRes,
-                    returnReqRes,
-                ] = results;
-                console.log(assetAllocRes)
+                const [assetAllocRes, assetReqRes, serviceReqRes, returnReqRes] = results;
                 const myAssets = extractSettledData(assetAllocRes);
                 const assetRequests = extractSettledData(assetReqRes);
                 const serviceRequests = extractSettledData(serviceReqRes);
@@ -115,16 +157,13 @@ const EmpDashboard = () => {
 
                 const assetReq = assetRequests.filter(r => r.userId === userId);
                 const serviceReq = serviceRequests.filter(r => r.userId === userId);
-                const returns = returnRequests.filter(
-                    r => r.userId === userId && r.returnStatus === 2
-                );
+                const returns = returnRequests.filter(r => r.userId === userId && r.returnStatus === 2);
 
                 setAssets(myAssets);
                 setReturnedCount(returns.length);
                 setRequestsCount(assetReq.length + serviceReq.length + returns.length);
                 setAssetReqData(groupByWeek(assetReq));
                 setServiceReqData(groupByWeek(serviceReq));
-
             } catch (err) {
                 console.error("Dashboard API Error:", err);
             } finally {
@@ -134,116 +173,160 @@ const EmpDashboard = () => {
 
         fetchDashboardData();
     }, []);
+
     const groupByWeek = (data = []) => {
         const weeks = Array(5).fill(0);
         data.forEach(item => {
-            const diff =
-                moment(item.requestDate).week() -
-                moment().startOf("month").week();
+            const diff = moment(item.requestDate).week() - moment().startOf("month").week();
             if (diff >= 0 && diff < 5) weeks[diff]++;
         });
         return weeks;
     };
 
-    const chartData = useMemo(
-        () => ({
-            labels: weekLabels,
-            datasets: [
-                {
-                    label: "Asset Requests",
-                    data: assetReqData,
-                    borderColor: "#F87060",
-                    backgroundColor: "rgba(248,112,96,0.25)",
-                    fill: true,
-                    tension: 0.4,
-                },
-                {
-                    label: "Service Requests",
-                    data: serviceReqData,
-                    borderColor: "#1E3A8A",
-                    backgroundColor: "rgba(59,130,246,0.25)",
-                    fill: true,
-                    tension: 0.4,
-                },
-            ],
-        }),
-        [assetReqData, serviceReqData]
-    );
+    const chartData = useMemo(() => ({
+        labels: weekLabels,
+        datasets: [
+            {
+                label: "Asset Requests",
+                data: assetReqData,
+                borderColor: "#1e2a55",
+                backgroundColor: "rgba(30, 42, 85, 0.1)",
+                fill: true,
+                tension: 0.4,
+            },
+            {
+                label: "Service Requests",
+                data: serviceReqData,
+                borderColor: "#00b894",
+                backgroundColor: "rgba(0, 184, 148, 0.1)",
+                fill: true,
+                tension: 0.4,
+            },
+        ],
+    }), [assetReqData, serviceReqData]);
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'top', labels: { usePointStyle: true, padding: 20 } }
+        },
+        scales: {
+            y: { beginAtZero: true, grid: { color: '#f3f4f6' } },
+            x: { grid: { display: false } }
+        }
+    };
 
     return (
-        <div className="min-h-screen flex flex-col
-    bg-gradient-to-br from-gray-100 to-indigo-100
-    dark:from-gray-950 dark:to-gray-900">
-
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f8fafc' }}>
             <EmployeeHeader />
+            
+            {/* Add Toolbar to create space below fixed header */}
+            <Toolbar />
 
-            <main className="flex-grow">
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 {loading ? (
-                    <div className="flex justify-center items-center h-full text-xl">
-                        Loading dashboard...
-                    </div>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                        <CircularProgress size={60} sx={{ color: '#1e2a55' }} />
+                    </Box>
                 ) : (
                     <>
-                        <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <CircularGauge value={assets.length} label="Assets Possessed" />
-                            <CircularGauge value={requestsCount} label="Requests Raised" />
-                            <CircularGauge value={returnedCount} label="Assets Returned" />
-                        </div>
+                        {/* HEADER */}
+                        <Box sx={{ mb: 4 }}>
+                            <Typography variant="h4" sx={{ fontWeight: 800, color: '#1e2a55', mb: 1 }}>
+                                Welcome Back! 👋
+                            </Typography>
+                            <Typography variant="body1" sx={{ color: '#6b7280' }}>
+                                Here's your inventory overview
+                            </Typography>
+                        </Box>
 
-                        <div className="p-6 flex flex-col lg:flex-row gap-6">
-                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 w-full lg:w-1/2">
-                                <h2 className="text-xl font-bold text-indigo-900 dark:text-white mb-4">
-                                    My Assets
-                                </h2>
+                        {/* STAT CARDS */}
+                        <Grid container spacing={3} sx={{ mb: 4 }}>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <StatCard icon={<AssetsIcon />} value={assets.length} label="My Assets" color="#ffffff" bgColor="#1e2a55" delay="0s" />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <StatCard icon={<RequestIcon />} value={requestsCount} label="Total Requests" color="#ffffff" bgColor="#00b894" delay="0.1s" />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <StatCard icon={<ReturnIcon />} value={returnedCount} label="Returned" color="#ffffff" bgColor="#f59e0b" delay="0.2s" />
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <StatCard icon={<BuildIcon />} value={serviceReqData.reduce((a, b) => a + b, 0)} label="Services" color="#ffffff" bgColor="#8b5cf6" delay="0.3s" />
+                            </Grid>
+                        </Grid>
 
-                                {assets.length === 0 ? (
-                                    <p className="text-gray-500 text-center">
-                                        No assets allocated.
-                                    </p>
-                                ) : (
-                                    <table className="w-full text-sm text-gray-700 dark:text-gray-300">
-                                        <thead className="bg-indigo-900 text-white">
-                                            <tr>
-                                                {["Name", "Type", "Value", "Model", "Allocated"].map(h => (
-                                                    <th key={h} className="p-3 text-center">{h}</th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {assets.map((a, i) => (
-                                                <tr
-                                                    key={i}
-                                                    className="border-b hover:bg-gray-50 dark:hover:bg-gray-800"
-                                                >
-                                                    <td className="p-2 text-center">{a.assetName}</td>
-                                                    <td className="p-2 text-center">{a.categoryName}</td>
-                                                    <td className="p-2 text-center">{a.Value}</td>
-                                                    <td className="p-2 text-center">{a.Model}</td>
-                                                    <td className="p-2 text-center">
-                                                        {new Date(a.allocatedDate).toDateString()}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                )}
-                            </div>
+                        {/* GAUGES */}
+                        <Grid container spacing={3} sx={{ mb: 4 }}>
+                            <Grid item xs={12} md={4}>
+                                <AnimatedGauge value={assets.length} label="Assets Possessed" color="#1e2a55" delay="0.4s" />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <AnimatedGauge value={requestsCount} label="Requests Raised" color="#00b894" delay="0.5s" />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <AnimatedGauge value={returnedCount} label="Assets Returned" color="#f59e0b" delay="0.6s" />
+                            </Grid>
+                        </Grid>
 
-                            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 w-full lg:w-1/2">
-                                <h2 className="text-xl font-bold text-indigo-900 dark:text-white mb-4 text-center">
-                                    Requests Overview
-                                </h2>
-                                <div className="h-72">
-                                    <Line data={chartData} />
-                                </div>
-                            </div>
-                        </div>
+                        {/* TABLE AND CHART */}
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} lg={6}>
+                                <Paper elevation={0} sx={{ p: 3, borderRadius: 3 }}>
+                                    <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e2a55', mb: 2 }}>
+                                        My Assets
+                                    </Typography>
+                                    {assets.length === 0 ? (
+                                        <Box sx={{ p: 4, textAlign: 'center' }}>
+                                            <Typography color="text.secondary">No assets allocated yet</Typography>
+                                        </Box>
+                                    ) : (
+                                        <TableContainer>
+                                            <Table>
+                                                <TableHead sx={{ bgcolor: '#1e2a55' }}>
+                                                    <TableRow>
+                                                        <TableCell sx={{ color: 'white', fontWeight: 600 }}>Name</TableCell>
+                                                        <TableCell sx={{ color: 'white', fontWeight: 600 }}>Type</TableCell>
+                                                        <TableCell sx={{ color: 'white', fontWeight: 600 }}>Value</TableCell>
+                                                        <TableCell sx={{ color: 'white', fontWeight: 600 }}>Model</TableCell>
+                                                        <TableCell sx={{ color: 'white', fontWeight: 600 }}>Allocated</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {assets.map((a, i) => (
+                                                        <TableRow key={i} hover sx={{ '&:hover': { bgcolor: '#f8fafc' } }}>
+                                                            <TableCell sx={{ fontWeight: 500 }}>{a.assetName}</TableCell>
+                                                            <TableCell><Chip label={a.categoryName} size="small" sx={{ bgcolor: '#e0e7ff', color: '#1e2a55' }} /></TableCell>
+                                                            <TableCell>${a.Value || 0}</TableCell>
+                                                            <TableCell>{a.Model || '-'}</TableCell>
+                                                            <TableCell>{new Date(a.allocatedDate).toLocaleDateString()}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    )}
+                                </Paper>
+                            </Grid>
+
+                            <Grid item xs={12} lg={6}>
+                                <Paper elevation={0} sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+                                    <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e2a55', mb: 2, textAlign: 'center' }}>
+                                        Requests Overview
+                                    </Typography>
+                                    <Box sx={{ height: 300 }}>
+                                        <Line data={chartData} options={chartOptions} />
+                                    </Box>
+                                </Paper>
+                            </Grid>
+                        </Grid>
                     </>
                 )}
-            </main>
+            </Box>
 
             <Footer />
-        </div>
+        </Box>
     );
 };
 

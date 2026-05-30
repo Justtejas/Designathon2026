@@ -1,365 +1,392 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
-import CustomPagination from '../../Utils/CustomPagination';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faTimes, faPaperPlane, faThumbsUp, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import EmployeeHeader from '../EmployeeHeader';
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../../Utils/api";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import EmployeeHeader from "../EmployeeHeader";
+import Footer from "../../LandingPage/Footer";
+import {
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  Button,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
+  CircularProgress,
+  Toolbar,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
+import {
+  Add as AddIcon,
+  Close as CloseIcon,
+  Replay as ReturnIcon,
+  CheckCircle as CheckIcon,
+  HourglassEmpty as PendingIcon,
+  Cancel as RejectIcon,
+} from "@mui/icons-material";
 
 const ReturnRequest = () => {
-    const [returnRequests, setReturnRequests] = useState([]);
-    const [loading, setLoading] = useState(false); // Add loading state
-    const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState('');
-    const [showForm, setShowForm] = useState(false);
+  const [returnRequests, setReturnRequests] = useState([]);
+  const [assetAllocations, setAssetAllocations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
 
-    const [assetAllocations, setAssetAllocations] = useState([]);
-    const [formData, setFormData] = useState({
-        assetId: '',
-        userId: '',
-        assetName: '',
-        returnDate: new Date().toISOString().split('T')[0],
-        Condition: '',
-        Reason: '',
-        returnStatus: '',
+  const [formData, setFormData] = useState({
+    assetId: "",
+    userId: "",
+    assetName: "",
+    returnDate: new Date().toISOString().split("T")[0],
+    Condition: "",
+    Reason: "",
+    returnStatus: "",
+  });
+
+  const conditionMapping = {
+    0: "Working",
+    1: "Damaged",
+    2: "Broken",
+  };
+
+  const statusConfig = {
+    Sent: { color: "#3b82f6", bg: "#dbeafe", label: "Sent" },
+    Approved: { color: "#f59e0b", bg: "#fef3c7", label: "Approved" },
+    Returned: { color: "#10b981", bg: "#d1fae5", label: "Returned" },
+    Rejected: { color: "#ef4444", bg: "#fee2e2", label: "Rejected" },
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const token = Cookies.get("token");
+      if (!token) {
+        setError("No token found");
+        return;
+      }
+
+      const decoded = jwtDecode(token);
+      const userId = decoded.userId;
+
+      setFormData((prev) => ({ ...prev, userId }));
+
+      const [returnRes, assetRes] = await Promise.all([
+        axiosInstance.get("/ReturnRequests"),
+        axiosInstance.get(`/AssetAllocations/user/${userId}`),
+      ]);
+
+      const returnData = returnRes?.data?.data || returnRes?.data || [];
+      const myReturns = returnData.filter(r => r.userId === userId);
+      setReturnRequests(myReturns);
+
+      const assetData = assetRes?.data?.data || assetRes?.data || [];
+      setAssetAllocations(assetData);
+
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError("Failed to load return requests");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAssetChange = (e) => {
+    const name = e.target.value;
+    const asset = assetAllocations.find((a) => a.assetName === name);
+    setFormData({
+      ...formData,
+      assetName: name,
+      assetId: asset ? asset.assetId : "",
+      categoryId: asset ? asset.categoryId : "",
     });
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10; // Set the number of items per page
+    if (!formData.assetId || !formData.Condition || !formData.Reason) {
+      setError("Please fill all required fields");
+      return;
+    }
 
-    const ConditionMapping = {
-        0: 'Working',
-        1: 'Damaged',
-        2: 'Broken',
-    };
+    try {
+      setLoading(true);
+      await axiosInstance.post("/ReturnRequests", formData);
+      setShowForm(false);
+      setSuccessMessage("Return request submitted successfully!");
 
-    useEffect(() => {
-        const fetchuserIdAndRequests = async () => {
-            setLoading(true);
-            // Fetch the token from cookies and decode it to get the userId
-            const token = Cookies.get('token');
-            if (token) {
-                const decode = jwtDecode(token);
-                console.log('Decoded token payload:', decode);
-                // Extract the userId from the 'userId' field
-                const userId = decode.userId;
-                if (userId) {
-                    setFormData((prevFormData) => ({
-                        ...prevFormData,
-                        userId: userId // Set the userId in formData
-                    }));
+      setTimeout(() => {
+        setSuccessMessage("");
+        fetchData();
+      }, 2000);
 
-                    try {
-                        // Fetch return requests first
-                        const returnResponse = await axios.get('http://localhost:7287/api/ReturnRequests', {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        });
-                        console.log('Return Requests fetched:', returnResponse.data);
+    } catch (err) {
+      console.error("Submit error:", err);
+      setError("Failed to submit return request");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                        // Set return requests regardless of the allocation fetch
-                        setReturnRequests(returnResponse.data || []);
+  const getStatusStyle = (status) => {
+    return statusConfig[status] || statusConfig.Sent;
+  };
 
-                    } catch (error) {
-                        // Handle error fetching return requests if necessary
-                        console.error('Error fetching return requests:', error.response ? error.response.data : error.message);
-                        setError('Error fetching return requests: ' + (error.response ? error.response.data : 'Unknown error'));
-                    }
-                    try {
-                        const assetResponse = await axios.get(`http://localhost:7287/api/AssetAllocations/user/${userId}`, {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        });
-                        console.log('Asset Allocations fetched:', assetResponse.data);
-                        setAssetAllocations(assetResponse.data || []);
-                    } catch (assetError) {
-                        // Log the error but do not set error state; just indicate no asset allocations were found
-                        console.error('Error fetching asset allocations:', assetError.response ? assetError.response.data : assetError.message);
-                        setAssetAllocations([]); // or handle it as needed
-                    }
-                    finally {
-                        setLoading(false); // End loading
-                    }
+  const getConditionLabel = (condition) => {
+    return conditionMapping[condition] || "Unknown";
+  };
 
-                } else {
-                    setError('User ID not found in token payload');
-                }
-            } else {
-                setError('Token not found');
-            }
-        };
+  const currentRequests = returnRequests.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
-        fetchuserIdAndRequests(); // Call the function to fetch data
-    }, []); // Empty dependency array to run only on mount
+  const guidelinesData = [
+    { label: "Condition", value: "Original/Acceptable", color: "#ef4444" },
+    { label: "Response Time", value: "~ 1 Week", color: "#f59e0b" },
+    { label: "Damages", value: "Charges May Apply", color: "#8b5cf6" },
+  ];
 
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f8fafc' }}>
+      <EmployeeHeader />
+      <Toolbar sx={{ height: 80 }} />
 
-    const handleassetNameChange = (e) => {
-        const selectedassetName = e.target.value.trim();
-        const selectedAsset = assetAllocations.find(asset => asset.assetName.toLowerCase() === selectedassetName.toLowerCase());
+      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 2 }}>
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#1e2a55', mb: 1 }}>
+            Return Requests
+          </Typography>
+          <Typography variant="body1" sx={{ color: '#6b7280' }}>
+            Submit and track your asset return requests
+          </Typography>
+        </Box>
 
-        console.log("Selected Asset Name:", selectedassetName);
-        console.log("Available Assets:", assetAllocations);
-        console.log("Selected Asset:", selectedAsset);
+        {/* Error Message */}
+        <Box sx={{ mb: 3 }}>
+          {error && (
+            <Paper elevation={0} sx={{ p: 2, bgcolor: '#fee2e2', borderRadius: 2, borderLeft: '4px solid #ef4444' }}>
+              <Typography color="error">{error}</Typography>
+            </Paper>
+          )}
+        </Box>
 
-        if (selectedAsset) {
-            console.log("Asset ID Found:", selectedAsset.assetId);
-            console.log("Category Id found", selectedAsset.categoryId);
-            setFormData({
-                ...formData,
-                assetName: selectedassetName,
-                assetId: selectedAsset.assetId,
-                categoryId: selectedAsset.categoryId
-            });
-        } else {
-            console.warn("No matching asset found for:", selectedassetName);
-            setFormData({
-                ...formData,
-                assetName: selectedassetName,
-                assetId: ''
-            });
-        }
-    };
+        {/* Success Message */}
+        <Box sx={{ mb: 3 }}>
+          {successMessage && (
+            <Paper elevation={0} sx={{ p: 2, bgcolor: '#d1fae5', borderRadius: 2, borderLeft: '4px solid #10b981' }}>
+              <Typography sx={{ color: '#065f46', fontWeight: 600 }}>{successMessage}</Typography>
+            </Paper>
+          )}
+        </Box>
 
+        {/* Stats Cards */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {Object.entries(statusConfig).map(([status, config]) => {
+            const count = returnRequests.filter(r => r.returnStatus === status).length;
+            return (
+              <Grid item xs={6} md={3} key={status}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    bgcolor: config.bg,
+                    border: `1px solid ${config.color}30`,
+                    transition: 'all 0.3s',
+                    '&:hover': { transform: 'translateY(-3px)', boxShadow: 3 }
+                  }}
+                >
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: config.color }}>{count}</Typography>
+                  <Typography variant="body2" sx={{ color: config.color, fontWeight: 500 }}>{config.label}</Typography>
+                </Paper>
+              </Grid>
+            );
+          })}
+        </Grid>
 
-    const handleFormSubmit = async (e) => {
-        e.preventDefault();
-        console.log("Submitting Return Request:", formData);
-        try {
-            const response = await axios.post('http://localhost:7287/api/ReturnRequests', {
-                ...formData // Ensure that formData is correctly populated
-            });
-            console.log("Return Request Submitted:", response.data);
-        } catch (error) {
-            console.error("Error submitting return request:", error);
-        }
+        {/* Table */}
+        <Paper elevation={0} sx={{ borderRadius: 3, overflow: 'hidden', mb: 4 }}>
+          <Box sx={{ p: 3, bgcolor: '#1e2a55', borderRadius: '12px 12px 0 0' }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: 'white' }}>Return Request History</Typography>
+          </Box>
 
-        // Reset form after submission
-        setFormData({
-
-            assetId: '',
-            userId: '',
-            assetName: '',
-            returnDate: new Date().toISOString().split('T')[0],
-            Condition: '',
-            Reason: '',
-            returnStatus: '',
-        });
-        setShowForm(false);
-        setSuccessMessage('Return request sent successfully!');
-        setTimeout(() => setSuccessMessage(''), 3000);
-        window.location.reload();
-    };
-
-    // Calculate the index of the last item and the first item of the current page
-    const indexOfLastRequest = currentPage * itemsPerPage;
-    const indexOfFirstRequest = indexOfLastRequest - itemsPerPage;
-
-    // Slice the filteredRequests to get the requests for the current page
-    const currentRequests = returnRequests.slice(indexOfFirstRequest, indexOfLastRequest);
-
-    return (
-        <div className="min-h-screen bg-white text-black">
-            <EmployeeHeader />
-            <div className="flex items-center justify-center bg-white">
-                <div className="max-w-7xl w-full mx-auto py-20 px-6 bg-white shadow-lg rounded-lg">
-                    <div className="flex justify-between items-center mb-6">
-                        <h1 className="text-2xl font-bold text-center w-full">RETURNS</h1>
-                    </div>
-
-                    {/* Display loading or error messages */}
-                    {loading ? (
-                        <p>Loading return requests...</p>
-                    ) : error ? (
-                        <p className="text-center text-gray-500">No Return Requests Sent.</p>
+          {loading && !showForm ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 8 }}>
+              <CircularProgress sx={{ color: '#1e2a55' }} />
+            </Box>
+          ) : (
+            <Box>
+              <TableContainer>
+                <Table>
+                  <TableHead sx={{ bgcolor: '#1e2a55' }}>
+                    <TableRow>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Return ID</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Asset</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Date</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Condition</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Reason</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Status</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {currentRequests.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                          <Typography color="text.secondary">No return requests found</Typography>
+                        </TableCell>
+                      </TableRow>
                     ) : (
-                        <>
-
-                            {/* Table for Return Requests */}
-                            <table className="w-full text-left table-auto border-collapse">
-                                <thead>
-                                    <tr className="text-lg font-medium text-gray-700 border-b">
-                                        <th className="px-4 py-2">Return Id</th>
-                                        <th className="px-4 py-2">Asset Id</th>
-                                        <th className="px-4 py-2">Return Date</th>
-                                        <th className="px-4 py-2">Reason</th>
-                                        <th className="px-4 py-2">Condition</th>
-                                        <th className="px-4 py-2">Request Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {currentRequests.map((request) => (
-                                        <tr key={request.returnId} className="text-lg border-b text-black">
-                                            <td className="px-4 py-2">{request.returnId}</td>
-                                            <td className="px-4 py-2">{request.assetId}</td>
-                                            <td className="px-4 py-2">{new Date(request.returnDate).toLocaleDateString()}</td>
-                                            <td className="px-4 py-2">{request.Reason}</td>
-                                            <td className="px-4 py-2">{request.Condition}</td>
-                                            <td className="px-4 py-2">
-                                                {request.returnStatus === "Sent" ? (
-                                                    <span className="text-blue-600 font-semibold"><FontAwesomeIcon icon={faPaperPlane} /> Sent</span>
-                                                ) : request.returnStatus === "Approved" ? (
-                                                    <span className="text-yellow-500 font-semibold"><FontAwesomeIcon icon={faThumbsUp} /> Approved</span>
-                                                ) : request.returnStatus === "Returned" ? (
-                                                    <span className="text-green-500 font-semibold"><FontAwesomeIcon icon={faCircleCheck} /> Returned</span>
-                                                ) : (
-                                                    <span className="text-red-600 font-semibold"><FontAwesomeIcon icon={faCircleXmark} /> Rejected</span>
-                                                )}
-                                            </td>
-
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-
-                            {/* Pagination */}
-                            <div className="my-12" />
-                            <CustomPagination
-                                currentPage={currentPage}
-                                totalItems={returnRequests.length}
-                                itemsPerPage={itemsPerPage}
-                                onPageChange={setCurrentPage}
-                            />
-
-
-
-                        </>
-
+                      currentRequests.map((r, i) => {
+                        const statusStyle = getStatusStyle(r.returnStatus);
+                        return (
+                          <TableRow key={i} hover sx={{ '&:hover': { bgcolor: '#f8fafc' } }}>
+                            <TableCell sx={{ fontWeight: 500 }}>{r.returnId}</TableCell>
+                            <TableCell>
+                              <Chip label={r.assetName || "N/A"} size="small" sx={{ bgcolor: '#e0e7ff', color: '#1e2a55' }} />
+                            </TableCell>
+                            <TableCell>
+                              {r.returnDate ? new Date(r.returnDate).toLocaleDateString() : "N/A"}
+                            </TableCell>
+                            <TableCell>
+                              <Chip label={getConditionLabel(r.Condition)} size="small" sx={{ bgcolor: '#fef3c7', color: '#92400e' }} />
+                            </TableCell>
+                            <TableCell sx={{ maxWidth: 200 }}>
+                              <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {r.Reason || "No reason"}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Chip label={statusStyle.label} size="small" sx={{ bgcolor: statusStyle.bg, color: statusStyle.color, fontWeight: 600 }} />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
                     )}
-                    {/* Terms and Conditions */}
-                    <div className="p-10 mt-8  flex justify-between items-start">
-                        <div className="mt-4 bg-gray-100 p-4 rounded-lg w-1/2 shadow-lg">
-                            <h2 className="text-lg font-bold">Terms and Conditions</h2>
-                            <p className="mt-2 text-sm">
-                                Executives must return assets in their original or acceptable Condition, as outlined in the asset management policy.
-                                Any damages or missing components will incur charges and may affect future asset allocations.
-                            </p>
-                        </div>
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
+              {returnRequests.length > rowsPerPage && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                  <Button onClick={() => setPage(page - 1)} disabled={page === 0} sx={{ mr: 1 }}>
+                    Previous
+                  </Button>
+                  <Typography sx={{ alignSelf: 'center', mx: 2 }}>
+                    Page {page + 1} of {Math.ceil(returnRequests.length / rowsPerPage)}
+                  </Typography>
+                  <Button onClick={() => setPage(page + 1)} disabled={page >= Math.ceil(returnRequests.length / rowsPerPage) - 1} sx={{ ml: 1 }}>
+                    Next
+                  </Button>
+                </Box>
+              )}
+            </Box>
+          )}
+        </Paper>
 
-                        {/* Button at the Bottom */}
-                        <div className="mt-8 flex flex-col items-center w-1/2 ">
-                            <button className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600" onClick={() => setShowForm(true)}>
-                                Raise a Return Request
-                            </button>
-                            {showForm && (
-                                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                    <form onSubmit={handleFormSubmit} className="bg-white p-5 rounded shadow-lg text-center w-1/4 h-45">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <div className="flex-grow text-center">
-                                                <h3 className="text-lg text-indigo-950 font-bold">Return Request</h3>
-                                            </div>
-                                            {/* Close Button beside the heading */}
-                                            <FontAwesomeIcon
-                                                icon={faTimes}
-                                                className="text-red-500 cursor-pointer ml-2" // Add margin for spacing
-                                                onClick={() => setShowForm(false)} // Close the form
-                                            />
-                                        </div>
+        {/* Guidelines & Action Button */}
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e2a55', mb: 2 }}>Terms and Conditions</Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {guidelinesData.map((item, i) => (
+                  <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', p: 2, borderRadius: 2, bgcolor: '#f8fafc', borderLeft: `3px solid ${item.color}` }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>{item.label}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: item.color }}>{item.value}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Paper>
+          </Grid>
 
-                                        <div className="flex flex-col space-y-4 mt-4">
+          <Grid item xs={12} md={6}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 3, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <ReturnIcon sx={{ fontSize: 60, color: '#1e2a55', opacity: 0.3, mb: 2 }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, color: '#1e2a55', mb: 2 }}>Need to Return an Asset?</Typography>
+              <Button variant="contained" startIcon={<AddIcon />} onClick={() => setShowForm(true)} sx={{ bgcolor: '#1e2a55', color: 'white', px: 4, py: 1.5, borderRadius: 2, fontWeight: 600 }}>
+                Raise Return Request
+              </Button>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Box>
 
+      {/* Form Dialog */}
+      <Dialog open={showForm} onClose={() => setShowForm(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#1e2a55', color: 'white', borderRadius: '12px 12px 0 0', p: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>↩️ New Return Request</Typography>
+          <IconButton onClick={() => setShowForm(false)} sx={{ color: 'white' }}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
+        <DialogContent sx={{ p: 3 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
+            <FormControl fullWidth required>
+              <InputLabel>User ID</InputLabel>
+              <Select value={formData.userId} label="User ID" disabled>
+                <MenuItem value={formData.userId}>{formData.userId}</MenuItem>
+              </Select>
+            </FormControl>
 
-                                            {/* User ID Field */}
-                                            <div className="relative">
-                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">User ID</label>
-                                                <input
-                                                    type="text"
-                                                    value={formData.userId}
-                                                    placeholder="User ID"
-                                                    readOnly
-                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                />
-                                            </div>
+            <FormControl fullWidth required>
+              <InputLabel>Select Asset</InputLabel>
+              <Select value={formData.assetName} onChange={handleAssetChange} label="Select Asset">
+                {assetAllocations.length === 0 ? (
+                  <MenuItem disabled>No assets available</MenuItem>
+                ) : (
+                  assetAllocations.map((a) => (
+                    <MenuItem key={a.assetId} value={a.assetName}>{a.assetName}</MenuItem>
+                  ))
+                )}
+              </Select>
+            </FormControl>
 
-                                            {/* Asset Name Dropdown */}
-                                            <div className="relative">
-                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Asset Name</label>
-                                                <select
-                                                    value={formData.assetName}
-                                                    onChange={handleassetNameChange}
-                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                    required
-                                                >
-                                                    <option value="" disabled>Select an Asset</option>
-                                                    {assetAllocations.map((allocation) => (
-                                                        <option key={allocation.userId} value={allocation.assetName} className="bg-indigo-950 text-slate-200 ">
-                                                            {allocation.assetName} {/* Assuming 'assetName' exists on each allocation */}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
+            <FormControl fullWidth required>
+              <InputLabel>Asset Condition</InputLabel>
+              <Select value={formData.Condition} onChange={(e) => setFormData({ ...formData, Condition: e.target.value })} label="Asset Condition">
+                {Object.entries(conditionMapping).map(([key, value]) => (
+                  <MenuItem key={key} value={key}>{value}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-                                            {/* Asset Condition Dropdown */}
-                                            <div className="relative">
-                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">
-                                                    Asset Condition
-                                                </label>
-                                                <select
-                                                    value={formData.Condition}
-                                                    onChange={(e) => setFormData({ ...formData, Condition: e.target.value })}
-                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                    required
-                                                >
-                                                    <option value="" disabled>Select Asset Condition</option>
-                                                    {Object.keys(ConditionMapping).map((key) => (
-                                                        <option key={key} value={ConditionMapping[key]} className="bg-indigo-950 text-slate-200">
-                                                            {ConditionMapping[key]}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
+            <TextField fullWidth label="Return Date" value={formData.returnDate} disabled />
 
+            <TextField fullWidth multiline rows={4} label="Return Reason" value={formData.Reason} onChange={(e) => setFormData({ ...formData, Reason: e.target.value })} required />
 
-                                            {/* Request Date Field */}
-                                            <div className="relative">
-                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Request Date</label>
-                                                <input
-                                                    type="date"
-                                                    value={formData.returnDate}
-                                                    readOnly
-                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                />
-                                            </div>
+            <Button type="submit" variant="contained" disabled={loading} sx={{ bgcolor: '#1e2a55', color: 'white', py: 1.5, fontWeight: 600 }}>
+              {loading ? "Submitting..." : "Submit Request"}
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
 
-                                            {/* Service Description Field */}
-                                            <div className="relative">
-                                                <label className="absolute -top-3 left-3 px-1 bg-white text-sm font-semibold text-slate-500">Return Reason</label>
-                                                <textarea
-                                                    value={formData.Reason}
-                                                    onChange={(e) => setFormData({ ...formData, Reason: e.target.value })}
-                                                    placeholder="Describe the Reason"
-                                                    className="p-3 border-2 bg-white border-slate-200 rounded w-full text-indigo-950 focus:outline-none"
-                                                    rows="4"
-                                                />
-                                            </div>
-
-                                            <button
-                                                type="submit"
-                                                className="bg-indigo-950 text-white px-4 py-2 rounded mt-4"
-                                            >
-                                                Submit Request
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    {successMessage && (
-                        <div className="fixed top-5 right-5 bg-green-500 text-white p-3 rounded shadow-lg">
-                            {successMessage}
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-
-    );
+      <Footer />
+    </Box>
+  );
 };
 
 export default ReturnRequest;

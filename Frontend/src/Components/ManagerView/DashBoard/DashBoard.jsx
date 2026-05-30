@@ -1,8 +1,5 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
-// import Header from '../ManagerHeader';
-// import Navbar from '../ManagerNavBar';
-import { jwtToken } from '../../Utils/utils';
 import Cookies from 'js-cookie';
 import {
     Toolbar,
@@ -18,7 +15,8 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    Chip // <--- Added Missing Import
 } from '@mui/material';
 import {
     BarChart,
@@ -31,9 +29,17 @@ import {
     ResponsiveContainer,
     PieChart,
     Pie,
-    Cell
+    Cell,
+    AreaChart, // <--- Added Missing Import
+    Area // <--- Added Missing Import
 } from 'recharts';
 import axios from 'axios';
+import {
+    Inventory as AssetsIcon,
+    AssignmentTurnedIn as RequestIcon,
+    AccountTree as AllocationIcon,
+    Build as BuildIcon,
+} from '@mui/icons-material';
 
 const token = Cookies.get('token');
 if (token) {
@@ -41,132 +47,37 @@ if (token) {
 }
 const drawerWidth = 240;
 
-const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+const CHART_COLORS = {
+    requests: '#8b5cf6',
+    allocated: '#34d399'
+};
 
 export default function Dashboard() {
-    
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    // const [mobileOpen, setMobileOpen] = useState(false);
     const [totalAssets, setTotalAssets] = useState(0);
     const [allocatedAssets, setAllocatedAssets] = useState(0);
     const [totalExecutives, setTotalExecutives] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [users, setUsers] = useState([]);
     const [auditTableData, setAuditTableData] = useState([]);
     const [maintenanceLog, setMaintenanceLog] = useState(0);
     const [serviceData, setServiceData] = useState([]);
     const [assetRequestData, setAssetRequestData] = useState([]);
-    const [assetAllocData, setAssetAllocData] = useState([]);
-
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         setLoading(true);
-    //         const token = Cookies.get('token');
-    //         if (token) {
-    //             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    //         } else {
-    //             console.error('No valid token found.');
-    //             setLoading(false);
-    //             return;
-    //         }
-
-    //         try {
-    //             const auditResponse = await axios.get('http://localhost:7287/api/Audits/All');
-    //             if (auditResponse.data && auditResponse.data) {
-    //                 setAuditTableData(auditResponse.data);
-    //             } else {
-    //                 console.error('Expected an array for Audits, but got:', auditResponse.data)
-    //             }
-
-    //             //Fetching Asset data
-    //             const assetResponse = await axios.get('http://localhost:7287/api/Assets');
-    //             if (assetResponse.data && assetResponse.data) {
-    //                 setTotalAssets(assetResponse.data.length);
-    //             } else {
-    //                 console.error('Expected an array for assets, but got:', assetResponse.data);
-    //             }
-    //             //Fetching Allcoated Assets data
-    //             const allocatedResponse = await axios.get('http://localhost:7287/api/Assets/Status?status=Allocated');
-    //             if (allocatedResponse.data && allocatedResponse.data) {
-    //                 setAllocatedAssets(allocatedResponse.data.length);
-    //             } else {
-    //                 console.error('Expected an array for allocated assets, but got:', allocatedResponse.data);
-    //             }
-
-    //             //Fetching Users data
-    //             const usersResponse = await axios.get('http://localhost:7287/api/users');
-    //             if (usersResponse.data && usersResponse.data) {
-    //                 setUsers(usersResponse.data);
-    //                 setTotalExecutives(usersResponse.data.length);
-    //             } else {
-    //                 console.error('Expected an array for users, but got:', usersResponse.data);
-    //             }
-
-    //             //Fetching MaintenaceLog data
-    //             const logResponse = await axios.get('http://localhost:7287/api/ServiceRequests/Status/UnderReview');
-    //             if (logResponse.data && logResponse.data) {
-    //                 setMaintenanceLog(logResponse.data.length);
-    //             } else {
-    //                 console.error('Expected an array for allocated asset, but got: ', logResponse.data);
-    //             }
-
-    //             //Fetching Service Requests data with status
-    //             const statuses = ['UnderReview', 'Approved', 'Completed'];
-    //             const serviceCounts = await Promise.all(
-    //                 statuses.map(status => axios.get(`http://localhost:7287/api/ServiceRequests/Status/${status}`))
-    //             );
-
-    //             const newServiceData = serviceCounts.map((response, index) => ({
-    //                 name: statuses[index],
-    //                 value: response.data ? response.data.length : 0
-    //             }));
-    //             setServiceData(newServiceData);
-
-    //             //Fetching Request and Allocation data filtered by month
-    //             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    //             const requestCounts = await Promise.all(
-    //                 months.map(async (month) => {
-    //                     try {
-    //                         const response = await axios.get(`http://localhost:7287/api/AssetRequests/filter-by-month?month=${month}`);
-    //                         const responseAlloc = await axios.get(`http://localhost:7287/api/AssetAllocations/filter-by-month?month=${month}`);
-    //                         return {
-    //                             name: month,
-    //                             AssetRequest: response.data ? response.data.length : 0,
-    //                             Allocated: responseAlloc.data ? responseAlloc.data.length : 0,
-    //                         };
-    //                     } catch (error) {
-    //                         console.error(`Error fetching data for month ${month}:`, error);
-    //                         return { name: month, requests: 0, requestsAlloc: 0 };
-    //                     }
-    //                 })
-    //             );
-    //             setAssetRequestData(requestCounts);
-    //             setAssetAllocData(requestCounts);
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error.response ? error.response.data : error.message);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, []);
 
     useEffect(() => {
         const controller = new AbortController();
-    
+
         const fetchData = async () => {
             setLoading(true);
-    
             const token = Cookies.get('token');
-    
+
             if (!token) {
                 console.error('No valid token found.');
                 setLoading(false);
                 return;
             }
-    
+
             const api = axios.create({
                 baseURL: 'http://localhost:7287/api',
                 headers: {
@@ -174,294 +85,221 @@ export default function Dashboard() {
                 },
                 signal: controller.signal
             });
-    
+
             const safeGet = async (url, fallback = []) => {
                 try {
                     const response = await api.get(url);
                     return Array.isArray(response.data) ? response.data : fallback;
                 } catch (error) {
-                    if (axios.isCancel(error)) {
-                        console.warn(`Request cancelled: ${url}`);
-                    } else {
-                        console.error(
-                            `Error fetching ${url}:`,
-                            error.response?.data || error.message
-                        );
+                    // Ignore cancel errors
+                    if (!axios.isCancel(error)) {
+                        console.error(`Error fetching ${url}:`, error.message);
                     }
-    
                     return fallback;
                 }
             };
-    
+
             try {
-                const [
-                    audits,
-                    assets,
-                    allocatedAssets,
-                    users,
-                    maintenanceLogs
-                ] = await Promise.all([
+                const [audits, assets, allocated, users, logs] = await Promise.all([
                     safeGet('/Audits/All'),
                     safeGet('/Assets'),
                     safeGet('/Assets/Status?status=Allocated'),
                     safeGet('/users'),
                     safeGet('/ServiceRequests/Status/UnderReview')
                 ]);
-    
+
                 setAuditTableData(audits);
                 setTotalAssets(assets.length);
-                setAllocatedAssets(allocatedAssets.length);
-                setUsers(users);
+                setAllocatedAssets(allocated.length);
                 setTotalExecutives(users.length);
-                setMaintenanceLog(maintenanceLogs.length);
-    
+                setMaintenanceLog(logs.length);
+
+                // Service Status
                 const statuses = ['UnderReview', 'Approved', 'Completed'];
-    
-                const serviceDataResult = await Promise.all(
-                    statuses.map(async (status) => {
-                        const data = await safeGet(`/ServiceRequests/Status/${status}`);
-    
-                        return {
-                            name: status,
-                            value: data.length
-                        };
-                    })
+                const serviceResult = await Promise.all(
+                    statuses.map(s => safeGet(`/ServiceRequests/Status/${s}`))
                 );
-    
-                setServiceData(serviceDataResult);
-    
-                const months = [
-                    'January',
-                    'February',
-                    'March',
-                    'April',
-                    'May',
-                    'June',
-                    'July',
-                    'August',
-                    'September',
-                    'October',
-                    'November',
-                    'December'
-                ];
-    
-                const monthlyData = await Promise.all(
-                    months.map(async (month) => {
-                        const [requests, allocations] = await Promise.all([
-                            safeGet(`/AssetRequests/filter-by-month?month=${month}`),
-                            safeGet(`/AssetAllocations/filter-by-month?month=${month}`)
+                setServiceData(serviceResult.map((data, i) => ({
+                    name: statuses[i],
+                    value: data.length
+                })));
+
+                // Monthly Data
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const monthly = await Promise.all(
+                    months.map(async (m) => {
+                        const [r, a] = await Promise.all([
+                            safeGet(`/AssetRequests/filter-by-month?month=${m}`),
+                            safeGet(`/AssetAllocations/filter-by-month?month=${m}`)
                         ]);
-    
-                        return {
-                            name: month,
-                            AssetRequest: requests.length,
-                            Allocated: allocations.length
-                        };
+                        return { name: m, AssetRequest: r.length, Allocated: a.length };
                     })
                 );
-    
-                setAssetRequestData(monthlyData);
-                setAssetAllocData(monthlyData);
+                setAssetRequestData(monthly);
+
             } catch (error) {
-                console.error('Unexpected error while fetching dashboard data:', error);
+                console.error("Unexpected error:", error);
             } finally {
                 setLoading(false);
             }
         };
-    
+
         fetchData();
-    
-        return () => {
-            controller.abort();
-        };
+
+        return () => controller.abort();
     }, []);
 
-    const getColor = (index) => {
-        const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
-        return colors[index % colors.length];
-    };
-
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box
+            component="main"
+            sx={{
+                flexGrow: 1,
+                p: 3,
+                width: { sm: `calc(100% - ${drawerWidth}px)` },
+                marginLeft: { sm: `${drawerWidth}px` },
+                bgcolor: 'background.default',
+                minHeight: '100vh'
+            }}
+        >
+           
 
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    p: 3,
-                    width: { sm: `calc(100% - ${drawerWidth}px)` },
-                    marginLeft: { sm: `${drawerWidth}px` },
-                }}
-            >
-                <Toolbar />
-                <Typography variant="h5" gutterBottom color="text.primary"sx={{ color: theme.palette.mode === 'dark' ? 'white' : 'black' }}>
-                    Asset Management
+            {/* HEADER */}
+            <Box sx={{ mb: 4 }}>
+                <Typography variant="h4" fontWeight="bold" color="text.primary">
+                    Manager Dashboard
                 </Typography>
-                <Grid container spacing={3}>
-                    {[{ title: 'Total Assets', value: totalAssets }, { title: 'Assets in use', value: allocatedAssets }, { title: 'Maintenance requests', value: maintenanceLog }, { title: 'Total Executives', value: totalExecutives }].map((item, index) => (
-                        <Grid item xs={12} sm={6} md={3} key={index}>
-                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-                                <Typography variant="subtitle1" gutterBottom>{item.title}</Typography>
-                                <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                                    {loading ? (
-                                        <CircularProgress size={80} />
-                                    ) : (
-                                        <>
-                                            <CircularProgress
-                                                variant="determinate"
-                                                value={item.value > 100 ? 100 : item.value}
-                                                size={80}
-                                                thickness={4}
-                                                sx={{
-                                                    color: getColor(index),
-                                                }}
-                                            />
-                                            <Box
-                                                sx={{
-                                                    top: 0,
-                                                    left: 0,
-                                                    bottom: 0,
-                                                    right: 0,
-                                                    position: 'absolute',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                }}
-                                            >
-                                                <Typography variant="caption" component="div" color="text.secondary">
-                                                    {item.value}
-                                                </Typography>
-                                            </Box>
-                                        </>
-                                    )}
-                                </Box>
-                            </Paper>
-                        </Grid>
-                    ))}
-
-                    <Grid item xs={12} md={8}>
-                        <Paper sx={{ p: 2, height: '100%' }}>
-                            <Typography variant="h6" gutterBottom>Asset Requests</Typography>
-                            {loading ? (
-                                <Box display="flex" justifyContent="center" alignItems="center" height="200px">
-                                    <CircularProgress />
-                                </Box>
-                            ) : (
-                                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
-                                    <BarChart data={assetRequestData}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" />
-                                        <YAxis />
-                                        <Tooltip
-                                            content={({ active, payload, label }) => {
-                                                if (active && payload && payload.length) {
-                                                    return (
-                                                        <div style={{
-                                                            backgroundColor: '#fff',
-                                                            border: '1px solid #ccc',
-                                                            padding: '10px',
-                                                            borderRadius: '4px',
-                                                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                                                        }}>
-                                                            <p style={{ color: '#000' }}>{label}</p>
-                                                            <p style={{ color: '#8884d8' }}>Requests: {payload[0].value}</p>
-                                                            <p style={{ color: '#82ca9d' }}>Allocated: {payload[1].value}</p>
-                                                        </div>
-                                                    );
-                                                }
-                                                return null;
-                                            }}
-                                        />
-
-                                        <Legend />
-                                        <Bar dataKey="AssetRequest" fill="#8884d8" />
-                                        <Bar dataKey="Allocated" fill="#82ca9d" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            )}
-                        </Paper>
-                    </Grid>
-
-                    <Grid item xs={12} md={4}>
-                        <Paper sx={{ p: 2, height: '100%' }}>
-                            <Typography variant="h6" gutterBottom>Service Requests</Typography>
-                            {loading ? (
-                                <Box display="flex" justifyContent="center" alignItems="center" height="200px">
-                                    <CircularProgress />
-                                </Box>
-                            ) : (
-                                <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
-                                    <PieChart>
-                                        <Pie
-                                            data={serviceData}
-                                            cx="50%"
-                                            cy="50%"
-                                            labelLine={false}
-                                            outerRadius={isMobile ? 60 : 80}
-                                            fill="#8884d8"
-                                            dataKey="value"
-                                        >
-                                            {serviceData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip />
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            )}
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Paper sx={{ p: 2, overflowX: 'auto' }}>
-                            <Typography variant="h6" gutterBottom>Audit List</Typography>
-                            <TableContainer>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Audit ID</TableCell>
-                                            <TableCell>Asset Name</TableCell>
-                                            <TableCell>User Name</TableCell>
-                                            <TableCell>Audit Date</TableCell>
-                                            <TableCell>Audit Message</TableCell>
-                                            <TableCell>Status</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {auditTableData.length > 0 ? (
-                                            auditTableData.map((row) => (
-                                                <TableRow key={row.auditId}>
-                                                    <TableCell>{row.auditId}</TableCell>
-                                                    <TableCell>{row.assetName || 'N/A'}</TableCell>
-                                                    <TableCell>{row.userName || 'N/A'}</TableCell>
-                                                    <TableCell>{row.auditDate ? new Date(row.auditDate).toLocaleDateString() : 'N/A'}</TableCell>
-                                                    <TableCell>{row.auditMessage || 'N/A'}</TableCell>
-                                                    <TableCell style={{ color: row.auditStatus === 'Completed' ? "#0BDA51" : "#36A2EB" }}>{row.auditStatus || 'N/A'}</TableCell>
-                                                </TableRow>
-                                            ))
-                                        ) : (
-                                            <TableRow>
-                                                <TableCell colSpan={6}>No audit data available</TableCell>
-                                            </TableRow>
-                                        )}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Paper>
-                    </Grid>
-                </Grid>
+                <Typography variant="body1" color="text.secondary">
+                    Here's your inventory overview.
+                </Typography>
             </Box>
+
+            {/* STAT CARDS */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                {[
+                    { title: 'Total Assets', value: totalAssets, color: '#4f46e5', icon: <AssetsIcon />, bg: '#e0e7ff' },
+                    { title: 'In Use', value: allocatedAssets, color: '#059669', icon: <AllocationIcon />, bg: '#d1fae5' },
+                    { title: 'Maintenance', value: maintenanceLog, color: '#d97706', icon: <BuildIcon />, bg: '#fef3c7' },
+                    { title: 'Executives', value: totalExecutives, color: '#7c3aed', icon: <RequestIcon />, bg: '#ede9fe' },
+                ].map((stat, i) => (
+                    <Grid item xs={12} sm={6} md={3} key={i}>
+                        <Paper elevation={0} sx={{ 
+                            p: 3, borderRadius: 3, display: 'flex', alignItems: 'center',
+                            border: '1px solid', borderColor: 'divider',
+                            transition: '0.3s', '&:hover': { transform: 'translateY(-5px)', boxShadow: 3 }
+                        }}>
+                            <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: stat.bg, color: stat.color, mr: 2, display:'flex' }}>
+                                {stat.icon}
+                            </Box>
+                            <Box>
+                                <Typography variant="body2" color="text.secondary">{stat.title}</Typography>
+                                <Typography variant="h4" fontWeight="bold">
+                                    {loading ? <CircularProgress size={20} /> : stat.value}
+                                </Typography>
+                            </Box>
+                        </Paper>
+                    </Grid>
+                ))}
+            </Grid>
+
+            {/* CHARTS */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                <Grid item xs={12} md={8}>
+                    <Paper sx={{ p: 3, borderRadius: 3, height: 400 }}>
+                        <Typography variant="h6" fontWeight="bold" gutterBottom>Monthly Trends</Typography>
+                        {loading ? (
+                            <Box sx={{ display:'flex', justifyContent:'center', alignItems:'center', height: 300 }}>
+                                <CircularProgress />
+                            </Box>
+                        ) : (
+                            <ResponsiveContainer width="100%" height={300}>
+                                <AreaChart data={assetRequestData}>
+                                    <defs>
+                                        <linearGradient id="colReq" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor={CHART_COLORS.requests} stopOpacity={0.3}/>
+                                            <stop offset="95%" stopColor={CHART_COLORS.requests} stopOpacity={0}/>
+                                        </linearGradient>
+                                        <linearGradient id="colAlloc" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor={CHART_COLORS.allocated} stopOpacity={0.3}/>
+                                            <stop offset="95%" stopColor={CHART_COLORS.allocated} stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                    <XAxis dataKey="name" tick={{fill: '#6b7280', fontSize: 12}} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{fill: '#6b7280', fontSize: 12}} axisLine={false} tickLine={false} />
+                                    <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                                    <Area type="monotone" dataKey="AssetRequest" stroke={CHART_COLORS.requests} fill="url(#colReq)" strokeWidth={3} />
+                                    <Area type="monotone" dataKey="Allocated" stroke={CHART_COLORS.allocated} fill="url(#colAlloc)" strokeWidth={3} />
+                                    <Legend />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        )}
+                    </Paper>
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                    <Paper sx={{ p: 3, borderRadius: 3, height: 400 }}>
+                        <Typography variant="h6" fontWeight="bold" gutterBottom>Service Status</Typography>
+                        {loading ? (
+                            <Box sx={{ display:'flex', justifyContent:'center', alignItems:'center', height: 300 }}>
+                                <CircularProgress />
+                            </Box>
+                        ) : (
+                            <ResponsiveContainer width="100%" height={300}>
+                                <PieChart>
+                                    <Pie data={serviceData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
+                                        {serviceData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        )}
+                    </Paper>
+                </Grid>
+            </Grid>
+
+            {/* AUDIT TABLE */}
+            <Paper sx={{ borderRadius: 3, overflow: 'hidden' }}>
+                <Box sx={{ p: 3, borderBottom: 1, borderColor: 'divider' }}>
+                    <Typography variant="h6" fontWeight="bold">Recent Audit Trail</Typography>
+                </Box>
+                <TableContainer>
+                    <Table>
+                        <TableHead sx={{ bgcolor: 'rgba(0,0,0,0.02)' }}>
+                            <TableRow>
+                                <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Asset</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>User</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Message</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {auditTableData.slice(0, 5).map((row) => (
+                                <TableRow key={row.auditId} hover>
+                                    <TableCell>#{row.auditId}</TableCell>
+                                    <TableCell sx={{ fontWeight: 500 }}>{row.assetName || '-'}</TableCell>
+                                    <TableCell>{row.userName || '-'}</TableCell>
+                                    <TableCell>{row.auditMessage || '-'}</TableCell>
+                                    <TableCell>
+                                        <Chip 
+                                            label={row.auditStatus || 'Unknown'} 
+                                            size="small"
+                                            sx={{ 
+                                                bgcolor: row.auditStatus === 'Completed' ? '#d1fae5' : '#fef3c7',
+                                                color: row.auditStatus === 'Completed' ? '#065f46' : '#92400e',
+                                                fontWeight: 'bold'
+                                            }} 
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
         </Box>
     );
 }
-
-
-
-
-
-
-
-
-
-
-

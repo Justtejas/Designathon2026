@@ -2,27 +2,50 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../Utils/api";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import CustomPagination from "../../Utils/CustomPagination";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleCheck,
-  faCircleExclamation,
-  faThumbsUp,
-  faTimes,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
 import EmployeeHeader from "../EmployeeHeader";
+import Footer from "../../LandingPage/Footer";
+import {
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  Button,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
+  CircularProgress,
+  Toolbar,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
+import {
+  Add as AddIcon,
+  Close as CloseIcon,
+  Build as BuildIcon,
+} from "@mui/icons-material";
 
 const ServiceRequest = () => {
   const [serviceRequests, setServiceRequests] = useState([]);
   const [assetAllocations, setAssetAllocations] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  // Pagination state
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
 
   const [formData, setFormData] = useState({
     serviceId: 0,
@@ -41,42 +64,60 @@ const ServiceRequest = () => {
     3: "Installation",
   };
 
+  const statusConfig = {
+    UnderReview: { color: "#3b82f6", bg: "#dbeafe", label: "Under Review" },
+    Approved: { color: "#f59e0b", bg: "#fef3c7", label: "Approved" },
+    Rejected: { color: "#ef4444", bg: "#fee2e2", label: "Rejected" },
+    Completed: { color: "#10b981", bg: "#d1fae5", label: "Completed" },
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const token = Cookies.get("token");
-        if (!token) return;
-
-        const decoded = jwtDecode(token);
-        const userId = decoded.userId;
-        setFormData((p) => ({ ...p, userId }));
-
-        const [serviceRes, assetRes] = await Promise.allSettled([
-          axiosInstance.get("/ServiceRequests"),
-          axiosInstance.get(`/AssetAllocations/user/${userId}`),
-        ]);
-
-        if (serviceRes.status === "fulfilled") {
-          setServiceRequests(serviceRes.value.data || []);
-        }
-
-        if (assetRes.status === "fulfilled") {
-          setAssetAllocations(assetRes.value.data || []);
-        }
-      } catch {
-        setError("Failed to load service requests");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
 
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentRequests = serviceRequests.slice(indexOfFirst, indexOfLast);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      
+      const token = Cookies.get("token");
+      if (!token) {
+        setError("No token found");
+        return;
+      }
+
+      const decoded = jwtDecode(token);
+      const userId = decoded.userId;
+
+      setFormData((prev) => ({ ...prev, userId }));
+
+      // Fetch in parallel
+      const [serviceRes, assetRes] = await Promise.all([
+        axiosInstance.get("/ServiceRequests"),
+        axiosInstance.get(`/AssetAllocations/user/${userId}`),
+      ]);
+
+      // Handle service requests
+      const serviceData = serviceRes?.data?.data || serviceRes?.data || [];
+      const myServiceRequests = serviceData.filter(r => r.userId === userId);
+      setServiceRequests(myServiceRequests);
+
+      // Handle asset allocations
+      const assetData = assetRes?.data?.data || assetRes?.data || [];
+      setAssetAllocations(assetData);
+
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError("Failed to load service requests");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pagination handlers
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
   const handleAssetChange = (e) => {
     const name = e.target.value;
@@ -90,228 +131,329 @@ const ServiceRequest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!formData.assetId || !formData.issueType || !formData.serviceDescription) {
+      setError("Please fill all required fields");
       return;
     }
+
     try {
+      setLoading(true);
       await axiosInstance.post("/ServiceRequests", formData);
       setShowForm(false);
       setSuccessMessage("Service request submitted successfully!");
-      setTimeout(() => setSuccessMessage(""), 3000);
-      window.location.reload();
+      
+      setTimeout(() => {
+        setSuccessMessage("");
+        fetchData(); // Refresh data
+      }, 2000);
+      
     } catch (err) {
-      console.error(err);
+      console.error("Submit error:", err);
+      setError("Failed to submit service request");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Get status style
+  const getStatusStyle = (status) => {
+    return statusConfig[status] || statusConfig.UnderReview;
+  };
+
+  // Get issue type label
+  const getIssueLabel = (type) => {
+    return issueTypeMapping[type] || "Unknown";
+  };
+
+  // Paginated data
+  const currentRequests = serviceRequests.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
   return (
-    <div className="min-h-screen flex flex-col
-      bg-gray-50 dark:bg-slate-950 transition-colors">
-
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#f8fafc' }}>
       <EmployeeHeader />
+      <Toolbar sx={{ height: 80 }} />
 
-      <main className="flex-grow max-w-7xl mx-auto px-6 py-16">
+      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 2 }}>
+        {/* Header Title */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#1e2a55', mb: 1 }}>
+            Service Requests
+          </Typography>
+          <Typography variant="body1" sx={{ color: '#6b7280' }}>
+            Manage your asset maintenance and repair requests
+          </Typography>
+        </Box>
 
-        <h1 className="text-3xl font-extrabold text-center mb-10
-          text-gray-900 dark:text-slate-100 animate-fadeUp">
-          Service Requests
-        </h1>
+        {/* Error Message */}
+        {error && (
+          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: '#fee2e2', borderRadius: 2, borderLeft: '4px solid #ef4444' }}>
+            <Typography color="error">{error}</Typography>
+          </Paper>
+        )}
 
-        <div className="bg-white dark:bg-slate-900
-          border border-gray-200 dark:border-slate-700
-          rounded-2xl shadow-lg p-6 animate-fadeUp">
+        {/* Success Message */}
+        {successMessage && (
+          <Paper elevation={0} sx={{ p: 2, mb: 3, bgcolor: '#d1fae5', borderRadius: 2, borderLeft: '4px solid #10b981' }}>
+            <Typography sx={{ color: '#065f46', fontWeight: 600 }}>{successMessage}</Typography>
+          </Paper>
+        )}
 
-          {loading ? (
-            <p className="text-center text-gray-600 dark:text-slate-300">
-              Loading...
-            </p>
-          ) : error ? (
-            <p className="text-center text-gray-500">{error}</p>
+        {/* Stats Cards */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {Object.entries(statusConfig).map(([status, config], index) => {
+            const count = serviceRequests.filter(r => r.serviceReqStatus === status).length;
+            return (
+              <Grid item xs={6} md={3} key={status}>
+                <Paper 
+                  elevation={0} 
+                  sx={{
+                    p: 3, 
+                    borderRadius: 3, 
+                    bgcolor: config.bg,
+                    border: `1px solid ${config.color}30`,
+                    transition: 'all 0.3s', 
+                    '&:hover': { transform: 'translateY(-3px)', boxShadow: 3 }
+                  }}
+                >
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: config.color }}>{count}</Typography>
+                  <Typography variant="body2" sx={{ color: config.color, fontWeight: 500 }}>{config.label}</Typography>
+                </Paper>
+              </Grid>
+            );
+          })}
+        </Grid>
+
+        {/* Table */}
+        <Paper elevation={0} sx={{ borderRadius: 3, overflow: 'hidden', mb: 4 }}>
+          <Box sx={{ p: 3, bgcolor: '#1e2a55', borderRadius: '12px 12px 0 0' }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: 'white' }}>Request History</Typography>
+          </Box>
+
+          {loading && !showForm ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 8 }}>
+              <CircularProgress sx={{ color: '#1e2a55' }} />
+            </Box>
           ) : (
             <>
-              <table className="w-full text-sm">
-                <thead className="bg-indigo-950 dark:bg-indigo-900 text-white">
-                  <tr>
-                    {["ID", "Asset ID", "Asset Name", "Date", "Issue", "Desc", "Status"]
-                      .map(h => (
-                        <th key={h} className="p-3 text-center">{h}</th>
-                      ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentRequests.map(r => (
-                    <tr key={r.serviceId}
-                      className="border-b border-gray-200
-                      dark:border-slate-700
-                      hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+              <TableContainer>
+                <Table>
+                  <TableHead sx={{ bgcolor: '#1e2a55' }}>
+                    <TableRow>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>ID</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Asset</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Date</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Issue</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Description</TableCell>
+                      <TableCell sx={{ color: 'white', fontWeight: 600 }}>Status</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {currentRequests.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
+                          <Typography color="text.secondary">No service requests found</Typography>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      currentRequests.map((r, i) => {
+                        const statusStyle = getStatusStyle(r.serviceReqStatus);
+                        return (
+                          <TableRow key={i} hover sx={{ '&:hover': { bgcolor: '#f8fafc' } }}>
+                            <TableCell sx={{ fontWeight: 500 }}>{r.serviceId}</TableCell>
+                            <TableCell>
+                              <Chip 
+                                label={r.assetName || "N/A"} 
+                                size="small" 
+                                sx={{ bgcolor: '#e0e7ff', color: '#1e2a55' }} 
+                              />
+                            </TableCell>
+                            <TableCell>
+                              {r.serviceRequestDate ? new Date(r.serviceRequestDate).toLocaleDateString() : "N/A"}
+                            </TableCell>
+                            <TableCell>
+                              <Chip 
+                                label={getIssueLabel(r.issueType)} 
+                                size="small" 
+                                sx={{ bgcolor: '#fef3c7', color: '#92400e' }} 
+                              />
+                            </TableCell>
+                            <TableCell sx={{ maxWidth: 200 }}>
+                              <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {r.serviceDescription || "No description"}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Chip 
+                                label={statusStyle.label}
+                                size="small"
+                                sx={{ bgcolor: statusStyle.bg, color: statusStyle.color, fontWeight: 600 }} 
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
-                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
-                        {r.serviceId}
-                      </td>
-                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
-                        {r.assetId}
-                      </td>
-                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
-                        {r.assetName || "N/A"}
-                      </td>
-                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
-                        {new Date(r.serviceRequestDate).toLocaleDateString()}
-                      </td>
-                      <td className="p-2 text-center text-gray-800 dark:text-slate-300">
-                        {issueTypeMapping[r.issueType]}
-                      </td>
-                      <td className="p-2 text-gray-800 dark:text-slate-300">
-                        {r.serviceDescription}
-                      </td>
-                      <td className="p-2 text-center">
-                        {r.serviceReqStatus === "UnderReview" && (
-                          <span className="text-blue-600 dark:text-blue-400 font-semibold">
-                            <FontAwesomeIcon icon={faCircleExclamation} /> Under Review
-                          </span>
-                        )}
-                        {r.serviceReqStatus === "Approved" && (
-                          <span className="text-yellow-600 dark:text-yellow-400 font-semibold">
-                            <FontAwesomeIcon icon={faThumbsUp} /> Approved
-                          </span>
-                        )}
-                        {r.serviceReqStatus === "Rejected" && (
-                          <span className="text-red-600 dark:text-red-400 font-semibold">
-                            <FontAwesomeIcon icon={faXmark} /> Rejected
-                          </span>
-                        )}
-                        {r.serviceReqStatus === "Completed" && (
-                          <span className="text-green-600 dark:text-green-400 font-semibold">
-                            <FontAwesomeIcon icon={faCircleCheck} /> Completed
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <CustomPagination
-                currentPage={currentPage}
-                totalItems={serviceRequests.length}
-                itemsPerPage={itemsPerPage}
-                onPageChange={setCurrentPage}
-              />
+              {/* Pagination */}
+              {serviceRequests.length > rowsPerPage && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                  <Button 
+                    onClick={(e) => handleChangePage(e, page - 1)}
+                    disabled={page === 0}
+                    sx={{ mr: 1 }}
+                  >
+                    Previous
+                  </Button>
+                  <Typography sx={{ alignSelf: 'center', mx: 2 }}>
+                    Page {page + 1} of {Math.ceil(serviceRequests.length / rowsPerPage)}
+                  </Typography>
+                  <Button 
+                    onClick={(e) => handleChangePage(e, page + 1)}
+                    disabled={page >= Math.ceil(serviceRequests.length / rowsPerPage) - 1}
+                    sx={{ ml: 1 }}
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
             </>
           )}
-        </div>
+        </Paper>
 
-        <div className="grid md:grid-cols-2 gap-8 mt-12 animate-fadeUp">
-          <div className="bg-gray-100 dark:bg-slate-800
-            border border-gray-200 dark:border-slate-700
-            p-6 rounded-xl shadow">
-            <h2 className="font-bold text-gray-900 dark:text-slate-100 mb-4">
-              Service Guidelines
-            </h2>
-            <ul className="text-gray-700 dark:text-slate-300 space-y-2">
-              <li className="flex justify-between">
-                Issues <span className="text-red-500">Malfunction / Repair / Install</span>
-              </li>
-              <li className="flex justify-between">
-                Time <span className="text-red-500">~ 2 Weeks</span>
-              </li>
-            </ul>
-          </div>
+        {/* Guidelines & Action Button */}
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e2a55', mb: 2 }}>Service Guidelines</Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {[
+                  { label: "Issue Types", value: "Malfunction, Repair, Install", color: "#ef4444" },
+                  { label: "Response Time", value: "~ 2 Weeks", color: "#f59e0b" },
+                  { label: "Priority", value: "High for Malfunctions", color: "#8b5cf6" },
+                ].map((item, i) => (
+                  <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', p: 2, borderRadius: 2, bgcolor: '#f8fafc', borderLeft: `3px solid ${item.color}` }}>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>{item.label}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: item.color }}>{item.value}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Paper>
+          </Grid>
 
-          <div className="flex justify-center items-center">
-            <button
-              onClick={() => setShowForm(true)}
-              className="bg-red-600 hover:bg-red-700
-              text-white px-6 py-3 rounded-lg shadow">
-              Raise Service Request
-            </button>
-          </div>
-        </div>
+          <Grid item xs={12} md={6}>
+            <Paper elevation={0} sx={{ p: 3, borderRadius: 3, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <BuildIcon sx={{ fontSize: 60, color: '#1e2a55', opacity: 0.3, mb: 2 }} />
+              <Typography variant="h6" sx={{ fontWeight: 600, color: '#1e2a55', mb: 2 }}>Need Maintenance?</Typography>
+              <Button 
+                variant="contained" 
+                startIcon={<AddIcon />} 
+                onClick={() => setShowForm(true)} 
+                sx={{ 
+                  bgcolor: '#1e2a55', 
+                  color: 'white', 
+                  px: 4, 
+                  py: 1.5, 
+                  borderRadius: 2, 
+                  fontWeight: 600, 
+                  '&:hover': { bgcolor: '#2d3a6a', transform: 'translateY(-2px)', boxShadow: 3} 
+                }} 
+              >
+                Raise Service Request
+              </Button>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Box>
 
-        {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-60
-            flex items-center justify-center z-50">
-            <form onSubmit={handleSubmit}
-              className="bg-white dark:bg-slate-900
-              border border-gray-200 dark:border-slate-700
-              p-6 rounded-xl w-full max-w-md animate-scaleIn">
+      {/* Form Dialog */}
+      <Dialog 
+        open={showForm} 
+        onClose={() => setShowForm(false)} 
+        maxWidth="sm" 
+        fullWidth 
+        PaperProps={{ sx: { borderRadius: 3 } }}
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#1e2a55', color: 'white', borderRadius: '12px 12px 0 0', p: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>New Service Request</Typography>
+          <IconButton onClick={() => setShowForm(false)} sx={{ color: 'white' }}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
-              <div className="flex justify-between mb-4">
-                <h3 className="font-bold text-lg text-gray-900 dark:text-white">
-                  New Service Request
-                </h3>
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  className="cursor-pointer text-red-500"
-                  onClick={() => setShowForm(false)}
-                />
-              </div>
+        <DialogContent sx={{ p: 3 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
+            <FormControl fullWidth required>
+              <InputLabel>Select Asset</InputLabel>
+              <Select 
+                value={formData.assetName} 
+                onChange={handleAssetChange} 
+                label="Select Asset"
+              >
+                {assetAllocations.length === 0 ? (
+                  <MenuItem disabled>No assets available</MenuItem>
+                ) : (
+                  assetAllocations.map((a) => (
+                    <MenuItem key={a.assetId} value={a.assetName}>
+                      {a.assetName}
+                    </MenuItem>
+                  ))
+                )}
+              </Select>
+            </FormControl>
 
-              <div className="space-y-4">
-                <select
-                  className="w-full p-3 rounded
-                  bg-white dark:bg-slate-800
-                  border border-gray-300 dark:border-slate-600
-                  text-gray-900 dark:text-slate-200"
-                  value={formData.assetName}
-                  onChange={handleAssetChange}
-                  required>
-                  <option value="">Select Asset</option>
-                  {assetAllocations.map(a => (
-                    <option key={a.assetId} value={a.assetName}>{a.assetName}</option>
-                  ))}
-                </select>
+            <FormControl fullWidth required>
+              <InputLabel>Select Issue Type</InputLabel>
+              <Select 
+                value={formData.issueType} 
+                onChange={(e) => setFormData({ ...formData, issueType: e.target.value })} 
+                label="Select Issue Type"
+              >
+                {Object.entries(issueTypeMapping).map(([key, value]) => (
+                  <MenuItem key={key} value={key}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-                <select
-                  className="w-full p-3 rounded
-                  bg-white dark:bg-slate-800
-                  border border-gray-300 dark:border-slate-600
-                  text-gray-900 dark:text-slate-200"
-                  value={formData.issueType}
-                  onChange={e => setFormData({
-                    ...formData,
-                    issueType: Number(e.target.value)
-                  })}
-                  required>
-                  <option value="">Select Issue</option>
-                  {Object.entries(issueTypeMapping).map(([k, v]) => (
-                    <option key={k} value={k}>{v}</option>
-                  ))}
-                </select>
+            <TextField 
+              fullWidth 
+              multiline 
+              rows={4} 
+              label="Describe the Issue" 
+              value={formData.serviceDescription} 
+              onChange={(e) => setFormData({ ...formData, serviceDescription: e.target.value })} 
+              required
+            />
 
-                <textarea
-                  rows={4}
-                  className="w-full p-3 rounded
-                  bg-white dark:bg-slate-800
-                  border border-gray-300 dark:border-slate-600
-                  text-gray-900 dark:text-slate-200"
-                  placeholder="Describe the issue"
-                  value={formData.serviceDescription}
-                  onChange={e => setFormData({
-                    ...formData,
-                    serviceDescription: e.target.value
-                  })}
-                  required
-                />
+            <Button 
+              type="submit" 
+              variant="contained" 
+              disabled={loading}
+              sx={{ 
+                bgcolor: '#1e2a55', 
+                color: 'white', 
+                py: 1.5, 
+                fontWeight: 600, 
+                '&:hover': { bgcolor: '#2d3a6a' },
+                '&:disabled': { bgcolor: '#9ca3af' }
+              }} 
+            >
+              {loading ? "Submitting..." : "Submit Request"}
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
 
-                <button
-                  type="submit"
-                  className="w-full bg-indigo-950 hover:bg-indigo-800
-                  text-white py-2 rounded">
-                  Submit Request
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {successMessage && (
-          <div className="fixed top-5 right-5 bg-green-600
-            text-white px-4 py-2 rounded shadow-lg">
-            {successMessage}
-          </div>
-        )}
-      </main>
-    </div>
+      <Footer />
+    </Box>
   );
 };
 
